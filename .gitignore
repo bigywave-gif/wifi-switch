@@ -1,0 +1,16 @@
+.build/
+.swiftpm/
+dist/
+.DS_Store
+artifacts/
+__pycache__/
+*.py[cod]
+._*
+.env
+.env.*
+!.env.example
+*.p12
+*.pfx
+*.keychain-db
+accounts.json
+accounts.json.*

@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- AppleDouble metadata copies (macOS -> non-HFS transfer) must never be compiled. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/._*</DefaultItemExcludes>
+    <Version>0.1.9</Version>
+    <Company>WiFi Switch</Company>
+    <Product>WiFi Switch</Product>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+</Project>
