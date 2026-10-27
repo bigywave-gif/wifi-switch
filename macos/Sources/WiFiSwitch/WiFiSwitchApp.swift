@@ -7,9 +7,27 @@ struct Launcher {
         if CommandLine.arguments.count == 3, CommandLine.arguments[1] == "--system-identity" {
             exit(SystemConnectionReader.runIdentityHelper(ssid: CommandLine.arguments[2]))
         }
+        if CommandLine.arguments.count == 2, CommandLine.arguments[1] == "--update-keychain-labels" {
+            exit(KeychainLabelMigration.runHelper())
+        }
+        if CommandLine.arguments.count == 2, CommandLine.arguments[1] == "--compare-system-password" {
+            exit(SystemCredentialComparator.runHelper())
+        }
         if CommandLine.arguments.contains("--self-test") {
             do { try runStorageSelfTest(); print("PASS: Keychain CRUD, JSON persistence, restart, secret isolation, cleanup"); exit(0) }
             catch { fputs("Storage self-test failed: \(error.localizedDescription)\n", stderr); exit(1) }
+        }
+        // Helpers above never create UI. Normal and demo launches share one gate,
+        // before SwiftUI constructs AppModel, reads credentials, or adds a menu item.
+        do {
+            guard try SingleInstanceController.claimGUIInstance() else { return }
+        } catch {
+            let alert = NSAlert()
+            alert.messageText = "无法启动 WiFi Switch"
+            alert.informativeText = "无法确认应用是否已运行。请检查本机应用数据目录的访问权限后重试。"
+            alert.addButton(withTitle: "好")
+            alert.runModal()
+            exit(1)
         }
         WiFiSwitchApp.main()
     }
@@ -67,7 +85,41 @@ private enum MenuBarIcon {
     }
 }
 
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var managementWindow: NSWindow?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        managementWindow = NSApp.windows.first { $0.canBecomeMain && !($0 is NSPanel) }
+        NotificationCenter.default.addObserver(self, selector: #selector(rememberMainWindow(_:)),
+            name: NSWindow.didBecomeMainNotification, object: nil)
+        DistributedNotificationCenter.default().addObserver(self, selector: #selector(reopenMainWindow(_:)),
+            name: SingleInstanceController.reopenNotification,
+            object: String(ProcessInfo.processInfo.processIdentifier))
+    }
+
+    @objc private func rememberMainWindow(_ notification: Notification) {
+        if let window = notification.object as? NSWindow, window.title == "WiFi Switch", !(window is NSPanel) {
+            managementWindow = window
+        }
+    }
+
+    @objc private func reopenMainWindow(_ notification: Notification) {
+        showManagementWindow()
+    }
+
+    private func showManagementWindow() {
+        NSApp.unhide(nil)
+        managementWindow?.deminiaturize(nil)
+        managementWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        showManagementWindow()
+        return true
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         // The system must be allowed to terminate the app during logout/shutdown.

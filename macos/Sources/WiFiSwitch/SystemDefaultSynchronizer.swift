@@ -96,9 +96,6 @@ struct SystemDefaultSynchronizer {
             for (domain, old) in saved where old != credential {
                 changed.append(domain)
                 try store.write(credential, ssid: ssid, enterprise: enterprise, domain: domain)
-                guard try store.read(ssid: ssid, enterprise: enterprise, domain: domain) == credential else {
-                    throw SyncFailure.credentialNotSaved
-                }
             }
             stage = "核对系统 Wi-Fi 凭据"
             for (domain, _) in saved {

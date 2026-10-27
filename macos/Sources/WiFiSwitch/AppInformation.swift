@@ -41,11 +41,11 @@ enum AppInformation {
     }
 
     static func showUserGuide() {
-        guard let url = Bundle.main.url(forResource: "README", withExtension: "txt"),
+        guard let url = Bundle.main.url(forResource: "UserGuide", withExtension: "txt"),
               NSWorkspace.shared.open(url) else {
             let alert = NSAlert()
             alert.messageText = "无法打开使用说明"
-            alert.informativeText = "请查看安装包中的 README.txt。"
+            alert.informativeText = "请查看安装包中的“使用说明.txt”。"
             alert.addButton(withTitle: "好")
             alert.runModal()
             return

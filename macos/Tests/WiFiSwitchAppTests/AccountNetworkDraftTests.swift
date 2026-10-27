@@ -102,8 +102,9 @@ struct AccountNetworkDraftTests {
 }
 
 private final class EditorWiFiService: WiFiServicing {
-    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws {
+    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult {
         try await switchAccount(ssid: ssid, username: username, password: password, progress: progress)
+        return .associated
     }
     var connectionAttempts = 0
     func snapshot() async -> WiFiSnapshot { WiFiSnapshot(ssid: "Office · Enterprise", poweredOn: true, available: true, hasUsableAddress: true) }

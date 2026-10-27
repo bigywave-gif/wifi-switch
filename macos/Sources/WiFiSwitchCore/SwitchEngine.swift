@@ -14,6 +14,11 @@ public enum SwitchPhase: Equatable {
     }
 }
 
+public enum WiFiReconnectResult: Equatable {
+    case associated
+    case systemRecovered
+}
+
 public struct LinkState: Equatable {
     public let ssid: String?
     public let hasUsableAddress: Bool
@@ -109,17 +114,23 @@ public struct SwitchEngine {
         } else { try driver.restoreSystemCredentials() }
     }
 
-    /// Recovery cooperates with system auto-join: it never deliberately disconnects
-    /// the interface, and yields if macOS recovered or joined a different network.
+    /// Yield to a system connection before taking ownership. Otherwise perform a fresh
+    /// association with the requested credentials, preserving the system default.
+    @discardableResult
     public func reconnectAccount(ssid: String, username: String, password: String,
-                                 progress: (SwitchPhase) -> Void) throws {
-        if try recoveredOrChanged(ssid: ssid) { return }
+                                 progress: (SwitchPhase) -> Void) throws -> WiFiReconnectResult {
+        if try recoveredOrChanged(ssid: ssid) { return .systemRecovered }
         progress(.finding)
         let authentication = try driver.prepare(ssid: ssid)
         let credentials = try authentication.credentials(username: username, password: password)
-        if try recoveredOrChanged(ssid: ssid) { return }
+        if try recoveredOrChanged(ssid: ssid) { return .systemRecovered }
         try driver.captureSystemCredentials(credentials: credentials)
+        // Authorization may have taken time; never displace a connection made meanwhile.
+        if try recoveredOrChanged(ssid: ssid) { return .systemRecovered }
         do {
+        progress(.disconnecting)
+        try driver.disconnect()
+        wait(0.5)
         progress(.authenticating)
         try driver.associate(credentials: credentials)
         try verify(ssid: ssid, progress: progress)
@@ -128,6 +139,7 @@ public struct SwitchEngine {
             throw error
         }
         try driver.restoreSystemCredentials()
+        return .associated
     }
 
     private func recoveredOrChanged(ssid: String) throws -> Bool {

@@ -42,18 +42,24 @@ enum WiFiInformationReader {
                 let interface = CWWiFiClient.shared().interface()
                 let before = interface.map(capture)
                 let values = dynamicValues()
+                let resolvers = DNSResolverReader.read()
                 let after = interface.map(capture)
                 continuation.resume(returning: assemble(ssid: ssid, authentication: WiFiAuthentication(rawValue: authenticationValue) ?? .unknown,
-                                                        before: before, after: after, values: values))
+                                                        before: before, after: after, values: values, resolvers: resolvers))
             }
         }
     }
 
     static func dynamicValues() -> [String: Any]? {
         guard let store = SCDynamicStoreCreate(nil, "WiFiSwitch.network-information" as CFString, nil, nil) else { return nil }
-        let patterns = ["State:/Network/Interface/.*/IPv[46]", "State:/Network/Service/.*/(IPv4|IPv6|DNS)"]
-        return SCDynamicStoreCopyMultiple(store, nil, patterns as CFArray) as? [String: Any]
+        return SCDynamicStoreCopyMultiple(store, nil, dynamicPatterns as CFArray) as? [String: Any]
     }
+
+    // Read both sources in one snapshot: State DNS is supplied by the network;
+    // applied explicit DNS settings live separately under Setup for the same service.
+    static let dynamicPatterns = ["State:/Network/Interface/.*/IPv[46]",
+                                  "State:/Network/Service/.*/(IPv4|IPv6|DNS)",
+                                  "Setup:/Network/Service/.*/DNS"]
 
     static func capture(_ interface: CWInterface) -> Interface {
         let name = interface.interfaceName ?? ""
@@ -86,7 +92,7 @@ enum WiFiInformationReader {
     }
 
     static func assemble(ssid: String, authentication: WiFiAuthentication,
-                         before: Interface?, after: Interface?, values: [String: Any]?) -> WiFiInformation {
+                         before: Interface?, after: Interface?, values: [String: Any]?, resolvers: String? = nil) -> WiFiInformation {
         func unavailable(_ status: String) -> WiFiInformation {
             .init(status: status, sections: [.init(title: "保存的配置", rows: [
                 .init(title: "Wi-Fi 名称", value: ssid),
@@ -118,9 +124,9 @@ enum WiFiInformationReader {
                   dictionary(key)["InterfaceName"] as? String == before.name else { return nil }
             return String(parts[3])
         }).sorted()
-        func entities(_ family: String) -> [[String: Any]] {
+        func entities(_ family: String, domain: String = "State") -> [[String: Any]] {
             serviceIDs.compactMap { id in
-                let data = dictionary("State:/Network/Service/\(id)/\(family)")
+                let data = dictionary("\(domain):/Network/Service/\(id)/\(family)")
                 if let name = data["InterfaceName"] as? String, name != before.name { return nil }
                 return data
             }
@@ -141,7 +147,9 @@ enum WiFiInformationReader {
             }
         let routers4 = entities("IPv4").compactMap { $0["Router"] as? String } + [ipv4["Router"] as? String].compactMap { $0 }
         let routers6 = entities("IPv6").compactMap { $0["Router"] as? String } + [ipv6["Router"] as? String].compactMap { $0 }
-        let dns = entities("DNS").flatMap { strings($0, "ServerAddresses") }
+        let automaticDNS = entities("DNS").flatMap { strings($0, "ServerAddresses") }
+        let manualDNS = entities("DNS", domain: "Setup").flatMap { strings($0, "ServerAddresses") }
+        let currentDNS = DNSResolverReader.servers(in: resolvers, interface: before.name)
         let security = securityDescription(before.security)
         return .init(status: "当前已连接此 Wi-Fi", sections: [
             .init(title: "网络地址", rows: addressRows + [
@@ -150,7 +158,9 @@ enum WiFiInformationReader {
                     index < prefixes.count ? "\(address)/\(prefixes[index])" : address
                 }, fallback: "未分配")),
                 .init(title: "IPv6 网关", value: joined(routers6)),
-                .init(title: "DNS（Wi-Fi 服务）", value: joined(dns))
+                .init(title: "当前 DNS（Wi-Fi）", value: joined(currentDNS, fallback: "未确认")),
+                .init(title: "DNS（手动设置）", value: joined(manualDNS, fallback: serviceIDs.isEmpty ? "未获取" : "未设置")),
+                .init(title: "DNS（自动获取）", value: joined(automaticDNS))
             ]),
             .init(title: "无线连接", rows: [
                 .init(title: "网卡", value: before.name),
@@ -199,8 +209,15 @@ enum WiFiInformationReader {
             "State:/Network/Interface/en0/IPv6": ["Addresses": ["2001:db8::10"], "PrefixLength": [64]],
             "State:/Network/Service/sample/IPv4": ["InterfaceName": "en0", "Router": "192.0.2.1"],
             "State:/Network/Service/sample/IPv6": ["InterfaceName": "en0", "Router": "fe80::1%en0"],
-            "State:/Network/Service/sample/DNS": ["ServerAddresses": ["192.0.2.53", "2001:db8::53"]]
-        ])
+            "State:/Network/Service/sample/DNS": ["ServerAddresses": ["192.0.2.53", "2001:db8::53"]],
+            "Setup:/Network/Service/sample/DNS": ["ServerAddresses": ["192.0.2.54"]]
+        ], resolvers: """
+        DNS configuration (for scoped queries)
+        resolver #1
+          nameserver[0] : 192.0.2.54
+          if_index : 1 (en0)
+          flags : Scoped, Request A records
+        """)
         return .init(status: "演示数据 · 不读取实际网络", sections: sample.sections, connectionConfirmed: true)
     }
 }

@@ -2,6 +2,7 @@
 """Exercise the packaging gate without signing keys, secrets, or network access."""
 import json
 import os
+import plistlib
 from pathlib import Path
 import shutil
 import subprocess
@@ -55,7 +56,12 @@ class SigningTests(unittest.TestCase):
         (self.root / ".build/release/WiFiSwitch").write_text("new-binary")
         (self.root / ".build/AppIcon.icns").write_text("synthetic icon")
         (self.root / "Resources").mkdir()
-        (self.root / "Resources/Info.plist").write_text("synthetic plist")
+        (self.root / "Resources/Info.plist").write_bytes(plistlib.dumps({
+            "CFBundleIdentifier": "org.wifiswitch.WiFiSwitch",
+            "WiFiSwitchDistribution": "internal",
+        }))
+        (self.root / "Resources/UserGuide.txt").write_text("Synthetic guide")
+        (self.root / "CHANGELOG.md").write_text("Synthetic release notes")
         self.previous = self.root / "dist/WiFi Switch.app"
         (self.previous / "Contents/MacOS").mkdir(parents=True)
         (self.previous / "Contents/MacOS/WiFiSwitch").write_text("previous-binary")

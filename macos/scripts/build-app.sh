@@ -24,7 +24,7 @@ cp Resources/Info.plist "$APP_PATH/Contents/Info.plist"
 if [ "${WIFI_SWITCH_SIGNING_MODE:-internal}" = "developer-id" ]; then
     /usr/libexec/PlistBuddy -c 'Set :WiFiSwitchDistribution Developer ID 签名版' "$APP_PATH/Contents/Info.plist"
 fi
-cp README.md "$APP_PATH/Contents/Resources/README.txt"
+cp Resources/UserGuide.txt "$APP_PATH/Contents/Resources/UserGuide.txt"
 cp CHANGELOG.md "$APP_PATH/Contents/Resources/CHANGELOG.txt"
 if [ ! -f "$PROJECT_ROOT/.build/AppIcon.icns" ] || [ scripts/make-icon.swift -nt "$PROJECT_ROOT/.build/AppIcon.icns" ] || [ scripts/package-icon.py -nt "$PROJECT_ROOT/.build/AppIcon.icns" ]; then
     swift -module-cache-path "$PROJECT_ROOT/.build/module-cache" scripts/make-icon.swift "$PROJECT_ROOT/.build/icon.png"

@@ -23,17 +23,17 @@ final class SwitchEngineTests {
         #expect(driver.calls == ["prepare:Office", "capture"])
     }
 
-    @Test func automaticRecoveryNeverDisconnectsAndStillVerifiesIP() throws {
+    @Test func automaticRecoveryReauthenticatesSelectedAccountAndVerifiesIP() throws {
         let driver = FakeDriver()
         let offline = LinkState(ssid: nil, hasUsableAddress: false)
         let ready = LinkState(ssid: "Office", hasUsableAddress: true)
-        driver.states = [offline, offline, ready, ready, ready]
+        driver.states = [offline, offline, offline, ready, ready, ready]
         var phases: [SwitchPhase] = []
         try SwitchEngine(driver: driver, wait: { _ in }).reconnectAccount(ssid: "Office", username: "alice", password: "synthetic", progress: { phases.append($0) })
-        #expect(!driver.calls.contains("disconnect"))
-        #expect(driver.calls.contains("associate"))
-        #expect(phases == [.finding, .authenticating, .verifying])
-        #expect(driver.stateReads == 5)
+        #expect(driver.calls == ["prepare:Office", "capture", "disconnect", "associate", "restore"])
+        #expect(driver.receivedCredentials == .enterprise(username: "alice", password: "synthetic"))
+        #expect(phases == [.finding, .disconnecting, .authenticating, .verifying])
+        #expect(driver.stateReads == 6)
     }
 
     @Test func automaticRecoveryYieldsToSystemRecoveryAndDifferentNetwork() throws {
@@ -44,7 +44,8 @@ final class SwitchEngineTests {
                 driver.states.append(LinkState(ssid: ssid, hasUsableAddress: true))
                 let engine = SwitchEngine(driver: driver, wait: { _ in })
                 if ssid == "Office" {
-                    try engine.reconnectAccount(ssid: "Office", username: "alice", password: "synthetic", progress: { _ in })
+                    let result = try engine.reconnectAccount(ssid: "Office", username: "alice", password: "synthetic", progress: { _ in })
+                    #expect(result == .systemRecovered)
                 } else {
                     #expect(throws: WiFiError.connectionChanged) {
                         try engine.reconnectAccount(ssid: "Office", username: "alice", password: "synthetic", progress: { _ in })
@@ -54,6 +55,27 @@ final class SwitchEngineTests {
                 #expect(!driver.calls.contains("associate"))
             }
         }
+    }
+
+    @Test func recoveryDuringCredentialAuthorizationDoesNotAuthenticateOrRestoreOverSystem() throws {
+        let driver = FakeDriver()
+        let offline = LinkState(ssid: nil, hasUsableAddress: false)
+        driver.states = [offline, offline, LinkState(ssid: "Office", hasUsableAddress: true)]
+        let result = try SwitchEngine(driver: driver, wait: { _ in }).reconnectAccount(
+            ssid: "Office", username: "studio", password: "synthetic", progress: { _ in })
+        #expect(result == .systemRecovered)
+        #expect(driver.calls == ["prepare:Office", "capture"])
+    }
+
+    @Test func applicationRecoveryFailureRestoresDefaultAndNeverReturnsSuccess() throws {
+        let driver = FakeDriver()
+        driver.associateError = WiFiError.verificationTimeout
+        #expect(throws: WiFiError.verificationTimeout) {
+            try SwitchEngine(driver: driver, wait: { _ in }).reconnectAccount(
+                ssid: "Office", username: "studio", password: "synthetic", progress: { _ in })
+        }
+        #expect(driver.calls == ["prepare:Office", "capture", "disconnect", "associate", "restore"])
+        #expect(driver.defaultCredentials == nil)
     }
 
     @Test func personalWiFiUsesOnlyPasswordAndVerifiesConnection() throws {
@@ -169,7 +191,7 @@ final class SwitchEngineTests {
     @Test func backgroundRecoveryDoesNotOverwriteUserSystemDefault() throws {
         let driver = FakeDriver()
         driver.states = [LinkState(ssid: nil, hasUsableAddress: false), LinkState(ssid: nil, hasUsableAddress: false),
-                         LinkState(ssid: "Office", hasUsableAddress: true)]
+                         LinkState(ssid: nil, hasUsableAddress: false), LinkState(ssid: "Office", hasUsableAddress: true)]
         try SwitchEngine(driver: driver, wait: { _ in }).reconnectAccount(ssid: "Office", username: "alice", password: "synthetic", progress: { _ in })
         #expect(driver.calls.contains("associate") && !driver.calls.contains("saveDefault"))
     }

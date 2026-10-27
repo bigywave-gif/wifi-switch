@@ -144,7 +144,7 @@ protocol WiFiServicing {
     func switchAccount(ssid: String, username: String, password: String,
                        progress: @escaping (SwitchPhase) -> Void) async throws
     func reconnectAccount(ssid: String, username: String, password: String,
-                          progress: @escaping (SwitchPhase) -> Void) async throws
+                          progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult
 }
 
 extension WiFiServicing {
@@ -197,33 +197,44 @@ final class WiFiService: WiFiServicing {
 
     func switchAccount(ssid: String, username: String, password: String,
                        progress: @escaping (SwitchPhase) -> Void) async throws {
-        try await connect(ssid: ssid, username: username, password: password, automatic: false, progress: progress)
+        _ = try await connect(ssid: ssid, username: username, password: password, automatic: false, progress: progress)
     }
 
     func reconnectAccount(ssid: String, username: String, password: String,
-                          progress: @escaping (SwitchPhase) -> Void) async throws {
+                          progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult {
         try await connect(ssid: ssid, username: username, password: password, automatic: true, progress: progress)
     }
 
     func switchAccount(ssid: String, username: String, password: String, synchronizeSystemCredentials: Bool,
                        progress: @escaping (SwitchPhase) -> Void) async throws {
-        try await connect(ssid: ssid, username: username, password: password, automatic: false, synchronizeSystemCredentials: synchronizeSystemCredentials, progress: progress)
+        _ = try await connect(ssid: ssid, username: username, password: password, automatic: false, synchronizeSystemCredentials: synchronizeSystemCredentials, progress: progress)
     }
 
     private func connect(ssid: String, username: String, password: String, automatic: Bool, synchronizeSystemCredentials: Bool = true,
-                         progress: @escaping (SwitchPhase) -> Void) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                         progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<WiFiReconnectResult, Error>) in
             queue.async {
                 do {
                     let driver = try CoreWLANDriver()
                     let engine = SwitchEngine(driver: driver)
-                    if automatic {
-                        try engine.reconnectAccount(ssid: ssid, username: username, password: password, progress: progress)
-                    } else {
-                        try engine.switchAccount(ssid: ssid, username: username, password: password, synchronizeSystemCredentials: synchronizeSystemCredentials, progress: progress)
+                    let trace: (SwitchPhase) -> Void = { phase in
+                        if phase == .authenticating { CredentialDiagnostics.record(.associationRequestStarting) }
+                        if phase == .verifying { CredentialDiagnostics.record(.associationReturned) }
+                        progress(phase)
                     }
-                    continuation.resume()
-                } catch { continuation.resume(throwing: error) }
+                    if automatic {
+                        let result = try engine.reconnectAccount(ssid: ssid, username: username, password: password, progress: trace)
+                        CredentialDiagnostics.record(.connectionServiceReturned)
+                        continuation.resume(returning: result)
+                    } else {
+                        try engine.switchAccount(ssid: ssid, username: username, password: password, synchronizeSystemCredentials: synchronizeSystemCredentials, progress: trace)
+                        CredentialDiagnostics.record(.connectionServiceReturned)
+                        continuation.resume(returning: .associated)
+                    }
+                } catch {
+                    CredentialDiagnostics.record(.connectionServiceFailed, errorCode: (error as NSError).code)
+                    continuation.resume(throwing: error)
+                }
             }
         }
     }

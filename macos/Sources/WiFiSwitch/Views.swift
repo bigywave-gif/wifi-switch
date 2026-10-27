@@ -26,7 +26,7 @@ struct ContentView: View {
             .padding(.horizontal, 28).padding(.top, 24).padding(.bottom, 22)
 
             HStack(spacing: 7) {
-                Circle().fill(model.snapshot.ssid == nil ? Color.secondary : Color.green).frame(width: 7, height: 7)
+                Circle().fill(connectionStatusColor(model.menuNetworkStatus)).frame(width: 7, height: 7)
                 Text(connectionTitle).lineLimit(1).truncationMode(.tail)
                     .help(model.accountStatusDetail).accessibilityIdentifier("connection-summary")
                 if model.selectedAccount == nil && model.canImportSystemConnection {
@@ -80,8 +80,8 @@ struct ContentView: View {
                     }
                     if let notice = model.notice {
                         HStack(alignment: .top, spacing: 10) {
-                            Image(systemName: notice.isError ? "exclamationmark.circle.fill" : "checkmark.circle.fill")
-                                .foregroundStyle(notice.isError ? Color.orange : Color.green)
+                            Image(systemName: notice.isError ? "exclamationmark.circle.fill" : (notice.isInformational ? "info.circle.fill" : "checkmark.circle.fill"))
+                                .foregroundStyle(notice.isError ? Color.orange : (notice.isInformational ? Color.gray : Color.green))
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(notice.text).font(.system(size: 12)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                                 if let editor = notice.accountEditor {
@@ -137,9 +137,9 @@ struct ContentView: View {
         if !model.snapshot.poweredOn { return "Wi-Fi 已关闭" }
         if let ssid = model.snapshot.ssid {
             if model.isCheckingConnection { return "已连接 · \(ssid) · 正在确认账号" }
-            guard let account = model.selectedAccount else { return "已连接 · \(ssid) · 当前账号未识别" }
+            guard model.selectedAccount != nil else { return "已连接 · \(ssid) · 当前账号未识别" }
             let source = model.accountSelection?.source == .manual ? "（手动标记）" : ""
-            return "已连接 · \(ssid) · \(account.displayName)\(source)"
+            return "已连接 · \(ssid) · \(model.connectionAccountLabel)\(source)"
         }
         return location.authorized ? "当前未连接 Wi-Fi" : "连接名称待授权后读取"
     }
@@ -260,16 +260,24 @@ private struct CurrentAccountIndicator: View {
     var body: some View {
         ZStack {
             if isCurrent {
-                Circle().fill(Color.green).frame(width: 18, height: 18)
-                Image(systemName: "checkmark")
-                    .font(.system(size: 10, weight: .bold)).foregroundStyle(.black)
+                if model.menuNetworkStatus.hasSystemConfigurationAction {
+                    Button { model.beginMenuSystemImport() } label: { indicator }
+                        .buttonStyle(.plain).disabled(!model.canAddMenuSystemConnection)
+                        .accessibilityLabel(model.menuNetworkStatus.accessibilityLabel)
+                } else { indicator }
             }
         }
         .frame(width: ConnectionColumn.width(compact: compact), height: 28)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("当前使用账号")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(model.menuNetworkStatus.accessibilityLabel)
         .accessibilityHidden(!isCurrent)
-        .help(isCurrent ? model.accountStatusDetail : "")
+        .help(isCurrent ? model.menuNetworkStatus.accessibilityLabel : "")
+    }
+
+    private var indicator: some View {
+        Image(systemName: model.menuNetworkStatus.symbol)
+            .symbolRenderingMode(.palette).foregroundStyle(.black, connectionStatusColor(model.menuNetworkStatus))
+            .font(.system(size: 18)).frame(width: 26, height: 26).contentShape(Rectangle())
     }
 }
 
@@ -282,8 +290,12 @@ struct NetworkConnectionControl: View {
     var body: some View {
         Group {
             if let status = model.accountConnectionStatus(for: account, on: network) {
-                AccountStatusLight(status: status, accountName: "\(account.displayName) · \(network.ssid)", canReconnect: model.canEdit) {
-                    model.reconnectAccount(account, on: network)
+                if status.isNormal && model.menuNetworkStatus != .registered {
+                    CurrentAccountIndicator(account: account, compact: compact)
+                } else {
+                    AccountStatusLight(status: status, accountName: "\(account.displayName) · \(network.ssid)", canReconnect: model.canEdit) {
+                        model.reconnectAccount(account, on: network)
+                    }
                 }
             } else {
                 Button {
@@ -610,9 +622,9 @@ struct MenuPanel: View {
                 Spacer()
                 if model.isSwitching { ProgressView().controlSize(.small) }
                 Menu {
-                    Button("配置管理") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
-                    Divider()
                     Button("关于 WiFi Switch") { AppInformation.showAbout() }
+                    Divider()
+                    Button("配置管理") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
                     Button("使用说明") { AppInformation.showUserGuide() }
                     Divider()
                     Button("退出系统") { NSApp.terminate(nil) }.disabled(model.isSwitching)
@@ -636,22 +648,24 @@ struct MenuPanel: View {
                                     .background(model.snapshot.hasUsableAddress ? Color.blue : Color.gray, in: Circle())
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(ssid).font(.system(size: 13, weight: .semibold)).lineLimit(1).help(ssid)
-                                    Text(model.connectedAccountID != nil ? (model.selectedAccount?.displayName ?? "未知账号") : "未知账号")
+                                    Text(model.connectedAccountID != nil ? model.connectionAccountLabel : "未知账号")
                                         .font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
                                         .help(model.accountStatusDetail)
                                 }
                                 Spacer(minLength: 0)
-                                if model.connectedAccountID != nil {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .symbolRenderingMode(.palette).foregroundStyle(.black, .green)
-                                        .font(.system(size: 18)).accessibilityLabel("当前使用账号")
-                                }
-                            }.accessibilityElement(children: .combine)
+                                networkStatusIndicator
+                            }.accessibilityElement(children: .contain)
                                 .accessibilityIdentifier("menu-connected-network")
                         }.padding(.bottom, 4)
                     } else {
-                        Text(model.snapshot.poweredOn ? "当前未连接 Wi-Fi" : "Wi-Fi 已关闭")
-                            .font(.system(size: 12)).foregroundStyle(.secondary)
+                        HStack(spacing: 10) {
+                            Image(systemName: "wifi.slash").font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(.secondary).frame(width: 32, height: 32)
+                            Text(model.menuNetworkStatus.accessibilityLabel)
+                                .font(.system(size: 12)).foregroundStyle(.secondary)
+                            Spacer(minLength: 0)
+                            networkStatusIndicator
+                        }.accessibilityIdentifier("menu-disconnected-network")
                     }
                     Divider()
                     Button { otherNetworksExpanded.toggle() } label: {
@@ -691,9 +705,6 @@ struct MenuPanel: View {
                         Text("若系统再次要求密码，可取消弹窗后在账号管理中核对保存的信息。")
                             .font(.caption).foregroundStyle(.orange)
                     }
-                    if let notice = model.notice {
-                        Text(notice.text).font(.system(size: 11)).foregroundStyle(notice.isError ? Color.orange : Color.secondary)
-                    }
                     if model.demoMode { Text("演示模式 · 不连接真实 Wi-Fi").font(.caption).foregroundStyle(.orange) }
                 }.padding(.horizontal, 12).padding(.vertical, 16)
             }.frame(maxHeight: 350)
@@ -705,6 +716,29 @@ struct MenuPanel: View {
                 await model.refresh()
                 try? await Task.sleep(nanoseconds: 5_000_000_000)
             }
+        }
+    }
+
+    private var statusColor: Color { connectionStatusColor(model.menuNetworkStatus) }
+
+    @ViewBuilder private var networkStatusIndicator: some View {
+        if model.menuNetworkStatus.hasSystemConfigurationAction {
+            Button { model.beginMenuSystemImport() } label: {
+                Image(systemName: model.menuNetworkStatus.symbol)
+                    .symbolRenderingMode(.palette).foregroundStyle(.black, statusColor)
+                    .font(.system(size: 18)).frame(width: 26, height: 26).contentShape(Rectangle())
+            }.buttonStyle(.plain)
+                .disabled(!model.canAddMenuSystemConnection)
+                .help(model.editBlockedReason ?? model.menuNetworkStatus.accessibilityLabel)
+                .accessibilityLabel(model.menuNetworkStatus.accessibilityLabel)
+                .accessibilityIdentifier("menu-add-current-wifi")
+        } else {
+            Image(systemName: model.menuNetworkStatus.symbol)
+                .symbolRenderingMode(.palette).foregroundStyle(.black, statusColor)
+                .font(.system(size: 18)).frame(width: 26, height: 26)
+                .help(model.menuNetworkStatus.accessibilityLabel)
+                .accessibilityLabel(model.menuNetworkStatus.accessibilityLabel)
+                .accessibilityIdentifier("menu-network-status")
         }
     }
 }
@@ -749,5 +783,15 @@ private struct AccountStatusLight: View {
                 }
             }.padding(16).frame(width: 280)
         }
+    }
+}
+
+/// The current connection has the same status color in the menu and management panel.
+private func connectionStatusColor(_ status: MenuNetworkStatus) -> Color {
+    switch status {
+    case .registered: return .green
+    case .unregistered, .accountNeedsReview, .passwordChanged: return .yellow
+    case .disconnected, .poweredOff, .internetUnavailable, .addressUnavailable: return .red
+    default: return .gray
     }
 }

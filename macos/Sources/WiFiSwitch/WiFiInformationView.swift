@@ -34,7 +34,7 @@ struct WiFiInformationView: View {
                         }
                     }
                     if information?.sections.count ?? 0 > 1 {
-                        Text("DNS 为此 Wi-Fi 服务的数据，VPN 或代理可能改变实际解析路径。认证信息不包含密码或实时认证用户名。")
+                        Text("当前 DNS 为系统分配给 Wi-Fi 接口的解析器地址，不代表每次请求实际命中的服务器；手动设置和自动获取仅列出配置来源。请先在系统设置中保存修改。VPN、加密 DNS 或按域名分流可能使用其他解析器。认证信息不包含密码或实时认证用户名。")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }.frame(maxWidth: .infinity, alignment: .leading).padding(22)

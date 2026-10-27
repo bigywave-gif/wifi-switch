@@ -180,8 +180,20 @@ private func validateSSID(_ ssid: String) throws {
 
 public protocol CredentialVault {
     func password(for accountID: UUID) throws -> String?
+    @MainActor func readPassword(for accountID: UUID) async throws -> String?
     func setPassword(_ password: String, for accountID: UUID) throws
     func deletePassword(for accountID: UUID) throws
+    func setPassword(_ password: String, for accountID: UUID, accountName: String) throws
+}
+
+public extension CredentialVault {
+    @MainActor func readPassword(for accountID: UUID) async throws -> String? {
+        try password(for: accountID)
+    }
+
+    func setPassword(_ password: String, for accountID: UUID, accountName: String) throws {
+        try setPassword(password, for: accountID)
+    }
 }
 
 public protocol ConfigurationStorage {
@@ -316,10 +328,10 @@ public final class AccountRepository {
             next.currentConnection = nil
             next.automaticReconnectFailure = nil
         }
-        if passwordChanged, let newPassword { try vault.setPassword(newPassword, for: id) }
+        if passwordChanged, let newPassword { try vault.setPassword(newPassword, for: id, accountName: account.displayName) }
         do { try commit(next) } catch {
             if passwordChanged {
-                do { try restore(oldPassword, for: id) } catch { throw StoreError.rollbackFailed }
+                do { try restore(oldPassword, for: id, accountName: oldAccount?.displayName) } catch { throw StoreError.rollbackFailed }
             }
             throw error
         }
@@ -367,7 +379,7 @@ public final class AccountRepository {
         if account.hasStoredSecret { try vault.deletePassword(for: accountID) }
         do { try commit(next) } catch {
             if account.hasStoredSecret {
-                do { try restore(oldPassword, for: accountID) } catch { throw StoreError.rollbackFailed }
+                do { try restore(oldPassword, for: accountID, accountName: account.displayName) } catch { throw StoreError.rollbackFailed }
             }
             throw error
         }
@@ -377,6 +389,14 @@ public final class AccountRepository {
         guard let account = configuration.accounts.first(where: { $0.id == accountID }) else { throw StoreError.notFound }
         guard account.hasStoredSecret else { return "" }
         guard let password = try vault.password(for: accountID), !password.isEmpty else { throw StoreError.missingPassword }
+        return password
+    }
+
+    /// Interactive vaults can suspend without blocking the UI while authorization is pending.
+    @MainActor public func readPassword(for accountID: UUID) async throws -> String {
+        guard let account = configuration.accounts.first(where: { $0.id == accountID }) else { throw StoreError.notFound }
+        guard account.hasStoredSecret else { return "" }
+        guard let password = try await vault.readPassword(for: accountID), !password.isEmpty else { throw StoreError.missingPassword }
         return password
     }
 
@@ -448,8 +468,9 @@ public final class AccountRepository {
         self.configuration = next
     }
 
-    private func restore(_ password: String?, for id: UUID) throws {
-        if let password { try vault.setPassword(password, for: id) }
+    private func restore(_ password: String?, for id: UUID, accountName: String?) throws {
+        if let password, let accountName { try vault.setPassword(password, for: id, accountName: accountName) }
+        else if let password { try vault.setPassword(password, for: id) }
         else { try vault.deletePassword(for: id) }
     }
 }

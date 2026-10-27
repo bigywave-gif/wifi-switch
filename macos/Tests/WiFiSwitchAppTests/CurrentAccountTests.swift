@@ -219,8 +219,9 @@ struct CurrentAccountTests {
 
 @MainActor
 private final class MockWiFiService: WiFiServicing {
-    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws {
+    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult {
         try await switchAccount(ssid: ssid, username: username, password: password, progress: progress)
+        return .associated
     }
     var current = WiFiSnapshot(ssid: "Office · Enterprise", poweredOn: true, available: true, hasUsableAddress: true)
     var resultSSID: String?

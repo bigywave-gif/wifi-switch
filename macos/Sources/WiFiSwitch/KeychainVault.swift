@@ -4,13 +4,19 @@ import WiFiSwitchCore
 
 struct KeychainVault: CredentialVault {
     let service: String
-    init(service: String = "org.wifiswitch.WiFiSwitch.accounts") { self.service = service }
+    private let isolatedKeychain: SecKeychain?
+    init(service: String = "org.wifiswitch.WiFiSwitch.accounts", isolatedKeychain: SecKeychain? = nil) {
+        self.service = service
+        self.isolatedKeychain = isolatedKeychain
+    }
 
     private func query(_ id: UUID) -> [String: Any] {
-        [kSecClass as String: kSecClassGenericPassword,
+        var query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
          kSecAttrService as String: service,
          kSecAttrAccount as String: id.uuidString,
          kSecAttrSynchronizable as String: false]
+        if let isolatedKeychain { query[kSecMatchSearchList as String] = [isolatedKeychain] }
+        return query
     }
 
     func password(for accountID: UUID) throws -> String? {
@@ -27,18 +33,53 @@ struct KeychainVault: CredentialVault {
         return value
     }
 
+    @MainActor func readPassword(for accountID: UUID) async throws -> String? {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                // SecItemCopyMatching can wait for the user's authorization. Keep the
+                // main run loop free to render the current account and access stage.
+                continuation.resume(with: Result { try password(for: accountID) })
+            }
+        }
+    }
+
+    static func label(accountID: UUID, accountName: String) -> String {
+        let name = accountName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let visible = name.isEmpty ? "未命名账号" : name
+        return "WiFi Switch 账号密码 · \(visible) [\(accountID.uuidString.prefix(8))]"
+    }
+
     func setPassword(_ password: String, for accountID: UUID) throws {
-        let attributes = [kSecValueData as String: Data(password.utf8)]
+        try writePassword(password, for: accountID, accountName: nil)
+    }
+
+    func setPassword(_ password: String, for accountID: UUID, accountName: String) throws {
+        try writePassword(password, for: accountID, accountName: accountName)
+    }
+
+    private func writePassword(_ password: String, for accountID: UUID, accountName: String?) throws {
+        var attributes: [String: Any] = [kSecValueData as String: Data(password.utf8)]
+        if let accountName { attributes[kSecAttrLabel as String] = Self.label(accountID: accountID, accountName: accountName) }
         let status = SecItemUpdate(query(accountID) as CFDictionary, attributes as CFDictionary)
         if status == errSecItemNotFound {
             var item = query(accountID)
+            if let isolatedKeychain {
+                item.removeValue(forKey: kSecMatchSearchList as String)
+                item[kSecUseKeychain as String] = isolatedKeychain
+            }
             item[kSecValueData as String] = Data(password.utf8)
-            item[kSecAttrLabel as String] = "WiFi Switch 账号密码"
+            item[kSecAttrLabel as String] = accountName.map { Self.label(accountID: accountID, accountName: $0) } ?? "WiFi Switch 账号密码"
             let addStatus = SecItemAdd(item as CFDictionary, nil)
             guard addStatus == errSecSuccess else { throw KeychainFailure(status: addStatus) }
         } else if status != errSecSuccess {
             throw KeychainFailure(status: status)
         }
+    }
+
+    /// Metadata-only update: never read or replace the stored secret or its access policy.
+    func updateLabel(for accountID: UUID, accountName: String) -> OSStatus {
+        SecItemUpdate(query(accountID) as CFDictionary,
+                      [kSecAttrLabel as String: Self.label(accountID: accountID, accountName: accountName)] as CFDictionary)
     }
 
     func deletePassword(for accountID: UUID) throws {

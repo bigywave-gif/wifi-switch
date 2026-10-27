@@ -30,7 +30,8 @@ struct WiFiInformationTests {
         #expect(result["IPv4 网关"] == "192.0.2.1")
         #expect(result["IPv6 / 前缀长度"] == "2001:db8::10/64")
         #expect(result["IPv6 网关"] == "fe80::1%en0")
-        #expect(result["DNS（Wi-Fi 服务）"] == "192.0.2.53\n2001:db8::53")
+        #expect(result["DNS（自动获取）"] == "192.0.2.53\n2001:db8::53")
+        #expect(result["DNS（手动设置）"] == "未设置")
         #expect(!result.values.joined().contains("198.51.100"))
         #expect(!result.values.joined().contains("203.0.113"))
         #expect(result["MAC（当前接口）"] == connected.mac)
@@ -42,6 +43,71 @@ struct WiFiInformationTests {
         #expect(!info.connectionConfirmed)
         #expect(rows(info)["IPv4 地址 1"] == nil)
         #expect(rows(info)["配置认证类型"] == "Wi-Fi 密码")
+    }
+    @Test func manualAndAutomaticDNSStaySeparateAndIgnoreOtherServices() {
+        var data = values
+        data["Setup:/Network/Service/wifi/DNS"] = ["ServerAddresses": ["192.0.2.55", "192.0.2.55", "2001:db8::54"]]
+        data["Setup:/Network/Service/vpn/DNS"] = ["ServerAddresses": ["198.51.100.54"]]
+        data["Setup:/Network/Service/inactive-wifi/DNS"] = ["ServerAddresses": ["203.0.113.54"]]
+        let info = WiFiInformationReader.assemble(ssid: "Office", authentication: .enterprise,
+            before: connected, after: connected, values: data)
+        let result = rows(info)
+        #expect(result["DNS（手动设置）"] == "192.0.2.55\n2001:db8::54")
+        #expect(result["DNS（自动获取）"] == "192.0.2.53\n2001:db8::53")
+        #expect(!result.values.joined().contains("198.51.100"))
+        #expect(!result.values.joined().contains("203.0.113"))
+    }
+    @Test func manualOnlyAndRemovedManualSettingsRefreshWithoutStaleValues() {
+        var data = values
+        data.removeValue(forKey: "State:/Network/Service/wifi/DNS")
+        data["Setup:/Network/Service/wifi/DNS"] = ["ServerAddresses": ["192.0.2.55"]]
+        func read() -> [String: String] {
+            rows(WiFiInformationReader.assemble(ssid: "Office", authentication: .enterprise,
+                before: connected, after: connected, values: data))
+        }
+        #expect(read()["DNS（手动设置）"] == "192.0.2.55")
+        #expect(read()["DNS（自动获取）"] == "未获取")
+        data.removeValue(forKey: "Setup:/Network/Service/wifi/DNS")
+        #expect(read()["DNS（手动设置）"] == "未设置")
+    }
+    @Test func matchingAddressesRetainBothSourcesAndMismatchedInterfaceIsIgnored() {
+        var data = values
+        data["Setup:/Network/Service/wifi/DNS"] = ["ServerAddresses": ["192.0.2.53"]]
+        func read() -> [String: String] {
+            rows(WiFiInformationReader.assemble(ssid: "Office", authentication: .enterprise,
+                before: connected, after: connected, values: data))
+        }
+        #expect(read()["DNS（手动设置）"] == "192.0.2.53")
+        #expect(read()["DNS（自动获取）"]?.contains("192.0.2.53") == true)
+        data["Setup:/Network/Service/wifi/DNS"] = ["InterfaceName": "utun7", "ServerAddresses": ["198.51.100.54"]]
+        #expect(read()["DNS（手动设置）"] == "未设置")
+    }
+    @Test func dynamicReadPatternsIncludeAppliedDNSSettings() throws {
+        let patterns = try WiFiInformationReader.dynamicPatterns.map { try NSRegularExpression(pattern: "^(?:\($0))$") }
+        func included(_ key: String) -> Bool {
+            patterns.contains { $0.firstMatch(in: key, range: NSRange(key.startIndex..., in: key)) != nil }
+        }
+        #expect(included("Setup:/Network/Service/wifi/DNS"))
+        #expect(included("State:/Network/Service/wifi/DNS"))
+        #expect(!included("State:/Network/Global/DNS"))
+    }
+    @Test func currentDNSUsesObservedResolverAndNeverGuessesFromManualSetting() {
+        var data = values
+        data["Setup:/Network/Service/wifi/DNS"] = ["ServerAddresses": ["192.0.2.55"]]
+        let output = """
+        DNS configuration (for scoped queries)
+        resolver #1
+          nameserver[0] : 192.0.2.99
+          if_index : 12 (en0)
+          flags : Scoped, Request A records
+        """
+        let info = WiFiInformationReader.assemble(ssid: "Office", authentication: .enterprise,
+            before: connected, after: connected, values: data, resolvers: output)
+        #expect(rows(info)["当前 DNS（Wi-Fi）"] == "192.0.2.99")
+        #expect(rows(info)["DNS（手动设置）"] == "192.0.2.55")
+        let unavailable = WiFiInformationReader.assemble(ssid: "Office", authentication: .enterprise,
+            before: connected, after: connected, values: data)
+        #expect(rows(unavailable)["当前 DNS（Wi-Fi）"] == "未确认")
     }
     @Test func missingPermissionPowerAndReadFailureHaveExplicitStates() {
         var unknown = connected; unknown.ssid = nil
@@ -76,7 +142,8 @@ struct WiFiInformationTests {
         let info = WiFiInformationReader.assemble(ssid: "Office", authentication: .enterprise,
             before: connected, after: connected, values: ["State:/Network/Global/DNS": ["ServerAddresses": ["203.0.113.53"]]])
         #expect(rows(info)["IPv4 地址"] == "未分配")
-        #expect(rows(info)["DNS（Wi-Fi 服务）"] == "未获取")
+        #expect(rows(info)["DNS（自动获取）"] == "未获取")
+        #expect(rows(info)["DNS（手动设置）"] == "未获取")
         #expect(rows(info)["IPv4 网关"] == "未获取")
     }
     @Test func securityComesFromLiveNetworkAndDoesNotGuessEAP() {

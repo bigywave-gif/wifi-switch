@@ -2,7 +2,7 @@
 
 两个平台独立版本管理：
 
-- [Mac 完整变更记录](macos/CHANGELOG.md)：0.1.0–0.1.41。
+- [Mac 完整变更记录](macos/CHANGELOG.md)：0.1.0–0.1.66。
 - [Windows 完整变更记录](windows/CHANGELOG.md)：0.1.0–0.1.9。
 - [发布规则与编写标准](macos/docs/release-policy.md)。
 - [新版本说明模板](macos/docs/release-notes-template.md)。

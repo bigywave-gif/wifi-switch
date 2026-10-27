@@ -6,6 +6,204 @@ import WiFiSwitchCore
 
 @MainActor
 struct ConnectionRestoreTests {
+    @Test(arguments: [true, false])
+    func completedAssociationUsesRequestedAccountRegardlessOfSystemDefault(sameDefault: Bool) async throws {
+        let f = try RestoreFixture()
+        let reader = RecoveryIdentityReader()
+        reader.username = sameDefault ? f.second.username : f.first.username
+        let model = try f.model(reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        #expect(model.menuNetworkStatus == .registered)
+        #expect(model.connectionAccountLabel == "Studio")
+        #expect(model.notice?.text.contains("当前账号：Studio") == true)
+        #expect(f.service.lastUsername == f.second.username)
+        #expect(model.connectionEvidence?.requestedUsername == f.second.username)
+        #expect(model.connectionEvidence?.savedUsername == reader.username)
+        #expect(model.connectionEvidence?.savedAccount == (sameDefault ? "Studio" : "Group"))
+        #expect(!model.canAddMenuSystemConnection)
+        #expect(!model.menuNetworkStatus.hasSystemConfigurationAction)
+        await model.refresh()
+        #expect(model.menuNetworkStatus == .registered)
+        #expect(model.systemImportCandidate == nil && model.systemPasswordComparison == nil)
+        #expect(try f.storage.load().currentConnection?.accountID == f.second.id)
+    }
+
+    @Test func unreadableSystemDefaultDoesNotInvalidateCompletedAssociation() async throws {
+        let f = try RestoreFixture()
+        let reader = RecoveryIdentityReader()
+        let model = try f.model(reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        #expect(model.menuNetworkStatus == .registered)
+        #expect(model.connectionEvidence?.savedUsername == nil)
+        #expect(model.connectionEvidence?.detail.contains("暂未读取到") == true)
+        #expect(reader.configurationReads == 0)
+        f.service.current.ssid = nil
+        await model.refresh()
+        #expect(model.menuNetworkStatus == .disconnected)
+        #expect(model.connectionEvidence == nil)
+    }
+
+    @Test func evidenceReadCannotFollowAnExpiredConnection() async throws {
+        let f = try RestoreFixture()
+        let reader = RecoveryIdentityReader()
+        reader.username = f.first.username
+        let model = try f.model(reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        reader.hold = true
+        let task = Task { await model.refreshConnectionEvidence() }
+        for _ in 0..<100 {
+            if reader.continuation != nil { break }
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        let pending = try #require(reader.continuation)
+        f.service.current.ssid = nil
+        await model.refresh()
+        reader.hold = false; reader.continuation = nil; pending.resume()
+        await task.value
+        #expect(model.connectionEvidence == nil && model.notice == nil)
+        #expect(model.menuNetworkStatus == .disconnected)
+    }
+
+    @Test func missingAddressAfterAssociationDoesNotReportSuccess() async throws {
+        let f = try RestoreFixture()
+        f.service.usableAddressAfterAssociation = false
+        let model = try f.model()
+        await model.switchAccount(f.second, on: f.network)?.value
+        #expect(model.menuNetworkStatus != .registered)
+        #expect(model.connectedAccountID == nil)
+        #expect(model.notice?.isError == true)
+        #expect(model.notice?.text.contains("连接成功") == false)
+    }
+
+    @Test(arguments: [true, false])
+    func applicationAssociationRequiresInternetForGreen(reachable: Bool) async throws {
+        let f = try RestoreFixture()
+        let checker = FixedInternet(result: reachable)
+        let model = try f.model(internet: checker)
+        await model.switchAccount(f.second, on: f.network)?.value
+        for _ in 0..<1000 {
+            if model.internetStatus != .checking { break }
+            await Task.yield()
+        }
+        #expect(model.connectedAccountID == f.second.id)
+        #expect(model.menuNetworkStatus == (reachable ? .registered : .internetUnavailable))
+    }
+
+    @Test func recoveryTargetDoesNotBecomeConfirmedAccountAndNoticeFollowsSystemIdentity() async throws {
+        let f = try RestoreFixture()
+        f.service.recoveryResult = .systemRecovered
+        let reader = RecoveryIdentityReader()
+        reader.username = f.first.username
+        let model = try f.model(automaticReconnect: true, reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        reader.hold = true
+        f.service.current.hasUsableAddress = false
+        await model.refresh()
+        for _ in 0..<100 {
+            if reader.continuation != nil { break }
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        let pending = try #require(reader.continuation)
+        #expect(f.service.reconnections == 1)
+        #expect(f.service.authentications == 1)
+        #expect(f.service.lastUsername == f.second.username)
+        #expect(model.connectedAccountID == nil)
+        #expect(model.notice?.text.contains("正在确认") == true)
+        #expect(model.notice?.text.contains("Studio") == false)
+        reader.hold = false; reader.continuation = nil; pending.resume()
+        for _ in 0..<100 {
+            if model.notice?.connection != nil { break }
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        #expect(model.connectedAccountID == f.first.id)
+        #expect(model.notice?.text.contains("Group") == true)
+        #expect(model.notice?.text.contains("Studio") == false)
+        #expect(try f.storage.load().currentConnection?.accountID == f.first.id)
+        // A later system change invalidates only the stale success notice.
+        reader.username = f.second.username
+        await model.connectionDidChange()
+        #expect(model.connectedAccountID == f.second.id && model.notice == nil)
+        model.notice = AppNotice(text: "Unrelated persistence error", isError: true)
+        reader.username = f.first.username
+        await model.refresh()
+        #expect(model.notice?.text == "Unrelated persistence error")
+    }
+
+    @Test func recoveredNetworkWithUnknownIdentityNeverClaimsTargetAccount() async throws {
+        let f = try RestoreFixture()
+        f.service.recoveryResult = .systemRecovered
+        let reader = RecoveryIdentityReader()
+        let model = try f.model(automaticReconnect: true, reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        f.service.current.hasUsableAddress = false; await model.refresh()
+        for _ in 0..<100 {
+            if model.notice?.text.contains("尚未确认") == true { break }
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        #expect(model.connectedAccountID == nil)
+        #expect(model.notice?.text.contains("尚未确认") == true)
+        #expect(model.notice?.text.contains("Studio") == false)
+        f.service.current.ssid = "Other"
+        await model.refresh()
+        #expect(model.notice == nil)
+    }
+
+    @Test func manualSuccessNoticeExpiresWhenSystemSelectsAnotherAccount() async throws {
+        let f = try RestoreFixture()
+        let reader = RecoveryIdentityReader()
+        reader.username = f.first.username
+        let model = try f.model(reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        #expect(model.notice?.text.contains("Studio") == true)
+        await model.connectionDidChange()
+        #expect(model.connectedAccountID == f.first.id)
+        #expect(model.notice == nil)
+    }
+
+    @Test func applicationRecoveryRetainsLastAccountEvenWhenSystemDefaultIsDifferent() async throws {
+        let f = try RestoreFixture()
+        let reader = RecoveryIdentityReader()
+        reader.username = f.first.username // Saved system default, not the application's live session.
+        let model = try f.model(automaticReconnect: true, reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        f.service.current.hasUsableAddress = false
+        await model.refresh()
+        for _ in 0..<100 {
+            if f.service.reconnections == 1 && !model.isSwitching { break }
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        #expect(f.service.lastUsername == f.second.username)
+        #expect(model.connectedAccountID == f.second.id)
+        #expect(model.notice?.text.contains("重新连接成功，当前账号：Studio") == true)
+        #expect(model.menuNetworkStatus == .registered)
+        #expect(model.connectionEvidence?.automatic == true)
+        #expect(model.connectionEvidence?.savedAccount == "Group")
+        await model.refresh()
+        #expect(model.connectedAccountID == f.second.id)
+        #expect(try f.storage.load().currentConnection?.accountID == f.second.id)
+    }
+
+    @Test func powerCycleLeavesSystemInControlUntilItJoins() async throws {
+        let f = try RestoreFixture()
+        let reader = RecoveryIdentityReader()
+        reader.username = f.first.username
+        let model = try f.model(automaticReconnect: true, reader: reader)
+        await model.switchAccount(f.second, on: f.network)?.value
+        f.service.current.poweredOn = false
+        f.service.current.ssid = nil
+        await model.connectionDidChange()
+        f.service.current.poweredOn = true
+        await model.connectionDidChange()
+        try await Task.sleep(for: .milliseconds(30))
+        #expect(f.service.reconnections == 0)
+        f.service.current.ssid = f.network.ssid
+        f.service.current.hasUsableAddress = true
+        await model.connectionDidChange()
+        #expect(f.service.reconnections == 0)
+        #expect(model.connectedAccountID == f.first.id)
+        #expect(model.notice == nil)
+    }
+
     @Test func informationAccessFollowsOnlyTheConfirmedAccountAndNetwork() async throws {
         let fixture = try RestoreFixture()
         let model = try fixture.model()
@@ -36,7 +234,7 @@ struct ConnectionRestoreTests {
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
         let saved = try fixture.storage.load().currentConnection
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.service.connectionError = NSError(domain: CWErrorDomain, code: code)
         await model.refresh()
         for _ in 0..<2000 {
@@ -62,7 +260,7 @@ struct ConnectionRestoreTests {
         let fixture = try RestoreFixture(storage: JSONConfigurationStorage(url: directory.appendingPathComponent("accounts.json")))
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.service.connectionError = NSError(domain: CWErrorDomain, code: 1)
         await model.refresh()
         for _ in 0..<2000 {
@@ -95,7 +293,7 @@ struct ConnectionRestoreTests {
         let fixture = try RestoreFixture()
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.service.connectionError = NSError(domain: CWErrorDomain, code: 1)
         await model.refresh()
         for _ in 0..<2000 {
@@ -138,7 +336,7 @@ struct ConnectionRestoreTests {
         let fixture = try RestoreFixture()
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.vault.values.removeValue(forKey: fixture.first.id)
         await model.refresh()
         for _ in 0..<2000 {
@@ -153,19 +351,19 @@ struct ConnectionRestoreTests {
     }
 
     @Test(arguments: [-3905, -3925])
-    func systemTimeoutStillUsesThreeAttemptLimit(code: Int) async throws {
+    func systemTimeoutStopsAfterSingleConfirmedAttempt(code: Int) async throws {
         let fixture = try RestoreFixture()
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.service.connectionError = NSError(domain: CWErrorDomain, code: code)
         await model.refresh()
         for _ in 0..<2000 {
-            if model.automaticReconnectFailures == 3 && !model.isSwitching { break }
+            if model.automaticReconnectFailures == 1 && !model.isSwitching { break }
             await Task.yield()
         }
-        #expect(fixture.service.reconnections == 3)
-        #expect(model.automaticReconnectFailures == 3)
+        #expect(fixture.service.reconnections == 1)
+        #expect(model.automaticReconnectFailures == 1)
         #expect(!model.automaticReconnectNeedsCredentialReview)
     }
 
@@ -199,7 +397,7 @@ struct ConnectionRestoreTests {
             #expect(fixture.service.lastUsername == changes.0)
             #expect(fixture.service.lastPassword == (changes.1.isEmpty ? "synthetic-secret" : changes.1))
             #expect(model.connectedAccountID == fixture.first.id)
-            #expect(model.notice?.text.contains("重新连接成功") == true)
+            #expect(model.notice?.text.contains("账号已保存并重新连接成功") == true)
             let reopened = try fixture.model()
             await reopened.refresh()
             #expect(reopened.selectedAccount?.username == changes.0)
@@ -294,57 +492,55 @@ struct ConnectionRestoreTests {
         #expect(fixture.service.authentications == 2)
     }
 
-    @Test func credentialCorrectionAfterThreeFailuresResetsLimitAndReconnects() async throws {
+    @Test func credentialCorrectionAfterConfirmedFailureReconnects() async throws {
         let fixture = try RestoreFixture()
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.service.failAuthentication = true
         await model.refresh()
         for _ in 0..<2000 {
-            if model.automaticReconnectFailures == 3 && !model.isSwitching { break }
+            if model.automaticReconnectFailures == 1 && !model.isSwitching { break }
             await Task.yield()
         }
-        #expect(model.automaticReconnectFailures == 3)
+        #expect(model.automaticReconnectFailures == 1)
         fixture.service.failAuthentication = false
         let task = try #require(try model.saveAccount(editor: AccountEditor(account: fixture.first), label: "Group",
                                                  username: fixture.first.username, password: "updated-secret"))
         await task.value
         #expect(model.automaticReconnectFailures == 0)
         #expect(model.connectedAccountID == fixture.first.id)
-        #expect(fixture.service.authentications == 5)
+        #expect(fixture.service.authentications == 3)
         #expect(try fixture.storage.load().automaticReconnectFailure == nil)
     }
 
-    @Test func threeAutomaticFailuresPersistAcrossRestartAndRequireManualRetry() async throws {
+    @Test func confirmedFailureIsNotRetriedAcrossRestartWithoutAction() async throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
         let fixture = try RestoreFixture(storage: JSONConfigurationStorage(url: directory.appendingPathComponent("accounts.json")))
         let model = try fixture.model(automaticReconnect: true)
         await model.switchAccount(fixture.first, on: fixture.network)?.value
         let saved = try fixture.storage.load().currentConnection
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         fixture.service.failAuthentication = true
         await model.refresh()
         for _ in 0..<2000 {
-            if model.automaticReconnectFailures == 3 && !model.isSwitching { break }
+            if model.automaticReconnectFailures == 1 && !model.isSwitching { break }
             await Task.yield()
         }
-        #expect(model.automaticReconnectFailures == 3)
-        #expect(fixture.service.reconnections == 3)
+        #expect(model.automaticReconnectFailures == 1)
+        #expect(fixture.service.reconnections == 1)
         #expect(try fixture.storage.load().currentConnection == saved)
-        #expect(model.accountConnectionStatus(for: fixture.first, on: fixture.network)?.detail.contains("失败 3 次") == true)
         let reopened = try fixture.model(automaticReconnect: true)
         for _ in 0..<10 { await reopened.refresh(); await Task.yield() }
-        #expect(reopened.automaticReconnectFailures == 3)
-        #expect(fixture.service.reconnections == 3)
-        #expect(reopened.notice?.text.contains("手动重新连接") == true)
+        #expect(reopened.automaticReconnectFailures == 1)
+        #expect(fixture.service.reconnections == 1)
         fixture.service.failAuthentication = false
         await reopened.reconnectAccount(fixture.first, on: fixture.network)?.value
         #expect(reopened.connectedAccountID == fixture.first.id)
         #expect(reopened.automaticReconnectFailures == 0)
         #expect(try fixture.storage.load().automaticReconnectFailure == nil)
-        #expect(fixture.service.reconnections == 3)
+        #expect(fixture.service.reconnections == 1)
     }
 
     @Test func automaticRecoveryUsesRecoveryAPIAndStopsAfterSuccess() async throws {
@@ -353,7 +549,7 @@ struct ConnectionRestoreTests {
         await model.switchAccount(fixture.first, on: fixture.network)?.value
         let saved = try fixture.storage.load().currentConnection
         let lastUsed = try fixture.storage.load().accounts[0].lastUsedAt
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         await model.refresh()
         for _ in 0..<2000 {
             if fixture.service.reconnections > 0 && !model.isSwitching { break }
@@ -364,9 +560,144 @@ struct ConnectionRestoreTests {
         #expect(model.automaticReconnectFailures == 0)
         #expect(try fixture.storage.load().currentConnection == saved)
         #expect(try fixture.storage.load().accounts[0].lastUsedAt == lastUsed)
-        #expect(model.notice?.text.contains("自动重连成功") == true)
+        #expect(model.notice?.text.contains("重新连接成功") == true)
         for _ in 0..<10 { await model.refresh() }
         #expect(fixture.service.reconnections == 1)
+    }
+
+    @Test(arguments: [true, false])
+    func disconnectedNetworkRequiresExplicitUserAction(switchAccount: Bool) async throws {
+        let f = try RestoreFixture()
+        let model = try f.model(automaticReconnect: true, delay: .milliseconds(10), prompt: { _, _ in false })
+        await model.switchAccount(f.first, on: f.network)?.value
+        let reads = f.vault.reads
+        f.service.current.ssid = nil
+        f.service.current.hasUsableAddress = false
+        await model.connectionDidChange()
+        try await Task.sleep(for: .milliseconds(60))
+        for _ in 0..<3 { await model.refresh() }
+        #expect(f.service.reconnections == 0)
+        #expect(f.vault.reads == reads)
+        #expect(model.menuNetworkStatus == .disconnected)
+        #expect(model.accountConnectionStatus(for: f.first, on: f.network)?.isNormal == false)
+        let target = switchAccount ? f.second : f.first
+        if switchAccount { await model.switchAccount(target, on: f.network)?.value }
+        else { await model.reconnectAccount(target, on: f.network)?.value }
+        #expect(model.connectedAccountID == target.id)
+        #expect(f.service.authentications == 2)
+    }
+
+    @Test func disconnectedDuringPendingPromptCanBeCancelled() async throws {
+        let f = try RestoreFixture()
+        let model = try f.model(automaticReconnect: true, delay: .milliseconds(60), prompt: { _, _ in false })
+        await model.switchAccount(f.first, on: f.network)?.value
+        f.service.current.hasUsableAddress = false
+        await model.refresh()
+        f.service.current.ssid = nil
+        await model.connectionDidChange()
+        try await Task.sleep(for: .milliseconds(120))
+        #expect(f.service.reconnections == 0)
+        #expect(model.menuNetworkStatus == .disconnected)
+    }
+
+    @Test func disconnectedAtRestartDoesNotResumeAutomatically() async throws {
+        let f = try RestoreFixture()
+        let old = try f.model()
+        await old.switchAccount(f.first, on: f.network)?.value
+        f.service.current.ssid = nil
+        f.service.current.hasUsableAddress = false
+        let model = try f.model(automaticReconnect: true, delay: .milliseconds(10))
+        await model.refresh()
+        try await Task.sleep(for: .milliseconds(60))
+        #expect(f.service.reconnections == 0)
+        #expect(model.menuNetworkStatus == .disconnected)
+        #expect(try f.storage.load().currentConnection?.accountID == f.first.id)
+    }
+
+    @Test func cancellingPromptDoesNotReadCredentialsOrPromptAgain() async throws {
+        let f = try RestoreFixture()
+        let decision = ReconnectDecision(answer: false)
+        let model = try f.model(automaticReconnect: true, prompt: { account, network in
+            await decision.ask(account: account, network: network)
+        })
+        await model.switchAccount(f.second, on: f.network)?.value
+        let reads = f.vault.reads
+        f.service.current.ssid = nil
+        f.service.current.hasUsableAddress = false
+        await model.connectionDidChange()
+        for _ in 0..<100 where decision.count == 0 { await Task.yield() }
+        for _ in 0..<5 { await model.refresh(); await Task.yield() }
+        #expect(decision.count == 1)
+        #expect(decision.accountID == f.second.id)
+        #expect(decision.ssid == f.network.ssid)
+        #expect(f.vault.reads == reads)
+        #expect(f.service.reconnections == 0)
+        #expect(model.menuNetworkStatus == .disconnected)
+    }
+
+    @Test func confirmingPromptReconnectsLastAccountOnce() async throws {
+        let f = try RestoreFixture()
+        let decision = ReconnectDecision(answer: true)
+        let model = try f.model(automaticReconnect: true, prompt: { account, network in
+            await decision.ask(account: account, network: network)
+        })
+        await model.switchAccount(f.second, on: f.network)?.value
+        f.service.current.ssid = nil
+        f.service.current.hasUsableAddress = false
+        await model.connectionDidChange()
+        for _ in 0..<1000 where f.service.reconnections == 0 || model.isSwitching { await Task.yield() }
+        #expect(decision.count == 1)
+        #expect(decision.accountID == f.second.id)
+        #expect(f.service.reconnections == 1)
+        #expect(f.service.lastUsername == f.second.username)
+        #expect(model.connectedAccountID == f.second.id)
+        #expect(model.menuNetworkStatus == .registered)
+    }
+
+    @Test func confirmationAfterSystemRecoveryCannotReconnectStaleAccount() async throws {
+        let f = try RestoreFixture()
+        let decision = ReconnectDecision(answer: nil)
+        let model = try f.model(automaticReconnect: true, prompt: { account, network in
+            await decision.ask(account: account, network: network)
+        })
+        await model.switchAccount(f.second, on: f.network)?.value
+        f.service.current.ssid = nil
+        f.service.current.hasUsableAddress = false
+        await model.connectionDidChange()
+        for _ in 0..<1000 where decision.pending == nil { await Task.yield() }
+        let pending = try #require(decision.pending)
+        f.service.current.ssid = "Other"
+        f.service.current.hasUsableAddress = true
+        await model.connectionDidChange()
+        decision.pending = nil
+        pending.resume(returning: true)
+        for _ in 0..<30 { await Task.yield() }
+        #expect(f.service.reconnections == 0)
+        #expect(model.snapshot.ssid == "Other")
+    }
+
+    @Test func defaultPromptDelayIsAboutThreeSecondsAndRequiresConfirmation() async throws {
+        let f = try RestoreFixture()
+        let decision = ReconnectDecision(answer: false)
+        let repository = try AccountRepository(storage: f.storage, vault: f.vault)
+        let model = AppModel(demoMode: true, wifi: f.service, repository: repository,
+                             automaticReconnectEnabled: true,
+                             reconnectPromptDecision: { account, network in await decision.ask(account: account, network: network) })
+        await model.switchAccount(f.first, on: f.network)?.value
+        f.service.current.ssid = nil
+        f.service.current.hasUsableAddress = false
+        let start = ContinuousClock.now
+        await model.connectionDidChange()
+        try await Task.sleep(for: .milliseconds(1000))
+        #expect(decision.count == 0)
+        for _ in 0..<50 {
+            if decision.count > 0 { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        let elapsed = start.duration(to: .now)
+        #expect(decision.count == 1)
+        #expect(elapsed >= .seconds(2) && elapsed < .seconds(6))
+        #expect(f.service.reconnections == 0)
     }
 
     @Test func systemRecoveryDuringGracePeriodDoesNotReadPasswordOrReconnect() async throws {
@@ -374,9 +705,9 @@ struct ConnectionRestoreTests {
         let model = try fixture.model(automaticReconnect: true, delay: .milliseconds(50))
         await model.switchAccount(fixture.first, on: fixture.network)?.value
         let reads = fixture.vault.reads
-        fixture.service.current.ssid = nil
+        fixture.service.current.hasUsableAddress = false
         await model.refresh()
-        fixture.service.current.ssid = fixture.network.ssid
+        fixture.service.current.hasUsableAddress = true
         try await Task.sleep(for: .milliseconds(100))
         #expect(fixture.service.reconnections == 0)
         #expect(fixture.vault.reads == reads)
@@ -948,9 +1279,10 @@ private final class RestoreFixture {
         vault.reads = 0
     }
 
-    func model(automaticReconnect: Bool = false, delay: Duration = .zero) throws -> AppModel {
+    func model(automaticReconnect: Bool = false, delay: Duration = .zero, reader: RecoveryIdentityReader? = nil, internet: (any InternetChecking)? = nil, prompt: @escaping (WiFiAccount, SavedWiFi) async -> Bool = { _, _ in true }) throws -> AppModel {
         AppModel(demoMode: true, wifi: service, repository: try AccountRepository(storage: storage, vault: vault),
-                 automaticReconnectEnabled: automaticReconnect, automaticReconnectDelay: delay)
+                 automaticReconnectEnabled: automaticReconnect, automaticReconnectDelay: delay, systemReader: reader,
+                 credentialComparator: reader == nil ? nil : RecoveryComparator(), internetChecker: internet, reconnectPromptDecision: prompt)
     }
 }
 
@@ -979,10 +1311,12 @@ private final class RestoreWiFi: WiFiServicing {
     var current = WiFiSnapshot(ssid: "Enterprise", poweredOn: true, available: true, hasUsableAddress: true)
     var authentications = 0
     var reconnections = 0
+    var recoveryResult: WiFiReconnectResult = .associated
     var lastUsername: String?
     var lastPassword: String?
     var lastSSID: String?
     var failAuthentication = false
+    var usableAddressAfterAssociation = true
     var connectionError: Error?
     var nextSnapshot: (() async -> WiFiSnapshot)?
     func snapshot() async -> WiFiSnapshot {
@@ -993,9 +1327,15 @@ private final class RestoreWiFi: WiFiServicing {
         return current
     }
     func scan() async throws -> [NearbyWiFi] { [] }
-    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws {
+    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult {
         reconnections += 1
+        if recoveryResult == .systemRecovered {
+            current.ssid = ssid
+            current.hasUsableAddress = true
+            return .systemRecovered
+        }
         try await switchAccount(ssid: ssid, username: username, password: password, progress: progress)
+        return recoveryResult
     }
     func switchAccount(ssid: String, username: String, password: String,
                        progress: @escaping (SwitchPhase) -> Void) async throws {
@@ -1006,7 +1346,47 @@ private final class RestoreWiFi: WiFiServicing {
         if let connectionError { throw connectionError }
         if failAuthentication { throw WiFiError.verificationTimeout }
         current.ssid = ssid
-        current.hasUsableAddress = true
+        current.hasUsableAddress = usableAddressAfterAssociation
         progress(.verifying)
+    }
+}
+
+private final class RecoveryIdentityReader: SystemConnectionReading {
+    var username: String?
+    var hold = false
+    var continuation: CheckedContinuation<Void, Never>?
+    var configurationReads = 0
+    func identity(ssid: String) async -> SystemConnectionIdentity? {
+        if hold { await withCheckedContinuation { continuation = $0 } }
+        guard let username else { return nil }
+        return .init(ssid: ssid, authentication: .enterprise, username: username)
+    }
+    func configuration(ssid: String) async throws -> SystemConnectionConfiguration {
+        configurationReads += 1
+        throw SystemImportError.unavailable
+    }
+}
+private struct RecoveryComparator: SystemCredentialComparing {
+    func compare(identity: SystemConnectionIdentity, accountID: UUID) async -> SystemCredentialComparison { .same }
+}
+
+private struct FixedInternet: InternetChecking {
+    let result: Bool
+    func isReachable() async -> Bool { result }
+}
+
+@MainActor private final class ReconnectDecision {
+    let answer: Bool?
+    var count = 0
+    var accountID: UUID?
+    var ssid: String?
+    var pending: CheckedContinuation<Bool, Never>?
+    init(answer: Bool?) { self.answer = answer }
+    func ask(account: WiFiAccount, network: SavedWiFi) async -> Bool {
+        count += 1
+        accountID = account.id
+        ssid = network.ssid
+        if let answer { return answer }
+        return await withCheckedContinuation { pending = $0 }
     }
 }

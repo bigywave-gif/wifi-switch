@@ -142,6 +142,14 @@ struct SystemDefaultSynchronizerTests {
         #expect(store.profiles == ["Other"] && first.security == .wpa2Enterprise && store.commits == 0)
     }
 
+    @Test func synchronizationVerifiesEachDomainOnlyOnceAfterWriting() throws {
+        let store = FakeDefaultStore()
+        store.values = [.user: old, .system: old]
+        try save(store)
+        #expect(store.reads == [.user, .system, .user, .system])
+        #expect(store.values[.user] == new && store.values[.system] == new)
+    }
+
     private func save(_ store: FakeDefaultStore) throws {
         try SystemDefaultSynchronizer(store: store).save(ssid: ssid, credentials: .enterprise(username: "art", password: "new-secret"))
     }
@@ -184,6 +192,7 @@ private final class FakeDefaultStore: SystemDefaultStore {
     var connected = true
     var writes: [SystemCredentialDomain] = []
     var enterpriseCalls: [Bool] = []
+    var reads: [SystemCredentialDomain] = []
     var commits = 0
     var failCommit = false, failRead = false, failSystemWrite = false, ignoreWrites = false
     var disconnectOnWrite = false, externalEditOnWrite = false, failRollback = false
@@ -204,6 +213,7 @@ private final class FakeDefaultStore: SystemDefaultStore {
     func read(ssid: Data, enterprise: Bool, domain: SystemCredentialDomain) throws -> SystemWiFiCredential? {
         #expect(ssid == Data("Office".utf8))
         enterpriseCalls.append(enterprise)
+        reads.append(domain)
         if failRead { throw NSError(domain: "fake", code: -1) }
         return values[domain]
     }

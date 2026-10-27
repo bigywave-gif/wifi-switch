@@ -60,6 +60,18 @@ final class AccountRepositoryTests {
         #expect(throws: (any Error).self) { try repository.saveAccount(networkID: first, label: "", username: "alice", newPassword: "three") }
     }
 
+    @Test func passwordWritesAndRollbackUseTheMatchingAccountName() throws {
+        let network = try repository.addNetwork(ssid: "Office")
+        let account = try repository.saveAccount(networkID: network, label: "办公账号", username: "alice", newPassword: "one")
+        #expect(vault.names[account] == "办公账号")
+        storage.fail = true
+        #expect(throws: (any Error).self) {
+            try repository.saveAccount(networkID: network, accountID: account, label: "新名称", username: "alice", newPassword: "two")
+        }
+        #expect(vault.names[account] == "办公账号")
+        #expect(try repository.password(for: account) == "one")
+    }
+
     @Test func testFailureToPersistNewAccountRollsBackCredential() throws {
         let network = try repository.addNetwork(ssid: "Office")
         storage.fail = true
@@ -154,6 +166,7 @@ private final class FakeStorage: ConfigurationStorage {
 }
 private final class FakeVault: CredentialVault {
     var values: [UUID: String] = [:]
+    var names: [UUID: String] = [:]
     var fail = false
     func password(for accountID: UUID) throws -> String? {
         if fail { throw SimulatedFailure() }
@@ -163,8 +176,13 @@ private final class FakeVault: CredentialVault {
         if fail { throw SimulatedFailure() }
         values[accountID] = password
     }
+    func setPassword(_ password: String, for accountID: UUID, accountName: String) throws {
+        try setPassword(password, for: accountID)
+        names[accountID] = accountName
+    }
     func deletePassword(for accountID: UUID) throws {
         if fail { throw SimulatedFailure() }
         values.removeValue(forKey: accountID)
+        names.removeValue(forKey: accountID)
     }
 }

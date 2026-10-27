@@ -85,6 +85,9 @@ def record(root):
     bundled_log = root / "dist/WiFi Switch.app/Contents/Resources/CHANGELOG.txt"
     if bundled_log.read_bytes() != (root / "CHANGELOG.md").read_bytes():
         raise ValueError("应用包内版本记录与源文件不一致，不能记录发布")
+    bundled_guide = root / "dist/WiFi Switch.app/Contents/Resources/UserGuide.txt"
+    if bundled_guide.read_bytes() != (root / "Resources/UserGuide.txt").read_bytes():
+        raise ValueError("应用包内使用说明与源文件不一致，不能记录发布")
     previous = json.loads((root / "release.json").read_text())
     if version_tuple(release["version"]) <= version_tuple(previous["version"]) or release["build"] <= previous["build"]:
         raise ValueError("发布记录不能覆盖或回退")

@@ -20,7 +20,7 @@ private final class ImportDemoWiFi: WiFiServicing {
     func switchAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws {
         throw WiFiError.demoMode
     }
-    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws {
+    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult {
         throw WiFiError.demoMode
     }
 }

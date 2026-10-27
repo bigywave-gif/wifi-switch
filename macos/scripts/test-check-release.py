@@ -21,6 +21,7 @@ class ReleaseGuardTests(unittest.TestCase):
         self.prepare()
 
     def prepare(self, version="0.1.37", build="38", readme_version=None):
+        (self.root / "Resources/UserGuide.txt").write_text("WiFi Switch 使用说明\n添加账号后选择 Wi-Fi 连接。\n")
         (self.root / "Resources/Info.plist").write_bytes(plistlib.dumps({
             "CFBundleShortVersionString": version, "CFBundleVersion": build
         }))
@@ -87,6 +88,7 @@ class ReleaseGuardTests(unittest.TestCase):
         output.mkdir(parents=True)
         (output / "Resources").mkdir()
         (output / "Resources/CHANGELOG.txt").write_bytes((self.root / "CHANGELOG.md").read_bytes())
+        (output / "Resources/UserGuide.txt").write_bytes((self.root / "Resources/UserGuide.txt").read_bytes())
         info = plistlib.loads((self.root / "Resources/Info.plist").read_bytes())
         info["CFBundleVersion"] = "37"
         (output / "Info.plist").write_bytes(plistlib.dumps(info))
@@ -103,6 +105,16 @@ class ReleaseGuardTests(unittest.TestCase):
         (output / "Info.plist").write_bytes((self.root / "Resources/Info.plist").read_bytes())
         (output / "Resources/CHANGELOG.txt").write_text("stale history")
         with self.assertRaises(ValueError): release_check.record(self.root)
+        self.assertEqual(json.loads((self.root / "release.json").read_text())["build"], 37)
+
+    def test_stale_or_missing_guide_cannot_advance_release(self):
+        output = self.root / "dist/WiFi Switch.app/Contents"
+        (output / "Resources").mkdir(parents=True)
+        (output / "Info.plist").write_bytes((self.root / "Resources/Info.plist").read_bytes())
+        (output / "Resources/CHANGELOG.txt").write_bytes((self.root / "CHANGELOG.md").read_bytes())
+        with self.assertRaises(OSError): release_check.record(self.root)
+        (output / "Resources/UserGuide.txt").write_text("Old release history")
+        with self.assertRaisesRegex(ValueError, "使用说明"): release_check.record(self.root)
         self.assertEqual(json.loads((self.root / "release.json").read_text())["build"], 37)
 
 

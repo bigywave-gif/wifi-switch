@@ -5,6 +5,84 @@ import WiFiSwitchCore
 
 @MainActor
 struct SystemConnectionImportTests {
+    @Test(arguments: [WiFiAuthentication.enterprise, .personal, .open])
+    func menuUnknownConnectionCanCancelThenImportWithoutReconnecting(mode: WiFiAuthentication) async throws {
+        let f = try ImportFixture()
+        f.reader.value = .init(identity: .init(ssid: "Office", authentication: mode,
+            username: mode == .enterprise ? "alice" : nil), password: mode == .open ? nil : "synthetic-secret")
+        // Silent identity lookup can fail even though the user can authorize a manual import.
+        f.reader.identityUnavailable = true
+        await f.model.refresh()
+        #expect(f.model.menuNetworkStatus == .unregistered)
+        #expect(f.model.canAddMenuSystemConnection)
+        #expect(f.model.systemImportCandidate == nil)
+        f.model.beginMenuSystemImport()
+        #expect(f.model.systemImportCandidate?.automatic == false)
+        #expect(f.reader.secretReads == 0)
+        f.model.cancelSystemImport()
+        await f.model.refresh()
+        #expect(f.model.systemImportCandidate == nil)
+        #expect(f.model.menuNetworkStatus == .unregistered)
+        #expect(f.model.accounts.isEmpty && f.vault.values.isEmpty)
+        f.model.beginMenuSystemImport()
+        await f.model.confirmSystemImport(label: "  公司网络  ")
+        let account = try #require(f.model.accounts.first)
+        #expect(account.label == "公司网络")
+        #expect(f.model.menuNetworkStatus == .registered)
+        #expect(!f.model.canAddMenuSystemConnection)
+        #expect(f.model.connectedAccountID == account.id)
+        #expect(f.model.systemImportCandidate == nil)
+        #expect(f.reader.secretReads == 1 && f.wifi.connections == 0)
+        #expect(f.vault.values[account.id] == (mode == .open ? nil : "synthetic-secret"))
+        #expect(f.model.networks.first?.ssid == "Office")
+    }
+
+    @Test func knownMenuConnectionCannotOpenDuplicateImport() async throws {
+        let f = try ImportFixture(withAccounts: true)
+        await f.model.refresh()
+        #expect(f.model.menuNetworkStatus == .registered)
+        #expect(!f.model.canAddMenuSystemConnection)
+        f.model.beginMenuSystemImport()
+        #expect(f.model.systemImportCandidate == nil)
+        #expect(f.reader.secretReads == 0 && f.model.accounts.count == 2)
+    }
+
+    @Test func disconnectedMenuCancelsPendingImportAndRejectsNewImport() async throws {
+        let f = try ImportFixture()
+        f.reader.identityUnavailable = true
+        await f.model.refresh()
+        f.model.beginMenuSystemImport()
+        #expect(f.model.systemImportCandidate != nil)
+        f.wifi.current = .init(ssid: nil, poweredOn: true, available: true)
+        await f.model.refresh()
+        #expect(f.model.menuNetworkStatus == .disconnected)
+        #expect(f.model.menuNetworkStatus.symbol == "xmark.circle.fill")
+        #expect(f.model.systemImportCandidate == nil)
+        #expect(!f.model.canAddMenuSystemConnection)
+        f.model.beginMenuSystemImport()
+        #expect(f.model.systemImportCandidate == nil)
+        #expect(f.model.accounts.isEmpty && f.reader.secretReads == 0 && f.wifi.connections == 0)
+    }
+
+    @Test func menuDoesNotTreatUncertainLinkStatesAsDisconnectedOrImportable() async throws {
+        let f = try ImportFixture()
+        let scenarios: [(WiFiSnapshot, MenuNetworkStatus)] = [
+            (.init(ssid: nil, poweredOn: false, available: true), .poweredOff),
+            (.init(ssid: nil, poweredOn: true, available: true, ssidIsReadable: false), .unreadable),
+            (.init(ssid: nil, poweredOn: true, available: false), .unavailable),
+            (.init(ssid: "Office", poweredOn: true, available: true, hasUsableAddress: false), .waitingForAddress)
+        ]
+        for (snapshot, status) in scenarios {
+            f.wifi.current = snapshot
+            await f.model.refresh()
+            #expect(f.model.menuNetworkStatus == status)
+            #expect(!f.model.canAddMenuSystemConnection)
+            f.model.beginMenuSystemImport()
+            #expect(f.model.systemImportCandidate == nil)
+        }
+        #expect(f.reader.secretReads == 0 && f.wifi.connections == 0)
+    }
+
     @Test(arguments: [true, false])
     func failedIdentityReadNeverSuggestsAddingConfiguration(existingAccounts: Bool) async throws {
         let f = try ImportFixture(withAccounts: existingAccounts)
@@ -117,7 +195,8 @@ struct SystemConnectionImportTests {
         f.reader.value = .init(identity: f.reader.value.identity, password: "different")
         f.model.beginSystemImport()
         await f.model.confirmSystemImport(label: "新名称")
-        #expect(f.model.systemImportError != nil)
+        #expect(f.model.systemImportCandidate?.updatingAccount?.label == "Alice")
+        #expect(f.model.systemImportCandidate?.differenceConfirmed == true)
         #expect(!f.vault.values.values.contains("different"))
     }
 
@@ -135,6 +214,17 @@ struct SystemConnectionImportTests {
         #expect(throws: SystemImportError.self) {
             try SystemConnectionReader.resolve(ssid: "Office", authentication: .personal, credentials: [])
         }
+    }
+
+    @Test func keychainFailureKeepsImportOpenAndPreservesSpecificError() async throws {
+        let f = try ImportFixture()
+        await f.model.refresh()
+        f.reader.error = SystemImportError.keychain(stage: "读取用户钥匙串", code: 4097)
+        await f.model.confirmSystemImport(label: "Test")
+        #expect(f.model.systemImportError?.contains("读取用户钥匙串") == true)
+        #expect(f.model.systemImportError?.contains("4097") == true)
+        #expect(f.model.systemImportCandidate != nil)
+        #expect(f.model.accounts.isEmpty && f.vault.values.isEmpty && f.wifi.connections == 0)
     }
 
     @Test(arguments: [true, false])
@@ -252,5 +342,5 @@ private final class ImportWiFi: WiFiServicing {
         connections += 1
         current.ssid = ssid
     }
-    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws { connections += 1 }
+    func reconnectAccount(ssid: String, username: String, password: String, progress: @escaping (SwitchPhase) -> Void) async throws -> WiFiReconnectResult { connections += 1; return .associated }
 }
