@@ -3,16 +3,41 @@ import Security
 import WiFiSwitchCore
 
 struct KeychainVault: CredentialVault {
+    static let defaultService = "org.wifiswitch.WiFiSwitch.accounts"
     let service: String
     private let isolatedKeychain: SecKeychain?
-    init(service: String = "org.wifiswitch.WiFiSwitch.accounts", isolatedKeychain: SecKeychain? = nil) {
+    init(service: String = KeychainVault.defaultService, isolatedKeychain: SecKeychain? = nil) {
         self.service = service
         self.isolatedKeychain = isolatedKeychain
     }
 
-    private func query(_ id: UUID) -> [String: Any] {
+    /// Resolve a previous namespace from this account's metadata, never from a
+    /// hardcoded personal identifier. No password is requested during discovery.
+    static func resolvedService(_ services: [String]) throws -> String {
+        let candidates = Set(services.filter { $0.hasSuffix(".WiFiSwitch.accounts") })
+        if candidates.contains(defaultService) { return defaultService }
+        guard candidates.count <= 1 else { throw KeychainFailure(status: errSecDuplicateItem) }
+        return candidates.first ?? defaultService
+    }
+
+    private func existingService(_ id: UUID) throws -> String {
+        guard service == Self.defaultService else { return service }
+        var request: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
+            kSecAttrAccount as String: id.uuidString, kSecAttrSynchronizable as String: false,
+            kSecReturnAttributes as String: true, kSecMatchLimit as String: kSecMatchLimitAll,
+            kSecUseAuthenticationUI as String: kSecUseAuthenticationUIFail]
+        if let isolatedKeychain { request[kSecMatchSearchList as String] = [isolatedKeychain] }
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(request as CFDictionary, &result)
+        if status == errSecItemNotFound { return service }
+        guard status == errSecSuccess else { throw KeychainFailure(status: status) }
+        guard let records = result as? [[String: Any]] else { throw KeychainFailure(status: errSecDecode) }
+        return try Self.resolvedService(records.compactMap { $0[kSecAttrService as String] as? String })
+    }
+
+    private func query(_ id: UUID) throws -> [String: Any] {
         var query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-         kSecAttrService as String: service,
+         kSecAttrService as String: try existingService(id),
          kSecAttrAccount as String: id.uuidString,
          kSecAttrSynchronizable as String: false]
         if let isolatedKeychain { query[kSecMatchSearchList as String] = [isolatedKeychain] }
@@ -20,7 +45,7 @@ struct KeychainVault: CredentialVault {
     }
 
     func password(for accountID: UUID) throws -> String? {
-        var request = query(accountID)
+        var request = try query(accountID)
         request[kSecReturnData as String] = true
         request[kSecMatchLimit as String] = kSecMatchLimitOne
         var result: CFTypeRef?
@@ -60,9 +85,10 @@ struct KeychainVault: CredentialVault {
     private func writePassword(_ password: String, for accountID: UUID, accountName: String?) throws {
         var attributes: [String: Any] = [kSecValueData as String: Data(password.utf8)]
         if let accountName { attributes[kSecAttrLabel as String] = Self.label(accountID: accountID, accountName: accountName) }
-        let status = SecItemUpdate(query(accountID) as CFDictionary, attributes as CFDictionary)
+        let resolvedQuery = try query(accountID)
+        let status = SecItemUpdate(resolvedQuery as CFDictionary, attributes as CFDictionary)
         if status == errSecItemNotFound {
-            var item = query(accountID)
+            var item = resolvedQuery
             if let isolatedKeychain {
                 item.removeValue(forKey: kSecMatchSearchList as String)
                 item[kSecUseKeychain as String] = isolatedKeychain
@@ -78,12 +104,15 @@ struct KeychainVault: CredentialVault {
 
     /// Metadata-only update: never read or replace the stored secret or its access policy.
     func updateLabel(for accountID: UUID, accountName: String) -> OSStatus {
-        SecItemUpdate(query(accountID) as CFDictionary,
-                      [kSecAttrLabel as String: Self.label(accountID: accountID, accountName: accountName)] as CFDictionary)
+        do {
+            return SecItemUpdate(try query(accountID) as CFDictionary,
+                [kSecAttrLabel as String: Self.label(accountID: accountID, accountName: accountName)] as CFDictionary)
+        } catch let failure as KeychainFailure { return failure.status }
+        catch { return errSecInternalComponent }
     }
 
     func deletePassword(for accountID: UUID) throws {
-        let status = SecItemDelete(query(accountID) as CFDictionary)
+        let status = SecItemDelete(try query(accountID) as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else { throw KeychainFailure(status: status) }
     }
 }

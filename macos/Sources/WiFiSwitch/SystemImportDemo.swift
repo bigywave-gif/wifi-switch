@@ -30,6 +30,6 @@ private final class ImportDemoReader: SystemConnectionReading {
         .init(ssid: ssid, authentication: .personal, username: nil)
     }
     func configuration(ssid: String) async throws -> SystemConnectionConfiguration {
-        .init(identity: .init(ssid: ssid, authentication: .personal, username: nil), password: "synthetic-demo-only")
+        .init(identity: .init(ssid: ssid, authentication: .personal, username: nil), password: "EXAMPLE-ONLY-NOT-A-REAL-PASSWORD")
     }
 }

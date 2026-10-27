@@ -13,10 +13,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Publish failed' }
 Copy-Item README.md artifacts/publish/README.txt -Force
 $Makensis = (Get-Command makensis.exe -ErrorAction SilentlyContinue).Source
 if (-not $Makensis) { $Makensis = "${env:ProgramFiles(x86)}\NSIS\makensis.exe" }
-& $Makensis /DVERSION=0.1.9 "/DPAYLOAD=$WindowsRoot\artifacts\publish" `
-    "/DOUTPUT=$WindowsRoot\dist\WiFi-Switch-0.1.9-windows-x64-setup.exe" installer/WiFiSwitch.nsi
+& $Makensis /DVERSION=0.1.10 "/DPAYLOAD=$WindowsRoot\artifacts\publish" `
+    "/DOUTPUT=$WindowsRoot\dist\WiFi-Switch-0.1.10-windows-x64-setup.exe" installer/WiFiSwitch.nsi
 if ($LASTEXITCODE -ne 0) { throw 'Installer build failed' }
-$Installer = Join-Path $WindowsRoot 'dist\WiFi-Switch-0.1.9-windows-x64-setup.exe'
+$Installer = Join-Path $WindowsRoot 'dist\WiFi-Switch-0.1.10-windows-x64-setup.exe'
 $Hash = (Get-FileHash $Installer -Algorithm SHA256).Hash.ToLowerInvariant()
-"$Hash  WiFi-Switch-0.1.9-windows-x64-setup.exe" | Set-Content "$Installer.sha256" -Encoding ascii
+"$Hash  WiFi-Switch-0.1.10-windows-x64-setup.exe" | Set-Content "$Installer.sha256" -Encoding ascii
 Write-Host "Built: $Installer"

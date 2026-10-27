@@ -30,12 +30,32 @@ cp CHANGELOG.md "$STAGE/payload/CHANGELOG.txt"
 cp docs/signing.md "$STAGE/payload/docs/signing.md"
 ln -s /Applications "$STAGE/payload/Applications"
 /usr/bin/codesign --verify --deep --strict "$STAGE/payload/WiFi Switch.app"
-/usr/bin/hdiutil create -quiet -volname "WiFi Switch $VERSION" \
-    -srcfolder "$STAGE/payload" -format UDZO "$STAGE/$PACKAGE_NAME.dmg"
+# Build the HFS+ filesystem from file contents, omitting host extended attributes.
+# The final download remains a compressed DMG with the Applications shortcut.
+/usr/bin/hdiutil makehybrid -quiet -hfs -hfs-volume-name "WiFi Switch $VERSION" \
+    -o "$STAGE/payload.dmg" "$STAGE/payload"
+# makehybrid adds FinderInfo; clear it on the staging image before compression
+# so code signing stays valid. Never follow the /Applications symlink.
+/usr/bin/hdiutil attach -readwrite -nobrowse -mountpoint "$MOUNT_PATH" "$STAGE/payload.dmg"
+MOUNTED=1
+python3 - "$MOUNT_PATH" <<'PY'
+from pathlib import Path
+import subprocess, sys
+root = Path(sys.argv[1])
+for path in [root, *root.rglob("*")]:
+    if not path.is_symlink():
+        subprocess.run(["xattr", "-c", str(path)], check=True)
+PY
+/usr/bin/codesign --verify --deep --strict "$MOUNT_PATH/WiFi Switch.app"
+python3 scripts/check-bundle-privacy.py "$MOUNT_PATH" --filesystem-metadata
+/usr/bin/hdiutil detach "$MOUNT_PATH"
+MOUNTED=0
+/usr/bin/hdiutil convert -quiet "$STAGE/payload.dmg" -format UDZO -o "$STAGE/$PACKAGE_NAME.dmg"
 /usr/bin/hdiutil verify "$STAGE/$PACKAGE_NAME.dmg"
 /usr/bin/hdiutil attach -readonly -nobrowse -mountpoint "$MOUNT_PATH" "$STAGE/$PACKAGE_NAME.dmg"
 MOUNTED=1
 /usr/bin/codesign --verify --deep --strict "$MOUNT_PATH/WiFi Switch.app"
+python3 scripts/check-bundle-privacy.py "$MOUNT_PATH" --filesystem-metadata
 cmp Resources/UserGuide.txt "$MOUNT_PATH/使用说明.txt"
 cmp Resources/UserGuide.txt "$MOUNT_PATH/WiFi Switch.app/Contents/Resources/UserGuide.txt"
 cmp CHANGELOG.md "$MOUNT_PATH/CHANGELOG.md"

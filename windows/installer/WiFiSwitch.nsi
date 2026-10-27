@@ -4,7 +4,7 @@ Unicode true
 !include "x64.nsh"
 !include "WinVer.nsh"
 !ifndef VERSION
-  !define VERSION "0.1.9"
+  !define VERSION "0.1.10"
 !endif
 !ifndef PAYLOAD
   !error "PAYLOAD must point to the verified Windows publish directory"
@@ -19,7 +19,7 @@ InstallDirRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\WiFiS
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
 BrandingText "WiFi Switch · Windows"
-VIProductVersion "0.1.9.0"
+VIProductVersion "0.1.10.0"
 VIAddVersionKey "ProductName" "WiFi Switch"
 VIAddVersionKey "FileDescription" "WiFi Switch Windows Installer"
 VIAddVersionKey "FileVersion" "${VERSION}"

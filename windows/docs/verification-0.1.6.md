@@ -2,7 +2,7 @@
 
 ## Evidence and scope
 
-On the target Windows 11 machine (example wireless adapter, Windows (OS build redacted)), five 0.1.5
+On the target Windows device (hardware and OS build details redacted), five 0.1.5
 connection attempts against the same enterprise SSID failed while a manual
 connection from the Windows Wi-Fi menu succeeded seconds later, using the same
 credentials. Diagnostics established four contributing defects:

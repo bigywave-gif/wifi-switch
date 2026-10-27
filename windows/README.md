@@ -7,7 +7,7 @@
 
 ## 安装
 
-运行 `WiFi-Switch-0.1.9-windows-x64-setup.exe`，按安装向导完成安装。
+运行 `WiFi-Switch-0.1.10-windows-x64-setup.exe`，按安装向导完成安装。
 安装向导提供“选择安装位置”步骤：默认目录为 `%LOCALAPPDATA%\Programs\WiFi Switch`，
 可直接使用，也可点击“浏览”选择其他当前用户有写入权限的目录。升级时默认填入上次安装目录。
 程序安装后出现在开始菜单的 **WiFi Switch** 文件夹中。

@@ -7,8 +7,8 @@
     <key>CFBundleExecutable</key><string>WiFiSwitch</string>
     <key>CFBundleIdentifier</key><string>org.wifiswitch.WiFiSwitch</string>
     <key>CFBundlePackageType</key><string>APPL</string>
-    <key>CFBundleShortVersionString</key><string>0.1.66</string>
-    <key>CFBundleVersion</key><string>67</string>
+    <key>CFBundleShortVersionString</key><string>0.1.68</string>
+    <key>CFBundleVersion</key><string>69</string>
     <key>CFBundleDevelopmentRegion</key><string>zh_CN</string>
     <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
     <key>WiFiSwitchDistribution</key><string>内部使用版</string>

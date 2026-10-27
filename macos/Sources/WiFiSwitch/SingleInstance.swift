@@ -53,14 +53,17 @@ enum SingleInstanceController {
     }
 
     private static func runningGUIInstance() -> NSRunningApplication? {
-        NSRunningApplication.runningApplications(withBundleIdentifier: "org.wifiswitch.WiFiSwitch")
-            .first { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier &&
+        NSWorkspace.shared.runningApplications
+            .first { $0.bundleIdentifier?.hasSuffix(".WiFiSwitch") == true &&
+                $0.executableURL?.lastPathComponent == "WiFiSwitch" &&
+                $0.processIdentifier != ProcessInfo.processInfo.processIdentifier &&
                 !$0.isTerminated && $0.activationPolicy != .prohibited }
     }
 
     private static func activate(_ application: NSRunningApplication) {
         application.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
-        DistributedNotificationCenter.default().postNotificationName(reopenNotification,
+        let notification = application.bundleIdentifier.map { Notification.Name($0 + ".showMainWindow") } ?? reopenNotification
+        DistributedNotificationCenter.default().postNotificationName(notification,
             object: String(application.processIdentifier), userInfo: nil, deliverImmediately: true)
     }
 }

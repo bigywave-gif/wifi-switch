@@ -4,6 +4,48 @@ import Testing
 @testable import WiFiSwitch
 
 struct KeychainLabelTests {
+    @Test func namespaceDiscoveryAcceptsOnlyProductServices() throws {
+        #expect(try KeychainVault.resolvedService([]) == KeychainVault.defaultService)
+        #expect(try KeychainVault.resolvedService(["org.example.unrelated"]) == KeychainVault.defaultService)
+        #expect(try KeychainVault.resolvedService(["org.example.legacy.WiFiSwitch.accounts"]) == "org.example.legacy.WiFiSwitch.accounts")
+    }
+
+    @Test func namespaceDiscoveryPrefersTheCurrentService() throws {
+        #expect(try KeychainVault.resolvedService(["org.example.legacy.WiFiSwitch.accounts", KeychainVault.defaultService]) == KeychainVault.defaultService)
+    }
+
+    @Test func namespaceDiscoveryRejectsAmbiguousLegacyEntries() {
+        #expect(throws: KeychainFailure.self) {
+            try KeychainVault.resolvedService(["org.example.first.WiFiSwitch.accounts", "org.example.second.WiFiSwitch.accounts"])
+        }
+    }
+
+    @Test func neutralNamespaceKeepsLegacyCredentialsInPlace() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("wifi-switch-namespace-\(UUID()).keychain-db")
+        var keychain: SecKeychain?
+        let secret = "EXAMPLE-ONLY-" + UUID().uuidString
+        let status = secret.withCString { SecKeychainCreate(url.path, UInt32(secret.utf8.count), $0, false, nil, &keychain) }
+        #expect(status == errSecSuccess)
+        let isolated = try #require(keychain)
+        defer { SecKeychainDelete(isolated) }
+        let id = UUID()
+        let legacy = KeychainVault(service: "org.example.legacy.WiFiSwitch.accounts", isolatedKeychain: isolated)
+        try legacy.setPassword(secret, for: id)
+        let current = KeychainVault(isolatedKeychain: isolated)
+        #expect(try current.password(for: id) == secret)
+        #expect(current.updateLabel(for: id, accountName: "Example account") == errSecSuccess)
+        let replacement = "EXAMPLE-ONLY-" + UUID().uuidString
+        try current.setPassword(replacement, for: id)
+        #expect(try legacy.password(for: id) == replacement)
+        let newID = UUID()
+        try current.setPassword(secret, for: newID)
+        #expect(try current.password(for: newID) == secret)
+        #expect(try legacy.password(for: newID) == nil)
+        try current.deletePassword(for: id)
+        #expect(try legacy.password(for: id) == nil)
+        try current.deletePassword(for: newID)
+    }
+
     @Test func labelsUseAccountNameAndRemainDistinct() {
         let one = UUID(uuidString: "11111111-0000-4000-8000-000000000001")!
         let two = UUID(uuidString: "22222222-0000-4000-8000-000000000002")!

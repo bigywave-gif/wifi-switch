@@ -12,10 +12,10 @@ Mac 与 Windows 独立维护版本。以下是当前已打包并上传的安装�
 
 | 平台 | 当前版本 | 系统与架构 | 安装包 | 校验文件 |
 | --- | --- | --- | --- | --- |
-| macOS | **0.1.66** · build 67 | macOS 13+ · Apple Silicon（arm64） | [下载 DMG](https://github.com/bigywave-gif/wifi-switch/releases/download/macos-v0.1.66/WiFi-Switch-0.1.66-arm64-internal.dmg) | [SHA-256](https://github.com/bigywave-gif/wifi-switch/releases/download/macos-v0.1.66/WiFi-Switch-0.1.66-arm64-internal.dmg.sha256) |
-| Windows | **0.1.9** | Windows 10/11 · Intel/AMD x64 | [下载 EXE 安装程序](https://github.com/bigywave-gif/wifi-switch/releases/download/windows-v0.1.9/WiFi-Switch-0.1.9-windows-x64-setup.exe) | [SHA-256](https://github.com/bigywave-gif/wifi-switch/releases/download/windows-v0.1.9/WiFi-Switch-0.1.9-windows-x64-setup.exe.sha256) |
+| macOS | **0.1.68** · build 69 | macOS 13+ · Apple Silicon（arm64） | [下载 DMG](https://github.com/bigywave-gif/wifi-switch/releases/download/macos-v0.1.68/WiFi-Switch-0.1.68-arm64-internal.dmg) | [SHA-256](https://github.com/bigywave-gif/wifi-switch/releases/download/macos-v0.1.68/WiFi-Switch-0.1.68-arm64-internal.dmg.sha256) |
+| Windows | **0.1.10** | Windows 10/11 · Intel/AMD x64 | [下载 EXE 安装程序](https://github.com/bigywave-gif/wifi-switch/releases/download/windows-v0.1.10/WiFi-Switch-0.1.10-windows-x64-setup.exe) | [SHA-256](https://github.com/bigywave-gif/wifi-switch/releases/download/windows-v0.1.10/WiFi-Switch-0.1.10-windows-x64-setup.exe.sha256) |
 
-[Mac 发布说明](https://github.com/bigywave-gif/wifi-switch/releases/tag/macos-v0.1.66) · [Windows 发布说明](https://github.com/bigywave-gif/wifi-switch/releases/tag/windows-v0.1.9) · [全部发行版本](https://github.com/bigywave-gif/wifi-switch/releases)
+[Mac 发布说明](https://github.com/bigywave-gif/wifi-switch/releases/tag/macos-v0.1.68) · [Windows 发布说明](https://github.com/bigywave-gif/wifi-switch/releases/tag/windows-v0.1.10) · [全部发行版本](https://github.com/bigywave-gif/wifi-switch/releases)
 
 > 当前提供内部测试版，供验证与试用。Mac 包使用本地证书签名、未经过 Apple 公证；Windows 包尚未进行 Authenticode 代码签名。Windows 的安装、驱动交互与真实企业认证仍需目标设备验收。当前没有提供 Intel Mac 或 Windows ARM64 专用安装包。
 
@@ -27,6 +27,8 @@ Mac 与 Windows 独立维护版本。以下是当前已打包并上传的安装�
 4. 按应用提示授予定位权限，以便扫描网络和读取当前 Wi-Fi 名称。
 
 安装用户无需 Xcode 或 Apple 开发者账号。此 DMG 仅适用于 Apple Silicon Mac。
+
+0.1.68 使用通用应用标识，保留账号配置目录，并按账号 UUID 兼容识别旧钥匙串条目；系统可能重新请求定位或钥匙串授权，部分界面偏好会恢复默认。升级前请退出旧版。
 
 ### Windows
 
@@ -44,14 +46,14 @@ Mac 与 Windows 独立维护版本。以下是当前已打包并上传的安装�
 macOS / Linux：
 
 ```sh
-shasum -a 256 -c WiFi-Switch-0.1.66-arm64-internal.dmg.sha256
+shasum -a 256 -c WiFi-Switch-0.1.68-arm64-internal.dmg.sha256
 ```
 
 Windows PowerShell：
 
 ```powershell
-Get-FileHash .\WiFi-Switch-0.1.9-windows-x64-setup.exe -Algorithm SHA256
-Get-Content .\WiFi-Switch-0.1.9-windows-x64-setup.exe.sha256
+Get-FileHash .\WiFi-Switch-0.1.10-windows-x64-setup.exe -Algorithm SHA256
+Get-Content .\WiFi-Switch-0.1.10-windows-x64-setup.exe.sha256
 ```
 
 核对计算结果与校验文件中的哈希一致。GitHub 自动生成的 **Source code (zip / tar.gz)** 是源码压缩包，安装时请选择上表中的 DMG 或 EXE。

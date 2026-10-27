@@ -50,7 +50,7 @@ class SigningTests(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
         (self.root / "scripts").mkdir()
-        for name in ("build-app.sh", "sign-app.sh"):
+        for name in ("build-app.sh", "sign-app.sh", "check-bundle-privacy.py"):
             shutil.copyfile(ROOT / "scripts" / name, self.root / "scripts" / name)
         (self.root / ".build/release").mkdir(parents=True)
         (self.root / ".build/release/WiFiSwitch").write_text("new-binary")
@@ -69,6 +69,7 @@ class SigningTests(unittest.TestCase):
         self.bin.mkdir()
         (self.bin / "codesign").write_text(f"#!{sys.executable}\n" + MOCK_CODESIGN)
         (self.bin / "swift").write_text("#!/bin/sh\nexit 0\n")
+        (self.bin / "strip").write_text("#!/bin/sh\nexit ${WIFI_TEST_STRIP_EXIT:-0}\n")
         for executable in self.bin.iterdir():
             executable.chmod(0o700)
         self.log = self.root / "codesign.jsonl"
@@ -169,6 +170,26 @@ class SigningTests(unittest.TestCase):
         self.assertEqual((self.previous / "Contents/MacOS/WiFiSwitch").read_text(), "previous-binary")
         local = self.root / "dist/local/WiFi Switch.app"
         self.assertEqual((local / "Contents/MacOS/WiFiSwitch").read_text(), "new-binary")
+
+    def test_failed_symbol_removal_preserves_previous_bundle(self):
+        self.assert_preserved(self.build(WIFI_TEST_STRIP_EXIT="1"))
+        self.assertEqual(self.calls(), [])
+
+    def test_local_path_leak_is_rejected_before_signing(self):
+        (self.root / ".build/release/WiFiSwitch").write_text("/Users/build-user/project/main.swift")
+        self.assert_preserved(self.build())
+        self.assertEqual(self.calls(), [])
+
+    def test_namespace_update_keeps_the_previous_certificate_requirement(self):
+        previous = REQUIREMENT.replace("org.wifiswitch.WiFiSwitch", "org.example.legacy.WiFiSwitch")
+        result = self.build(WIFI_TEST_REQUIREMENT=previous)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(any("-R=" + REQUIREMENT in call for call in self.calls()))
+
+    def test_utf16_local_path_leak_is_rejected_before_signing(self):
+        (self.root / ".build/release/WiFiSwitch").write_bytes("C:\\Users\\build-user\\app".encode("utf-16le"))
+        self.assert_preserved(self.build())
+        self.assertEqual(self.calls(), [])
 
 
 if __name__ == "__main__":

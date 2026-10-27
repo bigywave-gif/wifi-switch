@@ -170,8 +170,8 @@ final class AppModel: ObservableObject {
             } else if demoMode {
                 self.repository = try AccountRepository(storage: MemoryStorage(), vault: MemoryVault())
                 let id = try self.repository!.addNetwork(ssid: "Office · Enterprise")
-                let work = try self.repository!.saveAccount(networkID: id, label: "日常办公", username: "work@example.com", newPassword: "demo-only")
-                try self.repository!.saveAccount(networkID: id, label: "测试环境", username: "test@example.com", newPassword: "demo-only")
+                let work = try self.repository!.saveAccount(networkID: id, label: "日常办公", username: "work@example.com", newPassword: "EXAMPLE-ONLY-NOT-A-REAL-PASSWORD")
+                try self.repository!.saveAccount(networkID: id, label: "测试环境", username: "test@example.com", newPassword: "EXAMPLE-ONLY-NOT-A-REAL-PASSWORD")
                 try self.repository!.markUsed(networkID: id, accountID: work)
                 snapshot.ssid = "Office · Enterprise"
                 snapshot.hasUsableAddress = true

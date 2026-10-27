@@ -5,7 +5,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!-- AppleDouble metadata copies (macOS -> non-HFS transfer) must never be compiled. -->
     <DefaultItemExcludes>$(DefaultItemExcludes);**/._*</DefaultItemExcludes>
-    <Version>0.1.9</Version>
+    <Version>0.1.10</Version>
     <Company>WiFi Switch</Company>
     <Product>WiFi Switch</Product>
     <Deterministic>true</Deterministic>

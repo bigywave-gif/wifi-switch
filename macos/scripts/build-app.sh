@@ -20,6 +20,8 @@ APP_STAGE="$(mktemp -d "$PROJECT_ROOT/.build/app-stage.XXXXXX")"
 APP_PATH="$APP_STAGE/WiFi Switch.app"
 mkdir -p "$APP_PATH/Contents/MacOS" "$APP_PATH/Contents/Resources"
 cp "$BUILD_ROOT/$BUILD_CONFIGURATION/WiFiSwitch" "$APP_PATH/Contents/MacOS/WiFiSwitch"
+# Remove debug/source-path symbols before signing; keep the runtime symbol table.
+strip -S "$APP_PATH/Contents/MacOS/WiFiSwitch"
 cp Resources/Info.plist "$APP_PATH/Contents/Info.plist"
 if [ "${WIFI_SWITCH_SIGNING_MODE:-internal}" = "developer-id" ]; then
     /usr/libexec/PlistBuddy -c 'Set :WiFiSwitchDistribution Developer ID 签名版' "$APP_PATH/Contents/Info.plist"
@@ -38,6 +40,7 @@ if [ ! -f "$PROJECT_ROOT/.build/AppIcon.icns" ] || [ scripts/make-icon.swift -nt
     python3 scripts/package-icon.py "$ICONSET" "$PROJECT_ROOT/.build/AppIcon.icns"
 fi
 cp .build/AppIcon.icns "$APP_PATH/Contents/Resources/AppIcon.icns"
+python3 scripts/check-bundle-privacy.py "$APP_PATH"
 bash scripts/sign-app.sh "$APP_PATH" "$FINAL_APP_PATH"
 # Preserve the previous bundle intact so rebuilding cannot overwrite a running executable.
 if [ -d "$FINAL_APP_PATH" ]; then

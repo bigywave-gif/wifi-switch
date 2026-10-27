@@ -16,6 +16,6 @@ mkdir -p artifacts dist
   -p:EnableCompressionInSingleFile=true -p:DebugType=None -p:DebugSymbols=false \
   -o artifacts/publish
 cp README.md artifacts/publish/README.txt
-"$MAKENSIS" -DVERSION=0.1.9 "-DPAYLOAD=$WINDOWS_ROOT/artifacts/publish" \
-  "-DOUTPUT=$WINDOWS_ROOT/dist/WiFi-Switch-0.1.9-windows-x64-setup.exe" installer/WiFiSwitch.nsi
-python3 scripts/verify-package.py dist/WiFi-Switch-0.1.9-windows-x64-setup.exe
+"$MAKENSIS" -DVERSION=0.1.10 "-DPAYLOAD=$WINDOWS_ROOT/artifacts/publish" \
+  "-DOUTPUT=$WINDOWS_ROOT/dist/WiFi-Switch-0.1.10-windows-x64-setup.exe" installer/WiFiSwitch.nsi
+python3 scripts/verify-package.py dist/WiFi-Switch-0.1.10-windows-x64-setup.exe

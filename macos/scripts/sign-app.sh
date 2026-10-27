@@ -65,6 +65,14 @@ if [ "$SIGNING_MODE" = "developer-id" ]; then
     fi
 fi
 if [ -n "$PREVIOUS_REQUIREMENT" ]; then
+    # The public namespace is neutral. Keep every certificate constraint when
+    # checking an older product identity; only normalize its bundle identifier.
+    PREVIOUS_REQUIREMENT="$(python3 - "$PREVIOUS_REQUIREMENT" <<'PY'
+import re, sys
+print(re.sub(r'\bidentifier "[^"]+\.WiFiSwitch"',
+             'identifier "org.wifiswitch.WiFiSwitch"', sys.argv[1], count=1))
+PY
+)"
     if ! codesign --verify --strict "-R=$PREVIOUS_REQUIREMENT" "$APP_PATH"; then
         printf '%s\n' '新版本不符合旧版本的签名身份，已停止替换。请使用原来的证书，不要为每次构建重新创建证书。' >&2
         exit 1

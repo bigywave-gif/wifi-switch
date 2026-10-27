@@ -22,7 +22,7 @@ struct CurrentAccountTests {
         #expect(model.isCurrentAccount(account, on: second))
         #expect(!model.isCurrentAccount(account, on: first))
         #expect(service.usernames == [account.username, account.username])
-        #expect(service.passwords == ["demo-only", "demo-only"])
+        #expect(service.passwords == ["EXAMPLE-ONLY-NOT-A-REAL-PASSWORD", "EXAMPLE-ONLY-NOT-A-REAL-PASSWORD"])
         model.unlinkNetwork(first, from: account)
         #expect(model.selectedAccount?.id == account.id)
         model.unlinkNetwork(second, from: account)
@@ -41,7 +41,7 @@ struct CurrentAccountTests {
         await model.switchAccount(account, on: network)?.value
 
         #expect(service.usernames == [account.username])
-        #expect(service.passwords == ["demo-only"])
+        #expect(service.passwords == ["EXAMPLE-ONLY-NOT-A-REAL-PASSWORD"])
         #expect(model.selectedAccount?.id == account.id)
         #expect(model.accountSelection?.source == .successfulSwitch)
         #expect(model.accountStatusTitle == "当前账号：测试环境")
