@@ -1,0 +1,3662 @@
+<!doctype html>
+<html lang="en" data-visualize-standalone>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com https://persistent.oaistatic.com/plugins/visualize/; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com https://persistent.oaistatic.com/plugins/visualize/charts/; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Network Menubar Demo</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+
+</head>
+<body>
+<iframe id="codex-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="Network Menubar Demo" data-srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot; data-visualize-standalone&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com https://persistent.oaistatic.com/plugins/visualize/; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com https://persistent.oaistatic.com/plugins/visualize/charts/; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Network Menubar Demo&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 16px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans:
+    -apple-system-body, ui-sans-serif, -apple-system, system-ui, &quot;Segoe UI&quot;,
+    Helvetica, &quot;Apple Color Emoji&quot;, Arial, sans-serif, &quot;Segoe UI Emoji&quot;,
+    &quot;Segoe UI Symbol&quot;;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --icon-size: 16px;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --corner-shape: round;
+  --radius: var(--border-radius-lg, 8px);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: var(--visualize-paint-gutter, 0px);
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  font-size: var(--font-size-base);
+  line-height: calc(var(--font-size-base) * 1.625);
+  font-weight: var(--font-weight-normal);
+}
+
+.cursor-interaction {
+  cursor: var(--cursor-interaction, pointer);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+  text-underline-offset: 2px;
+  font-weight: inherit;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+.table {
+  font-family: var(--font-sans);
+}
+
+h1 {
+  font-size: calc(var(--font-size-base) * 1.5);
+  line-height: 1.3333333333;
+}
+
+h2 {
+  font-size: calc(var(--font-size-base) * 1.25);
+  line-height: 1.4;
+}
+h3 {
+  font-size: calc(var(--font-size-base) * 1.125);
+  line-height: 1.5555555556;
+}
+h4 {
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+h5,
+h6 {
+  font-size: var(--font-size-base);
+  line-height: calc(var(--font-size-base) * 1.625);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+b,
+strong,
+th {
+  font-weight: 600;
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: var(--corner-shape);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+pre,
+pre code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: calc(var(--font-size-base) * 0.875);
+  line-height: calc(var(--font-size-base) * 1.625);
+  font-family: var(--font-sans);
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 5%, transparent);
+}
+.table :is(th, td):not(:last-child) {
+  padding-inline-end: calc(var(--font-size-base) * 1.5);
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead :is(th, td) {
+  border-bottom-color: var(--border-strong, var(--input));
+  padding-block: calc(var(--font-size-base) / 2);
+  line-height: var(--font-size-base);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+.table tbody :is(th, td) {
+  padding-block: calc(var(--font-size-base) * 0.625);
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 8px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: var(--corner-shape);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+.widget {
+  min-width: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  corner-shape: var(--corner-shape);
+  box-shadow: 0 0 0 0.5px var(--border-strong, var(--border));
+  color: var(--foreground);
+  background: var(--background);
+}
+
+#widget &gt; :not(.card, .widget, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  border: 1px solid var(--border);
+  corner-shape: var(--corner-shape);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-sans);
+  padding: 5px 12px;
+  border-color: color-mix(
+    in oklab,
+    light-dark(var(--primary-foreground), var(--foreground)) 5%,
+    transparent
+  );
+  border-radius: var(--radius-2xl);
+  color: light-dark(var(--primary-foreground), var(--foreground));
+  background: light-dark(var(--foreground), var(--popover));
+  box-shadow: 0 8px 18px rgb(15 23 42 / 20%);
+  letter-spacing: -0.15px;
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+hr {
+  width: 100%;
+  height: 1px;
+  margin-block: 6px;
+  border: 0;
+  background: var(--border);
+}
+
+.nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.progress {
+  display: flex;
+  height: 8px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 8px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar:only-child {
+  border-radius: var(--radius-full);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  color: color-mix(in srgb, var(--foreground) 40%, var(--muted-foreground));
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  font-family: var(--font-sans);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 1;
+}
+
+small,
+.text-small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.nav-link,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+/* Match inline alignment without overriding a containing flex or grid layout. */
+.btn,
+.nav-link,
+.form-control,
+.form-select,
+.form-range,
+.form-check {
+  vertical-align: middle;
+}
+
+.btn,
+.nav-link {
+  --btn-size: calc(12px + 2 * var(--control-spacing, 12px));
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  corner-shape: var(--corner-shape);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: inherit;
+  font-family: var(--font-sans);
+  height: fit-content;
+  min-height: var(--btn-size);
+  padding-inline: var(--control-spacing, 12px);
+  border-color: transparent;
+  border-radius: var(--radius-full);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+}
+
+.btn {
+  border-color: var(--border);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+}
+
+/* Codex Button size=&quot;compact&quot;; appearance stays with the button variant. */
+.btn-sm {
+  --btn-size: 24px;
+  padding-inline: 8px;
+  font-size: calc(var(--font-size-base) * 12 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 12 / 16), 1px);
+  line-height: 16px;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: var(--cursor-interaction, pointer);
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.nav-link:not(:disabled):not([aria-disabled=&quot;true&quot;]):hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.btn-primary {
+  border-color: var(--border);
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: border-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: border-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--muted-foreground);
+  background: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.nav-pills .nav-link {
+  min-width: 0;
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.nav-justified .nav-link {
+  flex: 1 1 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+/* Shared preview chrome; product styles stay inside each variant. */
+.viz-dotted-background {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--foreground) 14%, transparent) 0.8px,
+    transparent 0.8px
+  );
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.viz-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.viz-carousel:has(&gt; .viz-carousel-controls) {
+  min-height: calc(60px + var(--viz-carousel-picker-height, 0px));
+  padding-bottom: 60px;
+}
+
+.viz-carousel &gt; [data-variant][hidden] {
+  display: none !important;
+}
+
+.viz-carousel &gt; [data-variant] {
+  isolation: isolate;
+}
+
+.viz-carousel-controls {
+  --viz-carousel-hover: light-dark(
+    color-mix(in srgb, var(--foreground) 5.4%, transparent),
+    color-mix(in srgb, var(--foreground) 7.8%, transparent)
+  );
+  position: absolute;
+  z-index: 2;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  width: max-content;
+  /* Leave room for the host&#x27;s design-controls launcher at the trailing edge. */
+  max-width: calc(100% - 96px);
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  /* Match the settings dropdown chrome independently of the content font size. */
+  font-size: 13px;
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+  transform: translateX(-50%);
+  user-select: none;
+}
+
+/* Keep authored mockup button styles out of the shared carousel chrome. */
+.viz-carousel-controls button,
+.viz-carousel-picker &gt; summary {
+  display: flex !important;
+  height: auto !important;
+  min-height: 30px;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px;
+  padding: 0 6px !important;
+  -webkit-app-region: no-drag;
+  border: 0 !important;
+  border-radius: 14px !important;
+  color: inherit !important;
+  background: transparent !important;
+  font: inherit !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-picker &gt; summary {
+  position: relative;
+  isolation: isolate;
+}
+
+.viz-carousel-controls &gt; button {
+  --icon-size: 16px;
+  width: 30px !important;
+  padding: 0 !important;
+}
+
+.viz-carousel-picker &gt; summary {
+  padding-inline: 12px !important;
+}
+
+.viz-carousel-controls .viz-carousel-caret {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin: 0;
+  color: inherit;
+  transform: rotate(180deg);
+}
+
+.viz-carousel-controls &gt; button &gt; svg,
+.viz-carousel-controls .viz-carousel-caret,
+.viz-carousel-count {
+  opacity: 0.5;
+}
+
+.viz-carousel-controls &gt; button::before,
+.viz-carousel-picker &gt; summary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 3px;
+  border-radius: 12px;
+  content: &quot;&quot;;
+  pointer-events: none;
+}
+
+.viz-carousel-controls &gt; button:hover::before,
+.viz-carousel-picker &gt; summary:hover::before {
+  background: var(--viz-carousel-hover);
+}
+
+.viz-carousel-controls &gt; button,
+.viz-carousel-controls [data-lucide],
+.viz-carousel-controls .lucide {
+  flex-shrink: 0;
+}
+
+.viz-carousel-picker {
+  min-width: 0;
+}
+
+.viz-carousel-picker &gt; summary {
+  min-width: 0;
+  list-style: none;
+}
+
+.viz-carousel-picker &gt; summary::-webkit-details-marker {
+  display: none;
+}
+
+.viz-carousel-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.viz-carousel-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viz-carousel-options {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  max-height: 240px;
+  flex-direction: column;
+  gap: 2px;
+  overflow: auto;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  box-shadow: 0 4px 12px light-dark(rgb(0 0 0 / 6%), rgb(0 0 0 / 25%));
+}
+
+.viz-carousel-options &gt; button {
+  border-radius: max(0px, calc(var(--radius-lg) - 5px)) !important;
+  width: 100% !important;
+  min-height: 28px;
+  justify-content: flex-start !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-small) !important;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.viz-carousel-options &gt; [aria-current=&quot;true&quot;],
+.viz-carousel-options &gt; button:hover {
+  background: var(--viz-carousel-hover) !important;
+}
+
+.btn:disabled,
+.nav-link:disabled,
+.nav-link[aria-disabled=&quot;true&quot;] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding-inline: calc(4px + var(--control-spacing, 12px) / 2);
+  border-color: var(--input);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--popover) 96%, transparent);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.4285714286;
+}
+.form-control:is(
+  [type=&quot;file&quot;],
+  [type=&quot;date&quot;],
+  [type=&quot;datetime-local&quot;],
+  [type=&quot;month&quot;],
+  [type=&quot;week&quot;],
+  [type=&quot;color&quot;]
+) {
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  line-height: 18px;
+}
+.form-control:is(
+  [type=&quot;date&quot;],
+  [type=&quot;datetime-local&quot;],
+  [type=&quot;month&quot;],
+  [type=&quot;week&quot;]
+) {
+  padding-inline: var(--control-spacing, 12px);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+  padding: 0;
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+  min-height: calc(10px + 2 * var(--control-spacing, 12px));
+  padding-inline: var(--control-spacing, 12px);
+  margin-inline-end: var(--control-spacing, 12px);
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: var(--corner-shape);
+}
+
+textarea.form-control {
+  height: auto;
+  resize: vertical;
+  min-height: 96px;
+  padding: 8px 10px;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: none;
+}
+.form-control:disabled {
+  color: var(--muted-foreground);
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  opacity: 1;
+}
+.form-control[aria-invalid=&quot;true&quot;] {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--red) 20%, transparent);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: fit-content;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  margin: 0;
+  /* The secondary icon role is 14px at compact density and 16px at web density. */
+  --icon-size: calc(10px + var(--control-spacing, 12px) / 2);
+  /* Settings dropdowns retain a 12px inset and a 4px text-to-chevron gap. */
+  padding: 0 calc(16px + var(--icon-size)) 0 12px;
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  corner-shape: var(--corner-shape);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent calc(50% - 0.6px),
+      var(--muted-foreground) calc(50% - 0.6px) calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    ),
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 0.6px),
+      var(--muted-foreground) calc(50% - 0.6px) calc(50% + 0.6px),
+      transparent calc(50% + 0.6px)
+    );
+  background-position:
+    calc(100% - 12px - var(--icon-size) / 2) 50%,
+    calc(100% - 12px - var(--icon-size) * 0.18) 50%;
+  background-repeat: no-repeat;
+  background-size: calc(var(--icon-size) * 0.32) calc(var(--icon-size) * 0.32);
+  cursor: var(--cursor-interaction, default);
+  font-size: calc(var(--font-size-base) * 14 / 16);
+  font-size: round(nearest, calc(var(--font-size-base) * 14 / 16), 1px);
+  font-weight: var(--font-weight-normal);
+  line-height: 18px;
+}
+
+.form-select :is(option, optgroup) {
+  color: var(--popover-foreground);
+  background-color: var(--popover);
+}
+
+.form-select :is(option, optgroup):disabled {
+  color: var(--muted-foreground);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: light-dark(
+    color-mix(in srgb, var(--foreground) 5.5%, transparent),
+    color-mix(in srgb, var(--foreground) 8%, transparent)
+  );
+}
+
+.form-select:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+.form-select:disabled {
+  opacity: 0.4;
+}
+
+.form-check {
+  display: flex;
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  corner-shape: round;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  width: calc(10px + var(--control-spacing, 12px) / 2);
+  height: calc(10px + var(--control-spacing, 12px) / 2);
+  border-color: var(--border-strong, var(--input));
+  border-radius: calc(var(--radius-sm) / 2);
+  background-color: transparent;
+  color: var(--foreground);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:is(:checked, :indeterminate) {
+  border-color: var(--border-strong, var(--input));
+  background-color: color-mix(in srgb, var(--popover) 96%, transparent);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+  background-color: var(--foreground);
+}
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:indeterminate::before {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 65%;
+  height: 6.65%;
+  margin: auto;
+  border-radius: var(--radius-full);
+  background: var(--foreground);
+  mask: none;
+  content: &quot;&quot;;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  border-radius: var(--radius-full);
+  width: 16px;
+  height: 16px;
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--input);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 0;
+  background: radial-gradient(
+    circle,
+    var(--primary-foreground) 0 3px,
+    var(--foreground) 3px
+  );
+  box-shadow: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:focus-visible {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+.form-check:not(.form-switch) .form-check-input[type=&quot;radio&quot;]:disabled,
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;radio&quot;]:disabled
+  + .form-check-label {
+  opacity: 0.5;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+  border-color: #fff;
+  background: #fff;
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--blue);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+  outline: none;
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  accent-color: var(--primary);
+  height: calc(12px + 2 * var(--control-spacing, 12px));
+  min-height: calc(12px + 2 * var(--control-spacing, 12px));
+  outline: none;
+  border-radius: var(--radius-full);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  background: var(--form-range-track, var(--border));
+  height: 2px;
+  border-radius: var(--radius-full);
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  margin-top: -9px;
+  border-color: transparent;
+  background: currentColor;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Outline the native track and thumb, preserving the larger input hit area. */
+.form-range:focus-visible::-webkit-slider-runnable-track {
+  outline: 2px auto Highlight;
+  outline-color: -webkit-focus-ring-color;
+}
+
+.form-range::-moz-range-track {
+  background: var(--form-range-track, var(--border));
+  height: 2px;
+  border-radius: var(--radius-full);
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  border-color: transparent;
+  background: currentColor;
+  box-shadow: var(--shadow-sm);
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
+}
+
+.form-range:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--blue);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible,
+.nav-link:focus-visible {
+  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.viz-carousel-controls :is(button, summary):focus-visible {
+  outline: 2px solid var(--ring) !important;
+  outline-offset: 2px !important;
+}
+
+/* Web recipes are the default, including on renderers without inline style queries. */
+@supports (border-radius: if(style(--corner-shape: round): 1px; else: 2px)) {
+  /* Match the host&#x27;s proportional text-sm scale at every text preference. */
+  .tooltip,
+  .viz-badge,
+  .btn,
+  .nav-link,
+  .form-control,
+  .form-select {
+    font-size: if(
+      style(--corner-shape: round): round(
+          nearest,
+          calc(var(--font-size-base) * 14 / 16),
+          1px
+        );
+        else: round(nearest, calc(var(--font-size-base) * 13 / 14), 1px)
+    );
+  }
+
+  .btn-sm {
+    font-size: if(
+      style(--corner-shape: round): round(
+          nearest,
+          calc(var(--font-size-base) * 12 / 16),
+          1px
+        );
+        else: round(nearest, calc(var(--font-size-base) * 12 / 14), 1px)
+    );
+  }
+
+  .btn,
+  .nav-link,
+  .form-select {
+    border-radius: if(
+      style(--corner-shape: round): var(--radius-full); else: var(--radius-lg)
+    );
+  }
+
+  .form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+    border-radius: if(
+      style(--corner-shape: round): calc(var(--radius-sm) / 2);
+        else: calc(var(--radius-lg) * 0.4)
+    );
+  }
+
+  .tooltip {
+    font-weight: if(
+      style(--corner-shape: round): 600; else: var(--font-weight-normal)
+    );
+  }
+}
+
+@media (pointer: coarse) {
+  .viz-carousel:has(&gt; .viz-carousel-controls) {
+    min-height: calc(76px + var(--viz-carousel-picker-height, 0px));
+    padding-bottom: 76px;
+  }
+
+  .btn,
+  .nav-link,
+  .viz-carousel-controls button,
+  .viz-carousel-picker &gt; summary,
+  .form-control,
+  .form-select {
+    --btn-size: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Keep small-screen WebKit from zooming when a text field receives focus. */
+  .form-control,
+  .form-select {
+    font-size: max(16px, calc(var(--font-size-base) * 14 / 16));
+    font-size: max(
+      16px,
+      round(nearest, calc(var(--font-size-base) * 14 / 16), 1px)
+    );
+  }
+  .form-control:is(
+    [type=&quot;file&quot;],
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;week&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;color&quot;]
+  ) {
+    height: 44px;
+    min-height: 44px;
+    font-size: max(16px, calc(var(--font-size-base) * 14 / 16));
+    font-size: max(
+      16px,
+      round(nearest, calc(var(--font-size-base) * 14 / 16), 1px)
+    );
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: var(--icon-size) !important;
+  height: var(--icon-size) !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;application/json&quot; id=&quot;codex-visualization-widget-state&quot;&gt;__CODEX_VISUALIZATION_WIDGET_STATE__&lt;/script&gt;
+&lt;script&gt;(() =&gt; {
+  const root = document.documentElement;
+  const mediaQuery = globalThis.matchMedia(&quot;(prefers-color-scheme: dark)&quot;);
+  const apply = Reflect.apply;
+  const isArray = Array.isArray;
+  const hasOwn = Object.hasOwn;
+  const parentWindow = globalThis.parent;
+  const stringify = JSON.stringify;
+  const parse = JSON.parse;
+  const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
+  const initialStateElement = document.getElementById(
+    &quot;codex-visualization-widget-state&quot;,
+  );
+  const initialGlobals = parse(initialStateElement?.textContent ?? &quot;{}&quot;);
+  initialStateElement?.remove();
+  /** @type {Record&lt;string, unknown&gt; | null} */
+  let state = initialGlobals.widgetState ?? null;
+  const statePersistence = initialGlobals.statePersistence ?? &quot;none&quot;;
+  let nextStateRequestId = 0;
+  /** @type {Map&lt;number, { resolve: () =&gt; void; reject: (error: Error) =&gt; void; timeout: ReturnType&lt;typeof globalThis.setTimeout&gt;; serializedState: string }&gt;} */
+  const pendingStateWrites = new Map();
+  const persistenceError = () =&gt;
+    Object.assign(
+      new Error(&quot;The host could not persist the widget state update&quot;),
+      {
+        code: -32000,
+        data: { code: &quot;widget_state_persistence_failed&quot;, retryable: false },
+      },
+    );
+  /**
+   * @param {object} prototype
+   * @param {string} property
+   */
+  const getPrototypeGetter = (prototype, property) =&gt; {
+    // oxlint-disable-next-line typescript/unbound-method -- invoked through captured Reflect.apply
+    const getter = Object.getOwnPropertyDescriptor(prototype, property)?.get;
+    if (getter == null) {
+      throw new Error(`Missing ${property} getter`);
+    }
+    return getter;
+  };
+  const getMessageData = getPrototypeGetter(MessageEvent.prototype, &quot;data&quot;);
+  const getMessagePorts = getPrototypeGetter(MessageEvent.prototype, &quot;ports&quot;);
+  const getMessageSource = getPrototypeGetter(MessageEvent.prototype, &quot;source&quot;);
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const addHostMessageListener = MessagePort.prototype.addEventListener;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const postHostMessage = MessagePort.prototype.postMessage;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const startHostPort = MessagePort.prototype.start;
+  // oxlint-disable-next-line typescript/unbound-method -- captured before the untrusted fragment runs
+  const stopMessagePropagation = Event.prototype.stopImmediatePropagation;
+  /** @type {MessagePort | null} */
+  let hostPort = null;
+  const postToHost = (type, payload) =&gt; {
+    if (hostPort != null) {
+      apply(postHostMessage, hostPort, [{ type, ...payload }]);
+    }
+  };
+  const openExternal = ({ href }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;open-external&quot;, { href });
+    }
+  };
+  const sendFollowUpMessage = ({ context, prompt, title }) =&gt; {
+    if (globalThis.navigator.userActivation?.isActive === true) {
+      postToHost(&quot;follow-up&quot;, { context, prompt, title });
+    }
+    return Promise.resolve();
+  };
+  /**
+   * @param {Record&lt;string, unknown&gt; | ((previous: Record&lt;string, unknown&gt; | null) =&gt; Record&lt;string, unknown&gt;)} next
+   * @returns {Promise&lt;void&gt;}
+   */
+  const setWidgetState = async (next) =&gt; {
+    const nextState = typeof next === &quot;function&quot; ? next(state) : next;
+    if (
+      nextState == null ||
+      typeof nextState !== &quot;object&quot; ||
+      isArray(nextState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const inputState = stringify(
+      nextState,
+      (_key, /** @type {unknown} */ value) =&gt; {
+        if (
+          typeof value === &quot;undefined&quot; ||
+          typeof value === &quot;function&quot; ||
+          typeof value === &quot;symbol&quot; ||
+          (typeof value === &quot;number&quot; &amp;&amp; !Number.isFinite(value))
+        ) {
+          throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+        }
+        return value;
+      },
+    );
+    const parsedState = parse(inputState);
+    if (
+      parsedState == null ||
+      typeof parsedState !== &quot;object&quot; ||
+      isArray(parsedState)
+    ) {
+      throw new TypeError(&quot;Widget state must be a JSON object&quot;);
+    }
+    const storedState = {
+      modelContent: null,
+      privateContent: null,
+      ...parsedState,
+    };
+    const serializedState = stringify(storedState);
+    if (encode(serializedState).length &gt; 16 * 1024) {
+      throw new TypeError(
+        &quot;Widget state must be a JSON object of at most 16 KiB&quot;,
+      );
+    }
+    if (
+      hasOwn(storedState, &quot;imageIds&quot;) &amp;&amp;
+      (!isArray(storedState.imageIds) ||
+        storedState.imageIds.some(
+          (/** @type {unknown} */ id) =&gt; typeof id !== &quot;string&quot;,
+        ))
+    ) {
+      throw new TypeError(&quot;Widget state imageIds must be an array of strings&quot;);
+    }
+    if (storedState.imageIds?.length &gt; 0) {
+      throw Object.assign(
+        new TypeError(&quot;Visualization state does not support image attachments&quot;),
+        { code: -32602, data: { code: &quot;images_unsupported&quot; } },
+      );
+    }
+    state = storedState;
+    globalThis.openai.widgetState = state;
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: { widgetState: state } },
+      }),
+    );
+    if (statePersistence === &quot;none&quot;) {
+      throw persistenceError();
+    }
+    const id = ++nextStateRequestId;
+    return new Promise((resolve, reject) =&gt; {
+      const timeout = globalThis.setTimeout(() =&gt; {
+        pendingStateWrites.delete(id);
+        reject(persistenceError());
+      }, 30_000);
+      pendingStateWrites.set(id, { resolve, reject, timeout, serializedState });
+      postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+    });
+  };
+  const bindingElement = document.getElementById(&quot;codex-visualization-bindings&quot;);
+  const mockElement = document.getElementById(&quot;codex-connector-mocks&quot;);
+  const fileElement = document.getElementById(&quot;codex-preview-files&quot;);
+  const connectorGlobals = {};
+  if (bindingElement != null || mockElement != null || fileElement != null) {
+    const bindings = parse(bindingElement?.textContent ?? &quot;{}&quot;);
+    bindingElement?.remove();
+    const values = new Map();
+    for (const [name, binding] of Object.entries(bindings)) {
+      if (binding.type === &quot;json&quot;) values.set(name, structuredClone(binding.value));
+    }
+    const pending = [bindings];
+    while (pending.length) {
+      const object = pending.pop();
+      Object.freeze(object);
+      for (const child of Object.values(object)) {
+        if (child !== null &amp;&amp; typeof child === &quot;object&quot;) pending.push(child);
+      }
+    }
+    const updates = [];
+    if (mockElement != null) {
+      const mocks = Object.entries(parse(mockElement.textContent));
+      mockElement.remove();
+      for (const [name, value] of mocks) {
+        values.set(name, value);
+        updates.push({ name, revision: 1, state: &quot;ready&quot;, value: { type: &quot;json&quot;, value } });
+      }
+    }
+    if (fileElement != null) {
+      const files = parse(fileElement.textContent);
+      fileElement.remove();
+      const blobs = new Map();
+      const urls = [];
+      for (const [name, binding] of Object.entries(bindings)) {
+        if (binding.type !== &quot;file&quot; || !hasOwn(files, binding.path)) continue;
+        const file = files[binding.path];
+        let blob = blobs.get(binding.path);
+        if (blob == null) {
+          const bytes = Uint8Array.fromBase64?.(file.base64) ??
+            Uint8Array.from(atob(file.base64), (char) =&gt; char.charCodeAt(0));
+          blob = new Blob([bytes], { type: file.mimeType });
+          blobs.set(binding.path, blob);
+        }
+        const url = URL.createObjectURL(blob);
+        urls.push(url);
+        values.set(name, { name: file.name, blob, url });
+        updates.push({ name, revision: 1, state: &quot;ready&quot;, value: { type: &quot;file&quot;, ...file } });
+      }
+      globalThis.addEventListener(&quot;pagehide&quot;, (event) =&gt; {
+        // A persisted pagehide can restore this same document and its subscriptions.
+        if (event.persisted) return;
+        for (const url of urls) URL.revokeObjectURL(url);
+        urls.length = 0;
+      });
+    }
+    if (mockElement != null || fileElement != null) connectorGlobals.visualizationData = { updates };
+    connectorGlobals.visualization = {
+      get bindings() {
+        return bindings;
+      },
+      /** @param {string} name @param {(value: unknown) =&gt; void} callback */
+      onData(name, callback) {
+        if (typeof callback !== &quot;function&quot;) {
+          throw new TypeError(&quot;onData requires a callback&quot;);
+        }
+        try {
+          callback(values.get(name));
+        } catch (error) {
+          // oxlint-disable-next-line no-console -- Keep authored callback failures local.
+          console.error(&quot;Live visualization data callback failed&quot;, error);
+        }
+        // A static preview delivers the current value once per subscription.
+        return () =&gt; {};
+      },
+    };
+  }
+  const syncTheme = () =&gt; {
+    const theme = mediaQuery.matches ? &quot;dark&quot; : &quot;light&quot;;
+    root.dataset.theme = theme;
+    globalThis.openai = {
+      ...globalThis.openai,
+      ...connectorGlobals,
+      openExternal,
+      sendFollowUpMessage,
+      setWidgetState,
+      theme,
+      visualizationStyleVariables: {},
+      visualizationTheme: theme,
+      widgetState: state,
+      statePersistence,
+      stateModelContext: &quot;none&quot;,
+    };
+    globalThis.dispatchEvent(
+      new CustomEvent(&quot;openai:set_globals&quot;, {
+        detail: { globals: globalThis.openai },
+      }),
+    );
+  };
+  const sendHeight = () =&gt; {
+    postToHost(&quot;height&quot;, {
+      height: Math.ceil(
+        Math.max(
+          document.body.scrollHeight,
+          document.body.getBoundingClientRect().height,
+        ),
+      ),
+    });
+  };
+
+  globalThis.addEventListener(
+    &quot;message&quot;,
+    (event) =&gt; {
+      const data = apply(getMessageData, event, []);
+      const ports = apply(getMessagePorts, event, []);
+      const source = apply(getMessageSource, event, []);
+      if (
+        hostPort != null ||
+        source !== parentWindow ||
+        typeof data !== &quot;object&quot; ||
+        data?.type !== &quot;codex-visualization-initialize&quot; ||
+        !isArray(ports) ||
+        ports.length !== 1
+      ) {
+        return;
+      }
+      apply(stopMessagePropagation, event, []);
+      const nextHostPort = ports[0];
+      try {
+        apply(addHostMessageListener, nextHostPort, [
+          &quot;message&quot;,
+          (event) =&gt; {
+            const data = apply(getMessageData, event, []);
+            if (typeof data === &quot;object&quot; &amp;&amp; data?.type === &quot;measure&quot;) {
+              sendHeight();
+            } else if (
+              typeof data === &quot;object&quot; &amp;&amp;
+              data?.type === &quot;widget-state-result&quot;
+            ) {
+              /** @type {unknown} */
+              const id = data.id;
+              if (typeof id !== &quot;number&quot;) {
+                return;
+              }
+              const pending = pendingStateWrites.get(id);
+              if (pending != null) {
+                pendingStateWrites.delete(id);
+                globalThis.clearTimeout(pending.timeout);
+                if (data.ok === true) {
+                  pending.resolve();
+                } else {
+                  pending.reject(persistenceError());
+                }
+              }
+            }
+          },
+        ]);
+        apply(startHostPort, nextHostPort, []);
+      } catch {
+        return;
+      }
+      hostPort = nextHostPort;
+      for (const [id, { serializedState }] of pendingStateWrites) {
+        postToHost(&quot;widget-state-write&quot;, { id, state: serializedState });
+      }
+      sendHeight();
+    },
+    { capture: true },
+  );
+  document.currentScript?.remove();
+  mediaQuery.addEventListener(&quot;change&quot;, syncTheme);
+  globalThis.addEventListener(&quot;click&quot;, (event) =&gt; {
+    if (event.defaultPrevented) {
+      return;
+    }
+    let element = null;
+    if (event.target instanceof globalThis.Element) {
+      element = event.target;
+    } else if (event.target instanceof globalThis.Node) {
+      element = event.target.parentElement;
+    }
+    const link = element?.closest(&quot;a[href]&quot;);
+    const href = link?.getAttribute(&quot;href&quot;);
+    if (href == null) {
+      return;
+    }
+    if (href.startsWith(&quot;#&quot;)) {
+      let id;
+      try {
+        id = decodeURIComponent(href.slice(1));
+      } catch {
+        return;
+      }
+      const target = id.length === 0 ? root : document.getElementById(id);
+      if (
+        target == null ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      event.preventDefault();
+      postToHost(&quot;scroll-to&quot;, {
+        top: target.getBoundingClientRect().top + globalThis.scrollY,
+      });
+      return;
+    }
+    event.preventDefault();
+    openExternal({ href });
+  });
+  new ResizeObserver(sendHeight).observe(document.body);
+  syncTheme();
+})();
+&lt;/script&gt;
+&lt;div id=&quot;network-switch-demo&quot; lang=&quot;zh-CN&quot; aria-label=&quot;WiFi Switch 交互演示&quot;&gt;
+  &lt;style&gt;
+    #network-switch-demo {
+      --ns-bg: light-dark(#f5f6f8, #1e2024);
+      --ns-panel: light-dark(#ffffff, #272a2f);
+      --ns-subtle: light-dark(#f4f5f7, #30343b);
+      --ns-text: light-dark(#20252d, #eff1f4);
+      --ns-muted: light-dark(#626b79, #a8afbb);
+      --ns-border: light-dark(#e3e6eb, #3e434d);
+      --ns-blue: light-dark(#0864d6, #79b5ff);
+      --ns-blue-fill: light-dark(#0875ed, #0875ed);
+      --ns-blue-soft: light-dark(#edf5ff, #24364d);
+      --ns-green: light-dark(#16713e, #71d69a);
+      --ns-green-bg: light-dark(#edf8f1, #213b2c);
+      --ns-amber: light-dark(#855213, #f2c27c);
+      --ns-amber-bg: light-dark(#fff5e6, #3c3123);
+      --ns-space: 22px;
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif;
+      color: var(--ns-text);
+      width: 100%;
+    }
+    #network-switch-demo * { box-sizing: border-box; }
+    #network-switch-demo button, #network-switch-demo input { font: inherit; }
+    #network-switch-demo button { color: inherit; }
+    #network-switch-demo button:focus-visible, #network-switch-demo summary:focus-visible { outline: 3px solid var(--ns-blue); outline-offset: 3px; }
+    #network-switch-demo .ns-window { background: var(--ns-bg); border: 1px solid var(--ns-border); border-radius: 16px; overflow: hidden; }
+    #network-switch-demo .ns-titlebar { display: flex; align-items: center; gap: 14px; padding: 19px 28px; padding-right: 112px; border-bottom: 1px solid var(--ns-border); background: var(--ns-panel); }
+    #network-switch-demo .ns-logo { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; color: #fff; background: var(--ns-blue-fill); flex: 0 0 auto; }
+    #network-switch-demo .ns-logo svg { width: 25px; height: 25px; }
+    #network-switch-demo .ns-heading { font-size: 21px; line-height: 1.3; font-weight: 600; letter-spacing: -.5px; margin: 0; }
+    #network-switch-demo .ns-subtitle { color: var(--ns-muted); font-size: 12px; margin-top: 3px; }
+    #network-switch-demo .ns-demo-tag { margin-left: auto; white-space: nowrap; border: 1px solid var(--ns-border); border-radius: 6px; padding: 3px 8px; font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-body { padding: 24px 28px 22px; }
+    #network-switch-demo .ns-section-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+    #network-switch-demo .ns-section-label h2 { font-size: 13px; font-weight: 600; margin: 0; }
+    #network-switch-demo .ns-hint { font-size: 12px; color: var(--ns-muted); }
+    #network-switch-demo .ns-masters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    #network-switch-demo .ns-master { background: var(--ns-panel); border: 1px solid var(--ns-border); border-radius: 12px; padding: 17px 17px 15px; min-width: 0; }
+    #network-switch-demo .ns-master-heading { display: flex; gap: 9px; align-items: center; margin-bottom: 14px; }
+    #network-switch-demo .ns-kind-icon { display: inline-flex; color: var(--ns-blue); flex-shrink: 0; }
+    #network-switch-demo .ns-kind-icon svg { width: 19px; height: 19px; }
+    #network-switch-demo .ns-kind-title { font-size: 14px; font-weight: 600; }
+    #network-switch-demo .ns-switch { position: relative; display: inline-flex; align-items: center; justify-content: flex-end; min-height: 32px; min-width: 42px; margin-left: auto; }
+    #network-switch-demo .ns-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; z-index: 1; }
+    #network-switch-demo .ns-switch-track { display: block; width: 36px; height: 21px; border-radius: 20px; background: light-dark(#858c97, #747b86); position: relative; transition: background 160ms ease; }
+    #network-switch-demo .ns-switch-track::after { content: &quot;&quot;; position: absolute; width: 17px; height: 17px; border-radius: 50%; top: 2px; left: 2px; background: #fff; transition: transform 160ms ease; }
+    #network-switch-demo .ns-switch input:checked + .ns-switch-track { background: var(--ns-blue-fill); }
+    #network-switch-demo .ns-switch input:checked + .ns-switch-track::after { transform: translateX(15px); }
+    #network-switch-demo .ns-switch input:focus-visible + .ns-switch-track { outline: 3px solid var(--ns-blue); outline-offset: 4px; }
+    #network-switch-demo .ns-target { font-weight: 500; overflow-wrap: anywhere; min-height: 21px; }
+    #network-switch-demo .ns-owner { color: var(--ns-muted); font-size: 12px; margin-top: 2px; min-height: 18px; }
+    #network-switch-demo .ns-master-footer { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-top: 15px; }
+    #network-switch-demo .ns-badge { font-size: 11px; padding: 2px 7px; border-radius: 5px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: var(--ns-muted); background: var(--ns-subtle); }
+    #network-switch-demo .ns-badge::before { content: &quot;&quot;; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    #network-switch-demo .ns-badge[data-tone=&quot;good&quot;] { color: var(--ns-green); background: var(--ns-green-bg); }
+    #network-switch-demo .ns-badge[data-tone=&quot;waiting&quot;] { color: var(--ns-amber); background: var(--ns-amber-bg); }
+    #network-switch-demo .ns-badge[data-tone=&quot;busy&quot;] { color: var(--ns-blue); background: var(--ns-blue-soft); }
+    #network-switch-demo .ns-mode { font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-network-note { margin-top: 12px; color: var(--ns-amber); background: var(--ns-amber-bg); border-radius: 8px; padding: 9px 12px; font-size: 12px; display: flex; gap: 8px; align-items: flex-start; }
+    #network-switch-demo .ns-network-note[hidden] { display: none; }
+    #network-switch-demo .ns-network-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+    #network-switch-demo .ns-accounts-title { margin-top: 26px; }
+    #network-switch-demo .ns-accounts { display: grid; gap: 14px; }
+    #network-switch-demo .ns-account { background: var(--ns-panel); border: 1px solid var(--ns-border); border-radius: 12px; }
+    #network-switch-demo .ns-account &gt; summary { display: flex; align-items: center; gap: 11px; padding: 15px 18px; list-style: none; }
+    #network-switch-demo .ns-account &gt; summary::-webkit-details-marker { display: none; }
+    #network-switch-demo .ns-avatar { width: 32px; height: 32px; background: var(--ns-subtle); border-radius: 50%; display: grid; place-items: center; font-weight: 500; color: var(--ns-muted); flex-shrink: 0; }
+    #network-switch-demo .ns-account-name { font-weight: 600; }
+    #network-switch-demo .ns-account-user { color: var(--ns-muted); font-size: 11px; margin-top: 1px; }
+    #network-switch-demo .ns-account-count { margin-left: auto; color: var(--ns-muted); font-size: 11px; text-align: right; }
+    #network-switch-demo .ns-chevron { width: 14px; height: 14px; display: inline-flex; color: var(--ns-muted); }
+    #network-switch-demo .ns-account[open] .ns-chevron { transform: rotate(90deg); }
+    #network-switch-demo .ns-account-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ns-border); }
+    #network-switch-demo .ns-group { padding: 15px 16px 16px; min-width: 0; }
+    #network-switch-demo .ns-group + .ns-group { border-left: 1px solid var(--ns-border); }
+    #network-switch-demo .ns-group-heading { display: flex; align-items: center; gap: 7px; color: var(--ns-muted); font-size: 11px; font-weight: 600; letter-spacing: .3px; margin-bottom: 10px; }
+    #network-switch-demo .ns-group-heading svg { width: 14px; height: 14px; }
+    #network-switch-demo .ns-add { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; gap: 3px; border: 0; background: transparent; color: var(--ns-blue); border-radius: 5px; padding: 4px 5px; min-height: 28px; font-size: 11px; font-weight: 400; white-space: nowrap; }
+    #network-switch-demo .ns-add:hover { background: var(--ns-blue-soft); }
+    #network-switch-demo .ns-account-tools { display: flex; align-items: center; gap: 12px; }
+    #network-switch-demo .ns-primary, #network-switch-demo .ns-secondary { border: 1px solid var(--ns-border); border-radius: 7px; padding: 7px 12px; min-height: 34px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+    #network-switch-demo .ns-primary { color: #fff; background: var(--ns-blue-fill); border-color: var(--ns-blue-fill); }
+    #network-switch-demo .ns-secondary { color: var(--ns-text); background: var(--ns-panel); }
+    #network-switch-demo .ns-primary svg { width: 14px; height: 14px; }
+    #network-switch-demo .ns-empty { padding: 12px 4px; color: var(--ns-muted); font-size: 12px; }
+    #network-switch-demo .ns-editor { border: 1px solid color-mix(in srgb, var(--ns-blue) 40%, var(--ns-border)); border-radius: 12px; padding: 20px; background: var(--ns-panel); margin-bottom: 16px; }
+    #network-switch-demo .ns-editor[hidden] { display: none; }
+    #network-switch-demo .ns-editor-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    #network-switch-demo .ns-editor-heading h3 { font-size: 15px; font-weight: 600; margin: 0; }
+    #network-switch-demo .ns-editor-owner { color: var(--ns-muted); font-size: 12px; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+    #network-switch-demo .ns-field { display: grid; gap: 6px; min-width: 0; align-content: start; }
+    #network-switch-demo .ns-field label { font-size: 12px; color: var(--ns-text); }
+    #network-switch-demo .ns-field input, #network-switch-demo .ns-field select { min-width: 0; width: 100%; height: 36px; border: 1px solid var(--ns-border); border-radius: 6px; background: var(--ns-bg); color: var(--ns-text); padding: 7px 10px; font: inherit; font-size: 13px; }
+    #network-switch-demo .ns-field input:focus-visible, #network-switch-demo .ns-field select:focus-visible { outline: 3px solid var(--ns-blue); outline-offset: 2px; }
+    #network-switch-demo .ns-field input[aria-invalid=&quot;true&quot;] { border-color: light-dark(#ba3030, #f38484); }
+    #network-switch-demo .ns-form-note { font-size: 11px; color: var(--ns-muted); margin: 14px 0 0; }
+    #network-switch-demo .ns-form-error { color: light-dark(#af2525, #ff9a9a); font-size: 12px; margin-top: 12px; }
+    #network-switch-demo .ns-form-error[hidden] { display: none; }
+    #network-switch-demo .ns-form-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
+    #network-switch-demo .ns-connections { display: grid; gap: 9px; }
+    #network-switch-demo .ns-connection { border-radius: 7px; padding: 9px 10px; min-width: 0; background: var(--ns-subtle); display: grid; gap: 8px; }
+    #network-switch-demo .ns-connection[data-selected=&quot;true&quot;] { background: var(--ns-blue-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ns-blue) 25%, transparent); }
+    #network-switch-demo .ns-connection-title { font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-connection-detail { font-size: 11px; color: var(--ns-muted); margin-top: 1px; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-connection-action { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 27px; }
+    #network-switch-demo .ns-selection-status { font-size: 11px; color: var(--ns-muted); display: inline-flex; align-items: center; gap: 4px; }
+    #network-switch-demo .ns-selection-status svg { width: 13px; height: 13px; }
+    #network-switch-demo .ns-selection-status[data-selected=&quot;true&quot;] { color: var(--ns-blue); }
+    #network-switch-demo .ns-select { min-height: 28px; border: 1px solid var(--ns-border); border-radius: 6px; padding: 3px 10px; background: var(--ns-panel); color: var(--ns-blue); font-size: 11px; white-space: nowrap; }
+    #network-switch-demo .ns-select:hover:not(:disabled) { border-color: var(--ns-blue); background: var(--ns-blue-soft); }
+    #network-switch-demo .ns-select:disabled { color: var(--ns-muted); opacity: .65; }
+    #network-switch-demo .ns-select[hidden] { display: none; }
+    #network-switch-demo .ns-footer { margin-top: 18px; display: flex; gap: 8px; align-items: flex-start; font-size: 11px; color: var(--ns-muted); min-height: 18px; }
+    #network-switch-demo .ns-footer svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+    #network-switch-demo[data-density=&quot;compact&quot;] { --ns-space: 14px; }
+    #network-switch-demo[data-density=&quot;compact&quot;] .ns-group { padding: 12px; }
+    #network-switch-demo[data-density=&quot;compact&quot;] .ns-connection { padding: 7px 9px; gap: 5px; }
+    #network-switch-demo[data-density=&quot;compact&quot;] .ns-account &gt; summary { padding: 12px 16px; }
+    #network-switch-demo[data-density=&quot;compact&quot;] .ns-accounts { gap: 10px; }
+    @media (max-width: 760px) {
+      #network-switch-demo .ns-body { padding: 20px; }
+      #network-switch-demo .ns-titlebar { padding-left: 20px; }
+      #network-switch-demo .ns-master { padding: 14px 12px; }
+      #network-switch-demo .ns-master-footer { align-items: flex-start; flex-direction: column; gap: 5px; }
+      #network-switch-demo .ns-group { padding: 12px; }
+    }
+    @media (max-width: 610px) {
+      #network-switch-demo .ns-titlebar { flex-wrap: wrap; gap: 10px; padding: 18px 20px; padding-right: 100px; }
+      #network-switch-demo .ns-demo-tag { margin-left: 50px; }
+      #network-switch-demo .ns-masters { grid-template-columns: 1fr; gap: 9px; }
+      #network-switch-demo .ns-master { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 12px 14px; }
+      #network-switch-demo .ns-master-heading { grid-column: 1 / -1; margin: 0 0 4px; }
+      #network-switch-demo .ns-master-footer { grid-row: 2 / 4; grid-column: 2; align-items: flex-end; align-self: center; margin: 0; }
+      #network-switch-demo .ns-owner { grid-column: 1; }
+      #network-switch-demo .ns-account-groups { grid-template-columns: 1fr; }
+      #network-switch-demo .ns-group { padding: 14px 16px; }
+      #network-switch-demo .ns-group + .ns-group { border-left: 0; border-top: 1px solid var(--ns-border); }
+      #network-switch-demo .ns-connection { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 10px; }
+      #network-switch-demo .ns-connection-action { flex-direction: column; align-items: flex-end; gap: 4px; }
+      #network-switch-demo .ns-section-label { align-items: flex-start; }
+      #network-switch-demo .ns-hint { font-size: 11px; text-align: right; max-width: 140px; }
+      #network-switch-demo .ns-account-count { max-width: 80px; }
+      #network-switch-demo .ns-account-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+      #network-switch-demo .ns-account-tools .ns-hint { max-width: none; }
+      #network-switch-demo .ns-fields { grid-template-columns: 1fr; }
+      #network-switch-demo .ns-editor { padding: 16px; }
+      #network-switch-demo .ns-editor-heading { flex-wrap: wrap; gap: 4px 10px; }
+    }
+    @media (max-width: 360px) {
+      #network-switch-demo .ns-body { padding: 16px 12px; }
+      #network-switch-demo .ns-heading { font-size: 18px; }
+      #network-switch-demo .ns-titlebar { padding-left: 14px; gap: 8px; }
+      #network-switch-demo .ns-logo { width: 32px; height: 32px; border-radius: 9px; }
+      #network-switch-demo .ns-account &gt; summary { padding: 13px 12px; gap: 8px; }
+      #network-switch-demo .ns-group { padding: 12px; }
+    }
+    @media (pointer: coarse) {
+      #network-switch-demo .ns-switch { min-height: 44px; min-width: 44px; }
+      #network-switch-demo .ns-select { min-height: 44px; padding-inline: 14px; }
+      #network-switch-demo .ns-add, #network-switch-demo .ns-primary, #network-switch-demo .ns-secondary { min-height: 44px; }
+      #network-switch-demo .ns-field input, #network-switch-demo .ns-field select { font-size: 16px; min-height: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #network-switch-demo .ns-switch-track, #network-switch-demo .ns-switch-track::after { transition: none; }
+    }
+  &lt;/style&gt;
+  &lt;style&gt;
+    #network-switch-demo .ns-preview { --ns-menu-width: min(360px, calc((100vw - 40px) / 2)); padding: 50px 12px 24px; }
+    #network-switch-demo .ns-menu-strip { width: var(--ns-menu-width); margin: 0 auto 10px; display: flex; align-items: center; gap: 14px; height: 34px; border-radius: 7px; background: var(--ns-panel); border: 1px solid var(--ns-border); padding: 0 9px 0 12px; font-size: 12px; }
+    #network-switch-demo .ns-menu-caption { color: var(--ns-muted); margin-right: auto; font-size: 11px; }
+    #network-switch-demo .ns-menu-trigger { border: 0; border-radius: 5px; background: transparent; width: 32px; height: 27px; display: grid; place-items: center; color: var(--ns-text); }
+    #network-switch-demo .ns-menu-trigger[aria-expanded=&quot;true&quot;] { background: var(--ns-subtle); }
+    #network-switch-demo .ns-menu-time { font-variant-numeric: tabular-nums; }
+    #network-switch-demo .ns-window { width: var(--ns-menu-width); margin: 0 auto; border-radius: 13px; background: var(--ns-panel); box-shadow: 0 10px 30px light-dark(#1b253018, #00000040); overflow: visible; }
+    #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-window, #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-menu-strip { transform: translateX(-126px); }
+    #network-switch-demo .ns-window[hidden], #network-switch-demo [hidden] { display: none !important; }
+    #network-switch-demo .ns-titlebar { padding: 16px 17px 12px; gap: 9px; border: 0; flex-wrap: nowrap; }
+    #network-switch-demo .ns-logo { width: 29px; height: 29px; border-radius: 8px; }
+    #network-switch-demo .ns-logo svg { width: 18px; height: 18px; }
+    #network-switch-demo .ns-heading { font-size: 15px; line-height: 1.3; letter-spacing: -.2px; }
+    #network-switch-demo .ns-subtitle { font-size: 11px; margin-top: 1px; }
+    #network-switch-demo .ns-demo-tag { margin-left: auto; font-size: 11px; padding: 1px 6px; }
+    #network-switch-demo .ns-gear { margin-left: auto; border: 0; border-radius: 6px; width: 30px; height: 30px; display: grid; place-items: center; background: transparent; color: var(--ns-muted); }
+    #network-switch-demo .ns-gear:hover { background: var(--ns-subtle); color: var(--ns-text); }
+    #network-switch-demo .ns-titlebar { position: relative; }
+    #network-switch-demo .ns-gear-menu { position: absolute; right: -106px; top: 50px; z-index: 5; width: 224px; padding: 6px; border: 1px solid var(--ns-border); border-radius: 11px; background: var(--ns-panel); box-shadow: 0 12px 30px light-dark(#14202c24, #00000066); }
+    #network-switch-demo .ns-gear-menu[hidden] { display: none; }
+    #network-switch-demo .ns-gear-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--ns-text); text-align: left; font-size: 12px; }
+    #network-switch-demo .ns-gear-menu button:hover, #network-switch-demo .ns-gear-menu button:focus-visible { background: var(--ns-blue-fill); color: #fff; }
+    #network-switch-demo .ns-gear-menu hr { border: 0; border-top: 1px solid var(--ns-border); margin: 5px 8px; }
+    @media (max-width: 659px) { #network-switch-demo .ns-gear-menu { right: 0; } }
+    #network-switch-demo .ns-window .ns-add, #network-switch-demo .ns-window .ns-bottom { display: none; }
+    #network-switch-demo[data-view=&quot;config&quot;] .ns-menu-strip { display: none; }
+    #network-switch-demo .ns-config-view { max-width: 860px; margin: 0 auto; border: 1px solid var(--ns-border); border-radius: 13px; background: var(--ns-bg); overflow: hidden; }
+    #network-switch-demo .ns-config-header { padding: 18px 22px; border-bottom: 1px solid var(--ns-border); display: flex; align-items: center; gap: 12px; background: var(--ns-panel); }
+    #network-switch-demo .ns-config-header h2 { font-size: 19px; margin: 0; line-height: 1.25; }
+    #network-switch-demo .ns-config-header .ns-logo { width: 38px; height: 38px; }
+    #network-switch-demo .ns-config-header .ns-subtitle { margin-top: 2px; }
+    #network-switch-demo .ns-config-back { border: 0; background: transparent; color: var(--ns-blue); display: inline-flex; align-items: center; gap: 5px; padding: 5px; }
+    #network-switch-demo .ns-config-back svg { width: 15px; height: 15px; }
+    #network-switch-demo .ns-config-body { padding: 20px 22px 22px; }
+    #network-switch-demo .ns-config-demo-tag { margin-left: auto; font-size: 11px; color: var(--ns-muted); border: 1px solid var(--ns-border); border-radius: 6px; padding: 3px 7px; }
+    #network-switch-demo .ns-config-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 12px; }
+    #network-switch-demo .ns-config-section-heading h3 { margin: 0; font-size: 13px; }
+    #network-switch-demo .ns-config-section-heading span { color: var(--ns-muted); font-size: 11px; }
+    #network-switch-demo .ns-config-masters { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+    #network-switch-demo .ns-config-masters .ns-master { display: block; padding: 15px; border: 1px solid var(--ns-border); border-radius: 11px; background: var(--ns-panel); }
+    #network-switch-demo .ns-config-masters .ns-master-heading { gap: 8px; margin-bottom: 14px; }
+    #network-switch-demo .ns-config-masters .ns-kind-icon { display: inline-flex; }
+    #network-switch-demo .ns-config-masters .ns-kind-title { font-size: 13px; font-weight: 600; }
+    #network-switch-demo .ns-config-masters .ns-target { font-size: 13px; }
+    #network-switch-demo .ns-config-masters .ns-owner { font-size: 11px; min-height: 32px; }
+    #network-switch-demo .ns-config-masters .ns-master-footer { display: flex; margin-top: 10px; align-items: center; justify-content: space-between; }
+    #network-switch-demo .ns-config-account-heading { margin: 26px 0 11px; }
+    #network-switch-demo .ns-config-account-heading .ns-primary { margin-left: auto; }
+    #network-switch-demo .ns-config-view .ns-accounts { display: grid; gap: 12px; border: 0; padding: 0; }
+    #network-switch-demo .ns-config-view .ns-account { border: 1px solid var(--ns-border); border-radius: 9px; }
+    #network-switch-demo .ns-config-view .ns-account &gt; summary { padding: 12px 14px; }
+    #network-switch-demo .ns-config-view .ns-account[open] &gt; summary { color: var(--ns-text); background: var(--ns-subtle); }
+    #network-switch-demo .ns-config-view .ns-account[open] &gt; summary .ns-account-user, #network-switch-demo .ns-config-view .ns-account[open] &gt; summary .ns-account-count, #network-switch-demo .ns-config-view .ns-account[open] &gt; summary .ns-chevron { color: var(--ns-muted); }
+    #network-switch-demo .ns-config-view .ns-account[open] &gt; summary .ns-avatar { color: var(--ns-muted); background: var(--ns-panel); }
+    #network-switch-demo .ns-config-view .ns-account[open] .ns-account-groups { position: static; width: auto; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); padding: 0; border: 0; border-top: 1px solid var(--ns-border); border-radius: 0; box-shadow: none; animation: none; min-height: 0; }
+    #network-switch-demo .ns-config-view .ns-group { padding: 12px; min-width: 0; }
+    #network-switch-demo .ns-config-view .ns-group + .ns-group { border-left: 1px solid var(--ns-border); }
+    #network-switch-demo .ns-config-view .ns-group-heading { order: 0; margin: 0 0 7px; padding: 0; border: 0; }
+    #network-switch-demo .ns-config-view .ns-group-heading &gt; span { display: inline; }
+    #network-switch-demo .ns-config-view .ns-add { margin-left: auto; }
+    #network-switch-demo .ns-config-view .ns-connections { order: 0; }
+    #network-switch-demo .ns-config-view .ns-connection-detail { display: block; }
+    #network-switch-demo .ns-config-view .ns-connection { display: block; background: var(--ns-subtle); margin-bottom: 5px; }
+    #network-switch-demo .ns-config-view .ns-connection[data-selected=&quot;true&quot;] { background: var(--ns-blue-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ns-blue) 25%, transparent); }
+    #network-switch-demo .ns-config-view .ns-connection-action { flex-direction: row; justify-content: space-between; align-items: center; }
+    #network-switch-demo .ns-config-view .ns-select { display: inline-flex; }
+    #network-switch-demo .ns-config-view .ns-account-back { display: none; }
+    #network-switch-demo .ns-config-view .ns-bottom { margin-top: 14px; }
+    #network-switch-demo .ns-config-view .ns-swipe-hint { display: none; }
+    @media (max-width: 610px) { #network-switch-demo .ns-config-view .ns-account[open] .ns-account-groups, #network-switch-demo .ns-config-masters { grid-template-columns: 1fr; } #network-switch-demo .ns-config-view .ns-group + .ns-group { border-left: 0; border-top: 1px solid var(--ns-border); } #network-switch-demo .ns-config-header, #network-switch-demo .ns-config-body { padding-inline: 14px; } #network-switch-demo .ns-config-header { flex-wrap: wrap; } }
+    #network-switch-demo .ns-tabs { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); padding: 3px; gap: 3px; margin: 0 14px; background: var(--ns-subtle); border-radius: 8px; }
+    #network-switch-demo .ns-tab { border: 0; border-radius: 6px; background: transparent; padding: 7px 4px; min-height: 31px; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 12px; color: var(--ns-muted); }
+    #network-switch-demo .ns-tab svg { width: 14px; height: 14px; }
+    #network-switch-demo .ns-tab[aria-selected=&quot;true&quot;] { color: var(--ns-text); background: var(--ns-panel); box-shadow: 0 1px 3px light-dark(#00000018, #00000040); font-weight: 600; }
+    #network-switch-demo .ns-tab:disabled { opacity: .55; }
+    #network-switch-demo .ns-body { padding: 13px 14px 12px; touch-action: pan-y; }
+    #network-switch-demo .ns-masters { display: block; }
+    #network-switch-demo .ns-master { display: block; padding: 0 3px 14px; border: 0; border-radius: 0; }
+    #network-switch-demo .ns-master-heading { display: flex; margin: 0 0 8px; }
+    #network-switch-demo .ns-kind-icon { display: none; }
+    #network-switch-demo .ns-kind-title { font-size: 13px; }
+    #network-switch-demo .ns-current-row { display: flex; align-items: center; gap: 10px; min-height: 46px; }
+    #network-switch-demo .ns-current-icon { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: var(--ns-blue-fill); color: #fff; }
+    #network-switch-demo .ns-current-icon svg { width: 21px; height: 21px; }
+    #network-switch-demo .ns-master[data-actual=&quot;off&quot;] .ns-current-icon { background: var(--ns-subtle); color: var(--ns-muted); }
+    #network-switch-demo .ns-current-copy { min-width: 0; flex: 1; }
+    #network-switch-demo .ns-target { font-size: 15px; font-weight: 600; min-height: 0; line-height: 1.35; }
+    #network-switch-demo .ns-owner { font-size: 11px; margin: 2px 0 0; min-height: 0; }
+    #network-switch-demo .ns-current-check { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: light-dark(#08d875, #17de81); color: #092b19; }
+    #network-switch-demo .ns-current-check svg { width: 16px; height: 16px; }
+    #network-switch-demo .ns-master:not([data-actual=&quot;good&quot;]) .ns-current-check { display: none; }
+    #network-switch-demo .ns-master-footer { display: none; }
+    #network-switch-demo .ns-window .ns-accounts { display: none; }
+    #network-switch-demo .ns-other { border-top: 1px solid var(--ns-border); padding-top: 8px; }
+    #network-switch-demo .ns-other-toggle { width: 100%; min-height: 33px; display: flex; align-items: center; justify-content: space-between; padding: 3px 1px; border: 0; background: transparent; color: var(--ns-muted); font-size: 12px; font-weight: 600; text-align: left; }
+    #network-switch-demo .ns-other-toggle svg { width: 15px; height: 15px; transition: transform 160ms ease; }
+    #network-switch-demo .ns-other-toggle[aria-expanded=&quot;true&quot;] svg { transform: rotate(90deg); }
+    #network-switch-demo .ns-other-list { padding-top: 4px; }
+    #network-switch-demo .ns-other-item { display: flex; align-items: center; gap: 9px; padding: 7px 0; min-width: 0; }
+    #network-switch-demo .ns-other-icon { width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 auto; color: var(--ns-muted); }
+    #network-switch-demo .ns-other-icon svg { width: 20px; height: 20px; }
+    #network-switch-demo .ns-other-copy { flex: 1; min-width: 0; }
+    #network-switch-demo .ns-other-name { font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-other-owner { font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-other-action { border: 0; border-radius: 6px; background: var(--ns-blue-fill); color: #fff !important; font-size: 11px; padding: 5px 11px; min-height: 28px; flex: 0 0 auto; }
+    #network-switch-demo .ns-other-action:disabled { opacity: .55; }
+    #network-switch-demo .ns-other-empty { padding: 10px 0; color: var(--ns-muted); font-size: 11px; }
+    #network-switch-demo .ns-network-note { margin: 0 0 10px; font-size: 11px; padding: 8px; }
+    #network-switch-demo .ns-accounts { gap: 4px; border-top: 1px solid var(--ns-border); padding-top: 7px; }
+    #network-switch-demo .ns-accounts { position: relative; }
+    #network-switch-demo .ns-account { border: 0; border-radius: 6px; }
+    #network-switch-demo .ns-account &gt; summary { padding: 9px 3px; gap: 8px; }
+    #network-switch-demo .ns-account &gt; summary:hover { background: var(--ns-subtle); }
+    #network-switch-demo .ns-account[open] &gt; summary { background: var(--ns-blue-fill); color: #fff; }
+    #network-switch-demo .ns-account[open] &gt; summary .ns-account-user, #network-switch-demo .ns-account[open] &gt; summary .ns-account-count, #network-switch-demo .ns-account[open] &gt; summary .ns-chevron { color: light-dark(#e6f0ff, #eef5ff); }
+    #network-switch-demo .ns-account[open] &gt; summary .ns-avatar { color: #fff; background: #ffffff26; }
+    #network-switch-demo .ns-account[open] .ns-account-groups { position: absolute; top: var(--ns-pane-top, 0px); left: calc(100% + 12px); width: 252px; z-index: 2; padding: 6px 8px; border: 1px solid var(--ns-border); border-radius: 10px; background: var(--ns-panel); box-shadow: 0 10px 30px light-dark(#1b253018, #00000040); animation: ns-account-slide 180ms ease-out both; }
+    #network-switch-demo .ns-account[open] .ns-chevron { transform: none; }
+    #network-switch-demo .ns-account-back { display: none; align-items: center; gap: 9px; width: 100%; padding: 5px 3px 11px; border: 0; border-bottom: 1px solid var(--ns-border); background: transparent; color: var(--ns-text); text-align: left; font-size: 12px; font-weight: 600; }
+    #network-switch-demo .ns-account-back svg { width: 15px; height: 15px; }
+    #network-switch-demo .ns-account-back:hover { color: var(--ns-blue); }
+    @keyframes ns-account-slide { from { transform: translateX(24px); opacity: .4; } to { transform: translateX(0); opacity: 1; } }
+    #network-switch-demo .ns-avatar { height: 26px; width: 26px; font-size: 12px; }
+    #network-switch-demo .ns-account-name { font-size: 12px; font-weight: 500; }
+    #network-switch-demo .ns-account-user { font-size: 11px; }
+    #network-switch-demo .ns-account-count { font-size: 11px; max-width: none; }
+    #network-switch-demo .ns-account-groups { display: block; border: 0; }
+    #network-switch-demo .ns-group { display: flex; flex-direction: column; padding: 0; }
+    #network-switch-demo .ns-group + .ns-group { border: 0; }
+    #network-switch-demo .ns-group-heading { order: 2; margin: 2px 0 0; padding: 3px 0 0; border-top: 1px solid var(--ns-border); font-size: 11px; }
+    #network-switch-demo .ns-group-heading &gt; svg, #network-switch-demo .ns-group-heading &gt; span { display: none; }
+    #network-switch-demo .ns-add { margin-left: 0; padding: 3px 4px; }
+    #network-switch-demo .ns-connections { order: 1; gap: 2px; }
+    #network-switch-demo .ns-connection { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; padding: 7px; gap: 7px; background: transparent; }
+    #network-switch-demo .ns-account-groups .ns-connection[data-selected=&quot;true&quot;] { background: transparent; box-shadow: none; }
+    #network-switch-demo .ns-account-groups .ns-connection:hover { background: var(--ns-subtle); }
+    #network-switch-demo .ns-config-view .ns-account-groups .ns-connection[data-selected=&quot;true&quot;] { background: var(--ns-blue-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ns-blue) 25%, transparent); }
+    #network-switch-demo .ns-config-view .ns-account-groups .ns-connection-action { flex-direction: row; align-items: center; justify-content: space-between; }
+    #network-switch-demo .ns-connection-action { flex-direction: column; align-items: flex-end; min-height: 0; gap: 2px; }
+    #network-switch-demo .ns-connection-title { font-size: 12px; }
+    #network-switch-demo .ns-connection-detail { display: none; }
+    #network-switch-demo .ns-selection-status { font-size: 11px; }
+    #network-switch-demo .ns-select { padding: 3px 7px; min-height: 26px; }
+    #network-switch-demo .ns-selection-status[data-selected=&quot;false&quot;] { display: none; }
+    #network-switch-demo .ns-editor { padding: 12px; margin: 6px 0 12px; border-radius: 8px; }
+    #network-switch-demo .ns-fields { grid-template-columns: 1fr; gap: 12px; }
+    #network-switch-demo .ns-editor-heading { flex-wrap: wrap; margin-bottom: 12px; gap: 3px 8px; }
+    #network-switch-demo .ns-editor-heading h3 { font-size: 13px; }
+    #network-switch-demo .ns-editor-owner { font-size: 11px; }
+    #network-switch-demo .ns-form-actions { margin-top: 12px; }
+    #network-switch-demo .ns-bottom { border-top: 1px solid var(--ns-border); padding-top: 10px; margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    #network-switch-demo .ns-bottom [data-add-account] { border: 0; background: transparent; color: var(--ns-blue); padding: 3px 4px; min-height: 30px; font-size: 12px; }
+    #network-switch-demo .ns-swipe-hint { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-footer { font-size: 11px; margin-top: 7px; min-height: 17px; }
+    #network-switch-demo .ns-footer &gt; svg { display: none; }
+    #network-switch-demo .ns-empty { padding: 10px 6px; font-size: 11px; }
+    @media (max-width: 659px) {
+      #network-switch-demo .ns-preview { --ns-menu-width: min(360px, calc(100vw - 8px)); padding-inline: 4px; }
+      #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-window, #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-menu-strip { transform: none; }
+      #network-switch-demo .ns-accounts:has(.ns-account[open]) &gt; .ns-account &gt; summary { visibility: hidden; }
+      #network-switch-demo .ns-account[open] .ns-account-groups { inset: 0 0 auto; width: auto; min-height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+      #network-switch-demo .ns-account-back { display: flex; }
+    }
+    @media (pointer: coarse) {
+      #network-switch-demo .ns-menu-trigger, #network-switch-demo .ns-tab, #network-switch-demo .ns-add, #network-switch-demo .ns-bottom [data-add-account], #network-switch-demo .ns-select, #network-switch-demo .ns-account-back { min-height: 44px; }
+      #network-switch-demo .ns-menu-strip { height: 48px; }
+    }
+    @media (prefers-reduced-motion: reduce) { #network-switch-demo .ns-account[open] .ns-account-groups { animation: none; } }
+  &lt;/style&gt;
+  &lt;div class=&quot;ns-preview viz-dotted-background&quot;&gt;
+  &lt;div class=&quot;ns-menu-strip&quot;&gt;&lt;span class=&quot;ns-menu-caption&quot;&gt;macOS 菜单栏&lt;/span&gt;&lt;button type=&quot;button&quot; class=&quot;ns-menu-trigger cursor-interaction&quot; aria-label=&quot;打开或收起 WiFi Switch&quot; aria-expanded=&quot;true&quot; aria-controls=&quot;ns-menu-window&quot;&gt;&lt;i data-lucide=&quot;arrow-left-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;span class=&quot;ns-menu-time&quot;&gt;14:32&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;ns-window&quot; id=&quot;ns-menu-window&quot;&gt;
+    &lt;header class=&quot;ns-titlebar&quot;&gt;
+      &lt;div class=&quot;ns-logo&quot; aria-hidden=&quot;true&quot;&gt;&lt;i data-lucide=&quot;arrow-left-right&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;h1 class=&quot;ns-heading&quot;&gt;WiFi Switch&lt;/h1&gt;&lt;div class=&quot;ns-subtitle&quot;&gt;快速切换连接&lt;/div&gt;&lt;/div&gt;
+      &lt;button type=&quot;button&quot; class=&quot;ns-gear cursor-interaction&quot; aria-label=&quot;设置&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;ns-gear-menu&quot; data-open-gear&gt;&lt;i data-lucide=&quot;settings&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;div class=&quot;ns-gear-menu&quot; id=&quot;ns-gear-menu&quot; hidden&gt;&lt;button type=&quot;button&quot; data-gear-action=&quot;about&quot;&gt;关于 WiFi Switch&lt;/button&gt;&lt;hr&gt;&lt;button type=&quot;button&quot; data-gear-action=&quot;config&quot;&gt;配置管理&lt;/button&gt;&lt;button type=&quot;button&quot; data-gear-action=&quot;guide&quot;&gt;使用说明&lt;/button&gt;&lt;hr&gt;&lt;button type=&quot;button&quot; data-gear-action=&quot;quit&quot;&gt;退出系统&lt;/button&gt;&lt;/div&gt;
+    &lt;/header&gt;
+    &lt;div class=&quot;ns-tabs&quot; role=&quot;tablist&quot; aria-label=&quot;连接类型&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;ns-tab cursor-interaction&quot; role=&quot;tab&quot; id=&quot;ns-tab-wifi&quot; data-tab=&quot;wifi&quot; aria-controls=&quot;ns-menu-page&quot; aria-selected=&quot;true&quot;&gt;&lt;i data-lucide=&quot;wifi&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;WI-FI&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;ns-tab cursor-interaction&quot; role=&quot;tab&quot; id=&quot;ns-tab-vpn&quot; data-tab=&quot;vpn&quot; aria-controls=&quot;ns-menu-page&quot; aria-selected=&quot;false&quot;&gt;&lt;i data-lucide=&quot;shield-check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;VPN&lt;/button&gt;
+      &lt;button type=&quot;button&quot; class=&quot;ns-tab cursor-interaction&quot; role=&quot;tab&quot; id=&quot;ns-tab-proxy&quot; data-tab=&quot;proxy&quot; aria-controls=&quot;ns-menu-page&quot; aria-selected=&quot;false&quot;&gt;&lt;i data-lucide=&quot;globe&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;代理&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;ns-body&quot; id=&quot;ns-menu-page&quot; role=&quot;tabpanel&quot; aria-labelledby=&quot;ns-tab-wifi&quot;&gt;
+      &lt;section class=&quot;ns-masters&quot; aria-label=&quot;三类连接总开关&quot;&gt;&lt;/section&gt;
+      &lt;div class=&quot;ns-network-note&quot; hidden&gt;&lt;i data-lucide=&quot;info&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;span&gt;Wi-Fi 已关闭。VPN 和代理仍为开启，等待网络恢复。&lt;/span&gt;&lt;/div&gt;
+      &lt;section class=&quot;ns-other&quot; aria-label=&quot;其他连接&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;ns-other-toggle cursor-interaction&quot; aria-expanded=&quot;false&quot; aria-controls=&quot;ns-other-list&quot;&gt;&lt;span&gt;其他网络&lt;/span&gt;&lt;i data-lucide=&quot;chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;div class=&quot;ns-other-list&quot; id=&quot;ns-other-list&quot; hidden&gt;&lt;/div&gt;&lt;/section&gt;
+      &lt;section class=&quot;ns-editor&quot; aria-labelledby=&quot;ns-editor-title&quot; hidden&gt;
+        &lt;div class=&quot;ns-editor-heading&quot;&gt;&lt;h3 id=&quot;ns-editor-title&quot;&gt;&lt;/h3&gt;&lt;span class=&quot;ns-editor-owner&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+        &lt;form novalidate autocomplete=&quot;off&quot;&gt;
+          &lt;div class=&quot;ns-fields&quot;&gt;&lt;/div&gt;
+          &lt;p class=&quot;ns-form-note&quot;&gt;&lt;/p&gt;
+          &lt;div class=&quot;ns-form-error&quot; role=&quot;alert&quot; hidden&gt;&lt;/div&gt;
+          &lt;div class=&quot;ns-form-actions&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;ns-secondary cursor-interaction&quot; data-cancel&gt;取消&lt;/button&gt;&lt;button type=&quot;button&quot; class=&quot;ns-primary cursor-interaction&quot; data-save&gt;保存&lt;/button&gt;&lt;/div&gt;
+        &lt;/form&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;ns-accounts&quot; aria-label=&quot;账号及其连接&quot;&gt;&lt;/section&gt;
+      &lt;div class=&quot;ns-bottom&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;ns-primary cursor-interaction&quot; data-add-account&gt;&lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;添加账号&lt;/button&gt;&lt;span class=&quot;ns-swipe-hint&quot;&gt;&lt;i data-lucide=&quot;move-horizontal&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;左右滑动切换类型&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;ns-footer&quot; role=&quot;status&quot; aria-live=&quot;polite&quot; aria-atomic=&quot;true&quot;&gt;&lt;i data-lucide=&quot;circle-check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;span class=&quot;ns-feedback&quot;&gt;操作仅在 Demo 中生效。&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;section class=&quot;ns-config-view&quot; aria-label=&quot;配置管理&quot; hidden&gt;
+    &lt;header class=&quot;ns-config-header&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;ns-config-back cursor-interaction&quot; data-close-config aria-label=&quot;返回菜单&quot;&gt;&lt;i data-lucide=&quot;arrow-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;span class=&quot;ns-logo&quot; aria-hidden=&quot;true&quot;&gt;&lt;i data-lucide=&quot;arrow-left-right&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;div&gt;&lt;h2&gt;WiFi Switch&lt;/h2&gt;&lt;div class=&quot;ns-subtitle&quot;&gt;一个账号，管理三类连接&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;ns-config-demo-tag&quot;&gt;交互演示 · 示例数据&lt;/span&gt;&lt;/header&gt;
+    &lt;div class=&quot;ns-config-body&quot;&gt;&lt;div class=&quot;ns-config-section-heading&quot;&gt;&lt;h3&gt;连接总开关&lt;/h3&gt;&lt;span&gt;每类一个开关，全账号共用&lt;/span&gt;&lt;/div&gt;&lt;section class=&quot;ns-config-masters&quot; aria-label=&quot;三类连接总开关&quot;&gt;&lt;/section&gt;&lt;div class=&quot;ns-config-section-heading ns-config-account-heading&quot;&gt;&lt;h3&gt;账号&lt;/h3&gt;&lt;span class=&quot;ns-config-count&quot;&gt;&lt;/span&gt;&lt;div class=&quot;ns-config-add-slot&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;ns-config-content&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&#x27;network-switch-demo&#x27;);
+      root.dataset.view = &#x27;menu&#x27;;
+      const types = [&#x27;wifi&#x27;, &#x27;vpn&#x27;, &#x27;proxy&#x27;];
+      const meta = {
+        wifi: { label: &#x27;WI-FI&#x27;, icon: &#x27;wifi&#x27;, mode: &#x27;无线网络&#x27; },
+        vpn: { label: &#x27;VPN&#x27;, icon: &#x27;shield-check&#x27;, mode: &#x27;企业连接&#x27; },
+        proxy: { label: &#x27;代理&#x27;, icon: &#x27;globe&#x27;, mode: &#x27;系统代理 · 规则&#x27; }
+      };
+      let accounts = [
+        { id: &#x27;work&#x27;, label: &#x27;办公账号&#x27;, username: &#x27;work.user&#x27;, avatar: &#x27;办&#x27;, connections: {
+          wifi: [{ id: &#x27;office&#x27;, name: &#x27;Office-WiFi&#x27;, detail: &#x27;企业 Wi-Fi&#x27; }, { id: &#x27;meeting&#x27;, name: &#x27;Meeting-WiFi&#x27;, detail: &#x27;企业 Wi-Fi&#x27; }],
+          vpn: [{ id: &#x27;atrust&#x27;, name: &#x27;公司内网&#x27;, detail: &#x27;aTrust&#x27; }],
+          proxy: [{ id: &#x27;work-proxy&#x27;, name: &#x27;办公规则&#x27;, detail: &#x27;Clash Verge · 工作配置&#x27; }]
+        }},
+        { id: &#x27;personal&#x27;, label: &#x27;个人账号&#x27;, username: &#x27;personal.user&#x27;, avatar: &#x27;个&#x27;, connections: {
+          wifi: [{ id: &#x27;home&#x27;, name: &#x27;Home-WiFi&#x27;, detail: &#x27;个人 Wi-Fi&#x27; }, { id: &#x27;hotspot&#x27;, name: &#x27;Phone-Hotspot&#x27;, detail: &#x27;手机热点&#x27; }],
+          vpn: [{ id: &#x27;cisco&#x27;, name: &#x27;项目专网&#x27;, detail: &#x27;Cisco Secure Client&#x27; }],
+          proxy: [{ id: &#x27;personal-proxy&#x27;, name: &#x27;日常规则&#x27;, detail: &#x27;Clash Verge · 个人配置&#x27; }]
+        }}
+      ];
+      let index;
+      function rebuildIndex() { index = Object.fromEntries(types.map(type =&gt; [type, accounts.flatMap(account =&gt; account.connections[type].map(connection =&gt; ({ ...connection, account: account.id, accountLabel: account.label })))])); }
+      rebuildIndex();
+      const defaults = () =&gt; ({ version: 2, activeType: &#x27;wifi&#x27;, enabled: { wifi: true, vpn: true, proxy: true }, selected: { wifi: &#x27;office&#x27;, vpn: &#x27;cisco&#x27;, proxy: &#x27;work-proxy&#x27; }, open: { work: false, personal: false } });
+      const state = defaults();
+      const pending = { wifi: false, vpn: false, proxy: false };
+      const timers = {};
+      const presentation = { density: &#x27;standard&#x27; };
+      const icon = name =&gt; `&lt;i data-lucide=&quot;${name}&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;`;
+      const escape = value =&gt; String(value ?? &#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g, character =&gt; ({ &#x27;&amp;&#x27;: &#x27;&amp;amp;&#x27;, &#x27;&lt;&#x27;: &#x27;&amp;lt;&#x27;, &#x27;&gt;&#x27;: &#x27;&amp;gt;&#x27;, &#x27;&quot;&#x27;: &#x27;&amp;quot;&#x27;, &quot;&#x27;&quot;: &#x27;&amp;#39;&#x27; })[character]);
+      const identifier = value =&gt; typeof value === &#x27;string&#x27; &amp;&amp; /^[a-zA-Z0-9-]{1,80}$/.test(value);
+      const text = (value, length) =&gt; typeof value === &#x27;string&#x27; &amp;&amp; value.length &lt;= length;
+      function restore(saved) {
+        if (!saved || ![1, 2].includes(saved.version)) return;
+        if (types.includes(saved.activeType)) state.activeType = saved.activeType;
+        if (Array.isArray(saved.accounts) &amp;&amp; saved.accounts.length &amp;&amp; saved.accounts.length &lt;= 128) {
+          const valid = saved.accounts.every(account =&gt; identifier(account.id) &amp;&amp; text(account.label, 40) &amp;&amp; account.label.trim() &amp;&amp; text(account.username, 64) &amp;&amp; types.every(type =&gt; Array.isArray(account.connections?.[type]) &amp;&amp; account.connections[type].length &lt;= 128 &amp;&amp; account.connections[type].every(item =&gt; identifier(item.id) &amp;&amp; text(item.name, 64) &amp;&amp; item.name.trim() &amp;&amp; text(item.detail, 240))));
+          const uniqueAccounts = new Set(saved.accounts.map(account =&gt; account.id)).size === saved.accounts.length;
+          const allConnections = valid ? saved.accounts.flatMap(account =&gt; types.flatMap(type =&gt; account.connections[type])) : [];
+          const uniqueConnections = new Set(allConnections.map(item =&gt; item.id)).size === allConnections.length;
+          if (valid &amp;&amp; uniqueAccounts &amp;&amp; uniqueConnections &amp;&amp; types.every(type =&gt; saved.accounts.some(account =&gt; account.connections[type].length))) {
+            accounts = saved.accounts.map(account =&gt; ({ id: account.id, label: account.label, username: account.username, avatar: Array.from(account.label)[0], connections: Object.fromEntries(types.map(type =&gt; [type, account.connections[type].map(item =&gt; ({ id: item.id, name: item.name, detail: item.detail, mode: [&#x27;系统代理&#x27;, &#x27;TUN&#x27;].includes(item.mode) ? item.mode : undefined }))])) }));
+            rebuildIndex();
+          }
+        }
+        for (const type of types) {
+          if (typeof saved.enabled?.[type] === &#x27;boolean&#x27;) state.enabled[type] = saved.enabled[type];
+          if (index[type].some(item =&gt; item.id === saved.selected?.[type])) state.selected[type] = saved.selected[type];
+          else if (!index[type].some(item =&gt; item.id === state.selected[type])) state.selected[type] = index[type][0].id;
+        }
+        for (const account of accounts) if (typeof saved.open?.[account.id] === &#x27;boolean&#x27;) state.open[account.id] = saved.open[account.id];
+        if ([&#x27;standard&#x27;, &#x27;compact&#x27;].includes(saved.density)) presentation.density = saved.density;
+        if (root.dataset.view === &#x27;menu&#x27;) accounts.forEach(account =&gt; { state.open[account.id] = false; });
+      }
+      restore(window.openai?.widgetState?.privateContent?.networkDemo);
+      const masters = root.querySelector(&#x27;.ns-masters&#x27;);
+      const configMasters = root.querySelector(&#x27;.ns-config-masters&#x27;);
+      const accountList = root.querySelector(&#x27;.ns-accounts&#x27;);
+      const otherList = root.querySelector(&#x27;.ns-other-list&#x27;);
+      const otherToggle = root.querySelector(&#x27;.ns-other-toggle&#x27;);
+      let otherOpen = false;
+      masters.innerHTML = `&lt;article class=&quot;ns-master&quot;&gt;
+        &lt;div class=&quot;ns-master-heading&quot;&gt;&lt;span class=&quot;ns-kind-title&quot;&gt;&lt;/span&gt;
+          &lt;label class=&quot;ns-switch cursor-interaction&quot;&gt;&lt;input type=&quot;checkbox&quot; role=&quot;switch&quot;&gt;&lt;span class=&quot;ns-switch-track&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/label&gt;
+        &lt;/div&gt;&lt;div class=&quot;ns-current-row&quot;&gt;&lt;span class=&quot;ns-current-icon&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;div class=&quot;ns-current-copy&quot;&gt;&lt;div class=&quot;ns-target&quot;&gt;&lt;/div&gt;&lt;div class=&quot;ns-owner&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;ns-current-check&quot; aria-hidden=&quot;true&quot;&gt;${icon(&#x27;check&#x27;)}&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;ns-master-footer&quot;&gt;&lt;span class=&quot;ns-badge&quot;&gt;&lt;/span&gt;&lt;span class=&quot;ns-mode&quot;&gt;&lt;/span&gt;&lt;/div&gt;
+      &lt;/article&gt;`;
+      configMasters.innerHTML = types.map(type =&gt; `&lt;article class=&quot;ns-master&quot; data-type=&quot;${type}&quot; aria-label=&quot;${meta[type].label} 总开关与当前连接&quot;&gt;&lt;div class=&quot;ns-master-heading&quot;&gt;&lt;span class=&quot;ns-kind-icon&quot;&gt;${icon(meta[type].icon)}&lt;/span&gt;&lt;span class=&quot;ns-kind-title&quot;&gt;${meta[type].label}&lt;/span&gt;&lt;label class=&quot;ns-switch cursor-interaction&quot;&gt;&lt;input type=&quot;checkbox&quot; role=&quot;switch&quot; data-switch=&quot;${type}&quot; aria-label=&quot;${meta[type].label} 总开关&quot;&gt;&lt;span class=&quot;ns-switch-track&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;&lt;/label&gt;&lt;/div&gt;&lt;div class=&quot;ns-target&quot;&gt;&lt;/div&gt;&lt;div class=&quot;ns-owner&quot;&gt;&lt;/div&gt;&lt;div class=&quot;ns-master-footer&quot;&gt;&lt;span class=&quot;ns-badge&quot;&gt;&lt;/span&gt;&lt;span class=&quot;ns-mode&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/article&gt;`).join(&#x27;&#x27;);
+      function renderAccounts() {
+        accountList.innerHTML = accounts.map(account =&gt; `&lt;details class=&quot;ns-account&quot; data-account=&quot;${account.id}&quot; ${state.open[account.id] ? &#x27;open&#x27; : &#x27;&#x27;}&gt;
+          &lt;summary class=&quot;cursor-interaction&quot;&gt;&lt;span class=&quot;ns-avatar&quot; aria-hidden=&quot;true&quot;&gt;${escape(account.avatar)}&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;ns-account-name&quot;&gt;${escape(account.label)}&lt;/div&gt;&lt;div class=&quot;ns-account-user&quot;&gt;${escape(account.username || &#x27;未填写用户名&#x27;)}&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;ns-account-count&quot;&gt;&lt;/span&gt;&lt;span class=&quot;ns-chevron&quot;&gt;${icon(&#x27;chevron-right&#x27;)}&lt;/span&gt;&lt;/summary&gt;
+          &lt;div class=&quot;ns-account-groups&quot;&gt;&lt;button class=&quot;ns-account-back cursor-interaction&quot; type=&quot;button&quot; aria-label=&quot;返回账号列表&quot;&gt;${icon(&#x27;arrow-left&#x27;)}&lt;span&gt;${escape(account.label)}&lt;/span&gt;&lt;/button&gt;${types.map(type =&gt; `&lt;section class=&quot;ns-group&quot; data-group=&quot;${type}&quot; aria-label=&quot;${escape(account.label)}的${meta[type].label}&quot;&gt;&lt;div class=&quot;ns-group-heading&quot;&gt;${icon(meta[type].icon)}&lt;span&gt;${meta[type].label}&lt;/span&gt;&lt;button class=&quot;ns-add cursor-interaction&quot; type=&quot;button&quot; data-add=&quot;${type}&quot; data-owner=&quot;${account.id}&quot; aria-label=&quot;为${escape(account.label)}添加${meta[type].label}&quot;&gt;${icon(&#x27;plus&#x27;)}添加&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;ns-connections&quot;&gt;${account.connections[type].map(connection =&gt; `&lt;div class=&quot;ns-connection&quot; data-connection=&quot;${connection.id}&quot; data-kind=&quot;${type}&quot;&gt;&lt;div&gt;&lt;div class=&quot;ns-connection-title&quot;&gt;${escape(connection.name)}&lt;/div&gt;&lt;div class=&quot;ns-connection-detail&quot;&gt;${escape(connection.detail)}&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;ns-connection-action&quot;&gt;&lt;span class=&quot;ns-selection-status&quot;&gt;&lt;/span&gt;&lt;button class=&quot;ns-select cursor-interaction&quot; type=&quot;button&quot; data-select=&quot;${connection.id}&quot; data-kind=&quot;${type}&quot; aria-label=&quot;选择${escape(account.label)}的${escape(connection.name)}&quot;&gt;切换&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;`).join(&#x27;&#x27;) || &#x27;&lt;div class=&quot;ns-empty&quot;&gt;尚未添加&lt;/div&gt;&#x27;}&lt;/div&gt;&lt;/section&gt;`).join(&#x27;&#x27;)}&lt;/div&gt;
+        &lt;/details&gt;`).join(&#x27;&#x27;);
+        accountList.querySelectorAll(&#x27;details&#x27;).forEach(details =&gt; details.addEventListener(&#x27;toggle&#x27;, () =&gt; {
+          if (details.open &amp;&amp; root.dataset.view !== &#x27;config&#x27;) accountList.querySelectorAll(&#x27;details&#x27;).forEach(other =&gt; { if (other !== details) { other.open = false; state.open[other.dataset.account] = false; } });
+          if (state.open[details.dataset.account] !== details.open) { state.open[details.dataset.account] = details.open; save(); }
+          syncAccountPane();
+        }));
+        accountList.querySelectorAll(&#x27;details&#x27;).forEach(details =&gt; details.querySelector(&#x27;summary&#x27;).addEventListener(&#x27;pointerenter&#x27;, event =&gt; {
+          if (root.dataset.view !== &#x27;config&#x27; &amp;&amp; event.pointerType === &#x27;mouse&#x27; &amp;&amp; matchMedia(&#x27;(pointer: fine)&#x27;).matches) details.open = true;
+        }));
+        accountList.querySelectorAll(&#x27;.ns-account-groups&#x27;).forEach(pane =&gt; pane.addEventListener(&#x27;pointerleave&#x27;, event =&gt; { if (root.dataset.view !== &#x27;config&#x27; &amp;&amp; event.pointerType === &#x27;mouse&#x27;) closeOpenAccount(); }));
+        if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+      function syncAccountPane() {
+        const pane = accountList.querySelector(&#x27;.ns-account[open] .ns-account-groups&#x27;);
+        const narrow = matchMedia(&#x27;(max-width: 659px)&#x27;).matches;
+        if (pane) pane.style.setProperty(&#x27;--ns-pane-top&#x27;, narrow ? &#x27;0px&#x27; : `${pane.closest(&#x27;.ns-account&#x27;).offsetTop}px`);
+        accountList.style.minHeight = pane &amp;&amp; narrow &amp;&amp; root.dataset.view !== &#x27;config&#x27; ? `${Math.max(pane.offsetHeight, 90)}px` : &#x27;&#x27;;
+      }
+      renderAccounts();
+      window.addEventListener(&#x27;resize&#x27;, syncAccountPane);
+      function closeOpenAccount() {
+        const opened = accountList.querySelector(&#x27;.ns-account[open]&#x27;);
+        if (opened) opened.open = false;
+      }
+      accountList.addEventListener(&#x27;pointerleave&#x27;, event =&gt; { if (root.dataset.view !== &#x27;config&#x27; &amp;&amp; event.pointerType === &#x27;mouse&#x27;) closeOpenAccount(); });
+      function connection(type) { return index[type].find(item =&gt; item.id === state.selected[type]); }
+      function actual(type) {
+        if (!state.enabled[type]) return { text: &#x27;已关闭&#x27;, tone: &#x27;off&#x27; };
+        if (pending[type]) return { text: &#x27;正在连接…&#x27;, tone: &#x27;busy&#x27; };
+        if (type !== &#x27;wifi&#x27; &amp;&amp; (!state.enabled.wifi || pending.wifi)) return { text: &#x27;等待网络&#x27;, tone: &#x27;waiting&#x27; };
+        return { text: &#x27;已连接&#x27;, tone: &#x27;good&#x27; };
+      }
+      function render() {
+        root.dataset.density = presentation.density;
+        root.querySelector(&#x27;.ns-config-count&#x27;).textContent = `${accounts.length} 个账号`;
+        const activeType = state.activeType;
+        root.querySelectorAll(&#x27;[data-tab]&#x27;).forEach(tab =&gt; tab.setAttribute(&#x27;aria-selected&#x27;, String(tab.dataset.tab === activeType)));
+        root.querySelector(&#x27;.ns-body&#x27;).setAttribute(&#x27;aria-labelledby&#x27;, `ns-tab-${activeType}`);
+        root.querySelectorAll(&#x27;[data-group]&#x27;).forEach(group =&gt; { group.hidden = root.dataset.view !== &#x27;config&#x27; &amp;&amp; group.dataset.group !== activeType; });
+        const current = connection(activeType), currentStatus = actual(activeType);
+        const card = masters.querySelector(&#x27;.ns-master&#x27;);
+        card.dataset.type = activeType;
+        card.dataset.actual = currentStatus.tone;
+        card.setAttribute(&#x27;aria-label&#x27;, `${meta[activeType].label} 总开关与当前连接`);
+        card.querySelector(&#x27;.ns-kind-title&#x27;).textContent = currentStatus.tone === &#x27;good&#x27; ? (activeType === &#x27;wifi&#x27; ? &#x27;已连接网络&#x27; : activeType === &#x27;vpn&#x27; ? &#x27;已连接VPN&#x27; : &#x27;已连接代理&#x27;) : `${meta[activeType].label} · ${currentStatus.text}`;
+        const masterSwitch = card.querySelector(&#x27;input&#x27;);
+        masterSwitch.dataset.switch = activeType;
+        masterSwitch.setAttribute(&#x27;aria-label&#x27;, `${meta[activeType].label} 总开关`);
+        masterSwitch.checked = state.enabled[activeType];
+        card.querySelector(&#x27;.ns-current-icon&#x27;).innerHTML = icon(meta[activeType].icon);
+        card.querySelector(&#x27;.ns-target&#x27;).textContent = current.name;
+        card.querySelector(&#x27;.ns-owner&#x27;).textContent = current.accountLabel;
+        card.querySelector(&#x27;.ns-badge&#x27;).textContent = currentStatus.text;
+        card.querySelector(&#x27;.ns-badge&#x27;).dataset.tone = currentStatus.tone;
+        card.querySelector(&#x27;.ns-mode&#x27;).textContent = activeType === &#x27;proxy&#x27; ? `${current.mode || &#x27;系统代理&#x27;} · 规则` : meta[activeType].mode;
+        for (const type of types) {
+          const status = actual(type);
+          const configCard = configMasters.querySelector(`[data-type=&quot;${type}&quot;]`);
+          const selectedItem = connection(type);
+          configCard.querySelector(&#x27;input&#x27;).checked = state.enabled[type];
+          configCard.querySelector(&#x27;.ns-target&#x27;).textContent = selectedItem.name;
+          configCard.querySelector(&#x27;.ns-owner&#x27;).textContent = `${selectedItem.accountLabel} · ${state.enabled[type] ? selectedItem.detail : &#x27;保留选择&#x27;}`;
+          configCard.querySelector(&#x27;.ns-badge&#x27;).textContent = status.text;
+          configCard.querySelector(&#x27;.ns-badge&#x27;).dataset.tone = status.tone;
+          configCard.querySelector(&#x27;.ns-mode&#x27;).textContent = type === &#x27;proxy&#x27; ? `${selectedItem.mode || &#x27;系统代理&#x27;} · 规则` : meta[type].mode;
+          root.querySelectorAll(`.ns-connection[data-kind=&quot;${type}&quot;]`).forEach(row =&gt; {
+            const selected = row.dataset.connection === state.selected[type];
+            row.dataset.selected = String(selected);
+            const label = row.querySelector(&#x27;.ns-selection-status&#x27;);
+            label.dataset.selected = String(selected);
+            label.textContent = selected ? (state.enabled[type] ? status.text : &#x27;已选择&#x27;) : &#x27;已保存&#x27;;
+            const button = row.querySelector(&#x27;button&#x27;);
+            button.hidden = selected;
+            button.disabled = pending[type];
+            button.textContent = state.enabled[type] ? &#x27;切换&#x27; : &#x27;选择&#x27;;
+          });
+        }
+        for (const account of accounts) {
+          const selected = connection(activeType).account === account.id;
+          const section = accountList.querySelector(`[data-account=&quot;${account.id}&quot;]`);
+          const activeCount = types.filter(type =&gt; connection(type).account === account.id &amp;&amp; state.enabled[type] &amp;&amp; actual(type).tone === &#x27;good&#x27;).length;
+          section.querySelector(&#x27;.ns-account-count&#x27;).textContent = root.dataset.view === &#x27;config&#x27; ? (activeCount ? `${activeCount} 项正在使用` : &#x27;未使用&#x27;) : selected ? (state.enabled[activeType] ? actual(activeType).text : &#x27;已选择&#x27;) : `${account.connections[activeType].length} 个连接`;
+          if (section.open !== state.open[account.id]) section.open = state.open[account.id];
+        }
+        const note = root.querySelector(&#x27;.ns-network-note&#x27;);
+        note.hidden = state.enabled.wifi || activeType === &#x27;wifi&#x27; || !state.enabled[activeType];
+        note.querySelector(&#x27;span&#x27;).textContent = `Wi-Fi 已关闭，${meta[activeType].label}保持开启，等待网络恢复。`;
+        const otherNames = { wifi: &#x27;其他网络&#x27;, vpn: &#x27;其他 VPN&#x27;, proxy: &#x27;其他代理&#x27; };
+        otherToggle.querySelector(&#x27;span&#x27;).textContent = otherNames[activeType];
+        otherToggle.setAttribute(&#x27;aria-expanded&#x27;, String(otherOpen));
+        otherList.hidden = !otherOpen;
+        otherList.setAttribute(&#x27;aria-label&#x27;, otherNames[activeType]);
+        const remaining = index[activeType].filter(item =&gt; item.id !== state.selected[activeType]);
+        otherList.innerHTML = remaining.map(item =&gt; `&lt;div class=&quot;ns-other-item&quot;&gt;&lt;span class=&quot;ns-other-icon&quot;&gt;${icon(meta[activeType].icon)}&lt;/span&gt;&lt;div class=&quot;ns-other-copy&quot;&gt;&lt;div class=&quot;ns-other-name&quot;&gt;${escape(item.name)}&lt;/div&gt;&lt;div class=&quot;ns-other-owner&quot;&gt;${escape(item.accountLabel)}&lt;/div&gt;&lt;/div&gt;&lt;button class=&quot;ns-other-action cursor-interaction&quot; type=&quot;button&quot; data-menu-select=&quot;${item.id}&quot; data-kind=&quot;${activeType}&quot; ${pending[activeType] ? &#x27;disabled&#x27; : &#x27;&#x27;}&gt;${state.enabled[activeType] ? &#x27;连接&#x27; : &#x27;选择&#x27;}&lt;/button&gt;&lt;/div&gt;`).join(&#x27;&#x27;) || &#x27;&lt;div class=&quot;ns-other-empty&quot;&gt;没有其他已保存的连接&lt;/div&gt;&#x27;;
+        syncAccountPane();
+        if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+      function save() {
+        const snapshot = JSON.parse(JSON.stringify({ ...state, accounts, density: presentation.density }));
+        if (typeof window.openai?.setWidgetState === &#x27;function&#x27;) {
+          const payload = {
+            modelContent: { demo: &#x27;WiFi Switch 菜单栏 · 横向分页&#x27;, activeType: meta[state.activeType].label, accountCount: accounts.length, enabled: snapshot.enabled, selected: Object.fromEntries(types.map(type =&gt; [meta[type].label, { account: connection(type).accountLabel, name: connection(type).name, status: actual(type).text }])) },
+            privateContent: { networkDemo: snapshot }
+          };
+          if (new TextEncoder().encode(JSON.stringify(payload)).length &lt; 16000) window.openai.setWidgetState(payload).catch(() =&gt; {});
+        }
+      }
+      function announce(message) { root.querySelector(&#x27;.ns-feedback&#x27;).textContent = message; }
+      function finishSoon(type, message) {
+        clearTimeout(timers[type]);
+        pending[type] = true;
+        render();
+        timers[type] = setTimeout(() =&gt; {
+          pending[type] = false;
+          render();
+          announce(actual(type).tone === &#x27;waiting&#x27; ? `${meta[type].label}已开启，等待网络恢复。` : message);
+          save();
+        }, 650);
+      }
+      function handleSwitch(event) {
+        const type = event.target.dataset.switch;
+        if (!types.includes(type)) return;
+        state.enabled[type] = event.target.checked;
+        clearTimeout(timers[type]);
+        pending[type] = false;
+        if (state.enabled[type]) {
+          announce(`${meta[type].label}正在开启…`);
+          finishSoon(type, `${meta[type].label}已开启，使用${connection(type).accountLabel}的${connection(type).name}。`);
+        } else {
+          render();
+          announce(type === &#x27;wifi&#x27; ? &#x27;WI-FI 已关闭，连接选择已保留；VPN 和代理开关未改变。&#x27; : `${meta[type].label}已关闭，连接选择已保留；其他开关未改变。`);
+        }
+        save();
+      }
+      masters.addEventListener(&#x27;change&#x27;, handleSwitch);
+      configMasters.addEventListener(&#x27;change&#x27;, handleSwitch);
+      function chooseConnection(type, id) {
+        if (!types.includes(type) || !index[type].some(item =&gt; item.id === id) || pending[type]) return;
+        state.selected[type] = id;
+        if (state.enabled[type]) {
+          announce(`正在切换${meta[type].label}…`);
+          finishSoon(type, `${meta[type].label}已切换至${connection(type).name}；其他类型的选择保持不变。`);
+        } else {
+          render();
+          announce(`已选择${connection(type).name}；开启${meta[type].label}总开关后生效。`);
+        }
+        save();
+      }
+      otherToggle.addEventListener(&#x27;click&#x27;, () =&gt; { otherOpen = !otherOpen; render(); });
+      otherList.addEventListener(&#x27;click&#x27;, event =&gt; {
+        const button = event.target.closest(&#x27;[data-menu-select]&#x27;);
+        if (button &amp;&amp; !button.disabled) chooseConnection(button.dataset.kind, button.dataset.menuSelect);
+      });
+      accountList.addEventListener(&#x27;click&#x27;, event =&gt; {
+        const back = event.target.closest(&#x27;.ns-account-back&#x27;);
+        if (back) {
+          const details = back.closest(&#x27;details&#x27;);
+          details.open = false;
+          details.querySelector(&#x27;summary&#x27;).focus();
+          return;
+        }
+        const button = event.target.closest(&#x27;button[data-select]&#x27;);
+        if (!button || button.disabled) return;
+        chooseConnection(button.dataset.kind, button.dataset.select);
+      });
+      const editor = root.querySelector(&#x27;.ns-editor&#x27;);
+      const form = editor.querySelector(&#x27;form&#x27;);
+      const configView = root.querySelector(&#x27;.ns-config-view&#x27;);
+      const menuWindow = root.querySelector(&#x27;.ns-window&#x27;);
+      const menuBody = root.querySelector(&#x27;.ns-body&#x27;);
+      const menuFooter = root.querySelector(&#x27;.ns-footer&#x27;);
+      const bottom = root.querySelector(&#x27;.ns-bottom&#x27;);
+      const addAccountButton = bottom.querySelector(&#x27;[data-add-account]&#x27;);
+      const gearButton = root.querySelector(&#x27;[data-open-gear]&#x27;);
+      const gearMenu = root.querySelector(&#x27;.ns-gear-menu&#x27;);
+      function closeGear() { gearMenu.hidden = true; gearButton.setAttribute(&#x27;aria-expanded&#x27;, &#x27;false&#x27;); }
+      gearButton.addEventListener(&#x27;click&#x27;, () =&gt; { gearMenu.hidden = !gearMenu.hidden; gearButton.setAttribute(&#x27;aria-expanded&#x27;, String(!gearMenu.hidden)); });
+      gearMenu.addEventListener(&#x27;click&#x27;, event =&gt; {
+        const action = event.target.dataset.gearAction;
+        if (!action) return;
+        closeGear();
+        if (action === &#x27;config&#x27;) openConfig();
+        else if (action === &#x27;quit&#x27;) {
+          menuWindow.hidden = true;
+          root.querySelector(&#x27;.ns-menu-trigger&#x27;).setAttribute(&#x27;aria-expanded&#x27;, &#x27;false&#x27;);
+        } else announce(action === &#x27;about&#x27; ? &#x27;WiFi Switch · 独立交互演示。&#x27; : &#x27;使用说明：通过齿轮进入配置管理，菜单栏用于查看和切换连接。&#x27;);
+      });
+      document.addEventListener(&#x27;pointerdown&#x27;, event =&gt; { if (!gearMenu.contains(event.target) &amp;&amp; !gearButton.contains(event.target)) closeGear(); });
+      gearMenu.addEventListener(&#x27;keydown&#x27;, event =&gt; { if (event.key === &#x27;Escape&#x27;) { event.preventDefault(); event.stopPropagation(); closeGear(); gearButton.focus(); } });
+      function openConfig() {
+        closeGear();
+        closeOpenAccount();
+        root.dataset.view = &#x27;config&#x27;;
+        menuWindow.hidden = true;
+        configView.hidden = false;
+        configView.querySelector(&#x27;.ns-config-add-slot&#x27;).append(addAccountButton);
+        configView.querySelector(&#x27;.ns-config-content&#x27;).append(editor, accountList);
+        accounts.forEach(account =&gt; { state.open[account.id] = true; });
+        renderAccounts();
+        render();
+        configView.querySelector(&#x27;[data-close-config]&#x27;).focus();
+      }
+      function closeConfig() {
+        if (editing) closeEditor();
+        root.dataset.view = &#x27;menu&#x27;;
+        configView.hidden = true;
+        menuWindow.hidden = false;
+        menuBody.insertBefore(editor, menuFooter);
+        menuBody.insertBefore(accountList, menuFooter);
+        bottom.prepend(addAccountButton);
+        accounts.forEach(account =&gt; { state.open[account.id] = false; });
+        renderAccounts();
+        render();
+        root.querySelector(&#x27;.ns-menu-trigger&#x27;).setAttribute(&#x27;aria-expanded&#x27;, &#x27;true&#x27;);
+        gearButton.focus();
+      }
+      root.querySelector(&#x27;[data-close-config]&#x27;).addEventListener(&#x27;click&#x27;, closeConfig);
+      let editing = null;
+      const inputField = (name, label, placeholder, type = &#x27;text&#x27;, length = 64) =&gt; `&lt;div class=&quot;ns-field&quot;&gt;&lt;label for=&quot;ns-field-${name}&quot;&gt;${label}&lt;/label&gt;&lt;input id=&quot;ns-field-${name}&quot; name=&quot;${name}&quot; type=&quot;${type}&quot; maxlength=&quot;${length}&quot; placeholder=&quot;${placeholder}&quot; autocomplete=&quot;${type === &#x27;password&#x27; ? &#x27;new-password&#x27; : &#x27;off&#x27;}&quot;&gt;&lt;/div&gt;`;
+      const selectField = (name, label, options) =&gt; `&lt;div class=&quot;ns-field&quot;&gt;&lt;label for=&quot;ns-field-${name}&quot;&gt;${label}&lt;/label&gt;&lt;select id=&quot;ns-field-${name}&quot; name=&quot;${name}&quot;&gt;${options.map(option =&gt; `&lt;option value=&quot;${escape(option)}&quot;&gt;${escape(option)}&lt;/option&gt;`).join(&#x27;&#x27;)}&lt;/select&gt;&lt;/div&gt;`;
+      function openEditor(type, accountId = null) {
+        const account = accounts.find(item =&gt; item.id === accountId);
+        if (type !== &#x27;account&#x27; &amp;&amp; (!types.includes(type) || !account)) return;
+        editing = { type, accountId };
+        root.querySelectorAll(&#x27;[data-tab]&#x27;).forEach(tab =&gt; { tab.disabled = true; });
+        editor.querySelector(&#x27;h3&#x27;).textContent = type === &#x27;account&#x27; ? &#x27;添加账号&#x27; : `添加 ${meta[type].label}`;
+        editor.querySelector(&#x27;.ns-editor-owner&#x27;).textContent = account ? `归属账号：${account.label}` : &#x27;创建一次，再关联三类连接&#x27;;
+        const fields = editor.querySelector(&#x27;.ns-fields&#x27;);
+        if (type === &#x27;account&#x27;) {
+          fields.innerHTML = inputField(&#x27;label&#x27;, &#x27;账号备注（必填）&#x27;, &#x27;例如：出差账号&#x27;, &#x27;text&#x27;, 40) + inputField(&#x27;username&#x27;, &#x27;用户名（选填）&#x27;, &#x27;例如：demo.user&#x27;) + inputField(&#x27;password&#x27;, &#x27;示例密码（选填）&#x27;, &#x27;仅演示，不保存密码&#x27;, &#x27;password&#x27;, 128);
+        } else if (type === &#x27;wifi&#x27;) {
+          fields.innerHTML = inputField(&#x27;name&#x27;, &#x27;网络名称 SSID（必填）&#x27;, &#x27;例如：Guest-WiFi&#x27;) + selectField(&#x27;authentication&#x27;, &#x27;认证方式&#x27;, [&#x27;企业 Wi-Fi&#x27;, &#x27;普通密码 Wi-Fi&#x27;, &#x27;开放网络&#x27;]);
+        } else if (type === &#x27;vpn&#x27;) {
+          fields.innerHTML = inputField(&#x27;name&#x27;, &#x27;连接名称（必填）&#x27;, &#x27;例如：研发内网&#x27;) + selectField(&#x27;client&#x27;, &#x27;VPN 客户端&#x27;, [&#x27;aTrust&#x27;, &#x27;Cisco Secure Client&#x27;]) + inputField(&#x27;server&#x27;, &#x27;服务器地址（必填）&#x27;, &#x27;例如：vpn.example.com&#x27;, &#x27;text&#x27;, 128) + selectField(&#x27;authentication&#x27;, &#x27;认证方式&#x27;, [&#x27;在原客户端登录&#x27;, &#x27;使用此账号凭据&#x27;]);
+        } else {
+          fields.innerHTML = inputField(&#x27;name&#x27;, &#x27;连接名称（必填）&#x27;, &#x27;例如：开发代理&#x27;) + selectField(&#x27;client&#x27;, &#x27;代理客户端&#x27;, [&#x27;Clash Verge Rev&#x27;, &#x27;Clash Verge&#x27;]) + inputField(&#x27;profile&#x27;, &#x27;客户端中的配置名称（必填）&#x27;, &#x27;例如：开发环境&#x27;) + selectField(&#x27;mode&#x27;, &#x27;接管方式&#x27;, [&#x27;系统代理&#x27;, &#x27;TUN&#x27;]);
+        }
+        editor.querySelector(&#x27;.ns-form-note&#x27;).textContent = type === &#x27;account&#x27; ? &#x27;演示密码不会保存。创建账号后，可分别添加 WI-FI、VPN 和代理。&#x27; : type === &#x27;wifi&#x27; ? &#x27;凭据沿用所属账号。保存只添加网络，不会自动连接。&#x27; : &#x27;保存只添加配置，不会自动连接或改变总开关。&#x27;;
+        editor.querySelector(&#x27;.ns-form-error&#x27;).hidden = true;
+        editor.hidden = false;
+        fields.querySelector(&#x27;input&#x27;).focus();
+      }
+      function closeEditor() {
+        const previous = editing;
+        editing = null;
+        root.querySelectorAll(&#x27;[data-tab]&#x27;).forEach(tab =&gt; { tab.disabled = false; });
+        form.reset();
+        editor.querySelector(&#x27;.ns-fields&#x27;).replaceChildren();
+        editor.hidden = true;
+        const opener = previous?.type === &#x27;account&#x27; ? root.querySelector(&#x27;[data-add-account]&#x27;) : accountList.querySelector(`[data-add=&quot;${previous?.type}&quot;][data-owner=&quot;${previous?.accountId}&quot;]`);
+        opener?.focus();
+      }
+      root.querySelector(&#x27;[data-add-account]&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; openEditor(&#x27;account&#x27;));
+      accountList.addEventListener(&#x27;click&#x27;, event =&gt; {
+        const button = event.target.closest(&#x27;[data-add]&#x27;);
+        if (button) openEditor(button.dataset.add, button.dataset.owner);
+      });
+      editor.querySelector(&#x27;[data-cancel]&#x27;).addEventListener(&#x27;click&#x27;, closeEditor);
+      editor.addEventListener(&#x27;keydown&#x27;, event =&gt; { if (event.key === &#x27;Escape&#x27;) { event.preventDefault(); closeEditor(); } });
+      function formError(message, name) {
+        const notice = editor.querySelector(&#x27;.ns-form-error&#x27;);
+        notice.textContent = message;
+        notice.hidden = false;
+        const field = form.elements.namedItem(name);
+        field?.setAttribute(&#x27;aria-invalid&#x27;, &#x27;true&#x27;);
+        field?.focus();
+      }
+      function saveEditor() {
+        if (!editing) return;
+        form.querySelectorAll(&#x27;[aria-invalid]&#x27;).forEach(field =&gt; field.removeAttribute(&#x27;aria-invalid&#x27;));
+        const value = name =&gt; String(form.elements.namedItem(name)?.value || &#x27;&#x27;).trim();
+        const { type, accountId } = editing;
+        const name = value(type === &#x27;account&#x27; ? &#x27;label&#x27; : &#x27;name&#x27;);
+        if (!name) return formError(type === &#x27;account&#x27; ? &#x27;请填写账号备注。&#x27; : &#x27;请填写连接名称。&#x27;, type === &#x27;account&#x27; ? &#x27;label&#x27; : &#x27;name&#x27;);
+        const account = accounts.find(item =&gt; item.id === accountId);
+        if (type !== &#x27;account&#x27; &amp;&amp; !account) return formError(&#x27;所属账号已不存在，请取消后重新添加。&#x27;, &#x27;name&#x27;);
+        if (account?.connections[type].some(item =&gt; item.name === name)) return formError(&#x27;此账号下已存在同名连接，请使用其他名称。&#x27;, &#x27;name&#x27;);
+        if (type === &#x27;wifi&#x27; &amp;&amp; (new TextEncoder().encode(name).length &gt; 32 || name.includes(&#x27;\0&#x27;))) return formError(&#x27;Wi-Fi 名称最多为 32 个 UTF-8 字节，且不能包含空字符。&#x27;, &#x27;name&#x27;);
+        if (type === &#x27;vpn&#x27;) {
+          if (!value(&#x27;server&#x27;)) return formError(&#x27;请填写 VPN 服务器地址。&#x27;, &#x27;server&#x27;);
+          try {
+            const server = new URL(value(&#x27;server&#x27;).includes(&#x27;://&#x27;) ? value(&#x27;server&#x27;) : `https://${value(&#x27;server&#x27;)}`);
+            if (![&#x27;https:&#x27;, &#x27;http:&#x27;].includes(server.protocol) || !server.hostname || server.username || server.password || /\s/.test(value(&#x27;server&#x27;))) throw new Error(&#x27;invalid&#x27;);
+          } catch { return formError(&#x27;请填写有效的服务器域名或地址。&#x27;, &#x27;server&#x27;); }
+        }
+        if (type === &#x27;proxy&#x27; &amp;&amp; !value(&#x27;profile&#x27;)) return formError(&#x27;请填写客户端中的配置名称。&#x27;, &#x27;profile&#x27;);
+        if (new TextEncoder().encode(JSON.stringify(accounts)).length &gt; 12000) return formError(&#x27;当前演示数据已满，请先完成已有连接的体验。&#x27;, type === &#x27;account&#x27; ? &#x27;label&#x27; : &#x27;name&#x27;);
+        const id = `custom-${globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}`;
+        if (type === &#x27;account&#x27;) {
+          accounts.push({ id, label: name, username: value(&#x27;username&#x27;), avatar: Array.from(name)[0], connections: { wifi: [], vpn: [], proxy: [] } });
+          state.open[id] = true;
+        } else {
+          const detail = type === &#x27;wifi&#x27; ? value(&#x27;authentication&#x27;) : type === &#x27;vpn&#x27; ? `${value(&#x27;client&#x27;)} · ${value(&#x27;server&#x27;)}` : `${value(&#x27;client&#x27;)} · ${value(&#x27;profile&#x27;)}`;
+          account.connections[type].push({ id, name, detail, ...(type === &#x27;proxy&#x27; ? { mode: value(&#x27;mode&#x27;) } : {}) });
+          state.open[accountId] = true;
+        }
+        closeEditor();
+        rebuildIndex();
+        renderAccounts();
+        render();
+        save();
+        announce(type === &#x27;account&#x27; ? `已添加账号“${name}”，可以继续添加三类连接。` : `已为${account.label}添加“${name}”，当前连接和总开关保持不变。`);
+        const next = type === &#x27;account&#x27; ? accountList.querySelector(`[data-account=&quot;${id}&quot;] [data-add=&quot;${state.activeType}&quot;]`) : root.dataset.view === &#x27;config&#x27; ? accountList.querySelector(`[data-add=&quot;${type}&quot;][data-owner=&quot;${accountId}&quot;]`) : accountList.querySelector(`[data-select=&quot;${id}&quot;]`);
+        next?.focus();
+      }
+      // The preview iframe disallows form navigation; save locally for clicks and Enter.
+      form.addEventListener(&#x27;submit&#x27;, event =&gt; event.preventDefault());
+      form.querySelector(&#x27;[data-save]&#x27;).addEventListener(&#x27;click&#x27;, saveEditor);
+      form.addEventListener(&#x27;input&#x27;, event =&gt; {
+        event.target.removeAttribute(&#x27;aria-invalid&#x27;);
+        editor.querySelector(&#x27;.ns-form-error&#x27;).hidden = true;
+      });
+      form.addEventListener(&#x27;keydown&#x27;, event =&gt; {
+        if (event.key === &#x27;Enter&#x27; &amp;&amp; !event.isComposing &amp;&amp; event.target.tagName === &#x27;INPUT&#x27;) {
+          event.preventDefault();
+          saveEditor();
+        }
+      });
+      const page = root.querySelector(&#x27;.ns-body&#x27;);
+      const tabs = root.querySelector(&#x27;.ns-tabs&#x27;);
+      function switchPage(type, focus = false) {
+        if (editing || !types.includes(type) || type === state.activeType) return;
+        const direction = types.indexOf(type) &gt; types.indexOf(state.activeType) ? 1 : -1;
+        state.activeType = type;
+        otherOpen = false;
+        render();
+        if (!matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches) {
+          accountList.getAnimations().forEach(animation =&gt; animation.cancel());
+          accountList.animate([{ transform: `translateX(${direction * 24}px)`, opacity: .5 }, { transform: &#x27;translateX(0)&#x27;, opacity: 1 }], { duration: 170, easing: &#x27;ease-out&#x27; });
+        }
+        if (focus) tabs.querySelector(`[data-tab=&quot;${type}&quot;]`).focus();
+        announce(`${meta[type].label} · ${actual(type).text}`);
+        save();
+      }
+      function stepPage(direction) {
+        const index = Math.max(0, Math.min(types.length - 1, types.indexOf(state.activeType) + direction));
+        switchPage(types[index]);
+      }
+      tabs.addEventListener(&#x27;click&#x27;, event =&gt; {
+        const tab = event.target.closest(&#x27;[data-tab]&#x27;);
+        if (tab) switchPage(tab.dataset.tab);
+      });
+      tabs.addEventListener(&#x27;keydown&#x27;, event =&gt; {
+        const keys = [&#x27;ArrowLeft&#x27;, &#x27;ArrowRight&#x27;, &#x27;Home&#x27;, &#x27;End&#x27;];
+        if (!keys.includes(event.key) || editing) return;
+        event.preventDefault();
+        const current = types.indexOf(state.activeType);
+        const next = event.key === &#x27;Home&#x27; ? 0 : event.key === &#x27;End&#x27; ? 2 : (current + (event.key === &#x27;ArrowRight&#x27; ? 1 : -1) + types.length) % types.length;
+        switchPage(types[next], true);
+      });
+      let gesture = null, suppressClickUntil = 0;
+      page.addEventListener(&#x27;pointerdown&#x27;, event =&gt; {
+        if (editing || !event.isPrimary || event.button !== 0 || event.target.closest(&#x27;input, select, textarea&#x27;)) return;
+        gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, swiping: false };
+      });
+      page.addEventListener(&#x27;pointermove&#x27;, event =&gt; {
+        if (!gesture || gesture.id !== event.pointerId) return;
+        const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
+        if (Math.abs(dx) &gt; 14 &amp;&amp; Math.abs(dx) &gt; Math.abs(dy) * 1.3) {
+          gesture.swiping = true;
+          page.setPointerCapture(event.pointerId);
+        }
+      });
+      page.addEventListener(&#x27;pointerup&#x27;, event =&gt; {
+        if (!gesture || gesture.id !== event.pointerId) return;
+        const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
+        if (gesture.swiping) {
+          suppressClickUntil = Date.now() + 350;
+          if (Math.abs(dx) &gt; 45 &amp;&amp; Math.abs(dx) &gt; Math.abs(dy) * 1.3) stepPage(dx &lt; 0 ? 1 : -1);
+        }
+        gesture = null;
+      });
+      page.addEventListener(&#x27;pointercancel&#x27;, () =&gt; { gesture = null; });
+      page.addEventListener(&#x27;click&#x27;, event =&gt; {
+        if (Date.now() &lt; suppressClickUntil) { event.preventDefault(); event.stopPropagation(); }
+      }, true);
+      let wheelTotal = 0, lastWheel = 0, wheelBlockedUntil = 0;
+      page.addEventListener(&#x27;wheel&#x27;, event =&gt; {
+        if (editing || Math.abs(event.deltaX) &lt;= Math.abs(event.deltaY)) return;
+        event.preventDefault();
+        const now = Date.now();
+        if (now - lastWheel &gt; 160) wheelTotal = 0;
+        lastWheel = now;
+        if (now &lt; wheelBlockedUntil) return;
+        wheelTotal += event.deltaX * (event.deltaMode === 1 ? 16 : 1);
+        if (Math.abs(wheelTotal) &gt; 45) {
+          stepPage(wheelTotal &gt; 0 ? 1 : -1);
+          wheelTotal = 0;
+          wheelBlockedUntil = now + 500;
+        }
+      }, { passive: false });
+      const menuTrigger = root.querySelector(&#x27;.ns-menu-trigger&#x27;);
+      menuTrigger.addEventListener(&#x27;click&#x27;, () =&gt; {
+        menuWindow.hidden = !menuWindow.hidden;
+        menuTrigger.setAttribute(&#x27;aria-expanded&#x27;, String(!menuWindow.hidden));
+      });
+      menuWindow.addEventListener(&#x27;keydown&#x27;, event =&gt; {
+        if (event.key === &#x27;Escape&#x27; &amp;&amp; !editing &amp;&amp; !event.defaultPrevented) {
+          menuWindow.hidden = true;
+          menuTrigger.setAttribute(&#x27;aria-expanded&#x27;, &#x27;false&#x27;);
+          menuTrigger.focus();
+        }
+      });
+      window.addEventListener(&#x27;openai:set_globals&#x27;, event =&gt; {
+        const saved = event.detail?.globals?.widgetState?.privateContent?.networkDemo;
+        if (!saved || editing || types.some(type =&gt; pending[type])) return;
+        const previousAccounts = JSON.stringify(accounts);
+        restore(saved);
+        if (previousAccounts !== JSON.stringify(accounts)) renderAccounts();
+        render();
+      });
+      render();
+      if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      if (globalThis.Tweak) {
+        const tweak = new Tweak({ container: root, onChange: () =&gt; { render(); save(); } });
+        tweak.addSelect(presentation, &#x27;density&#x27;, { label: &#x27;列表密度&#x27;, options: [{ label: &#x27;标准&#x27;, value: &#x27;standard&#x27; }, { label: &#x27;紧凑&#x27;, value: &#x27;compact&#x27; }] });
+      }
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(() =&gt; {
+  let positioningReady = window.FloatingUIDOM
+    ? Promise.resolve(window.FloatingUIDOM)
+    : null;
+  const loadScript = (src) =&gt; new Promise((resolve, reject) =&gt; {
+    const script = document.createElement(&quot;script&quot;);
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () =&gt; {
+      script.remove();
+      reject(new Error(&quot;Could not load tooltip positioning&quot;));
+    };
+    document.head.appendChild(script);
+  });
+  const loadPositioning = async () =&gt; {
+    const domUrl = &quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;;
+    const preload = document.createElement(&quot;link&quot;);
+    preload.rel = &quot;preload&quot;;
+    preload.as = &quot;script&quot;;
+    preload.href = domUrl;
+    document.head.appendChild(preload);
+    try {
+      if (window.FloatingUICore == null) {
+        await loadScript(&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;);
+      }
+      await loadScript(domUrl);
+      return window.FloatingUIDOM;
+    } finally {
+      preload.remove();
+    }
+  };
+  const getPositioning = () =&gt; positioningReady ??= loadPositioning().catch((error) =&gt; {
+    positioningReady = null;
+    throw error;
+  });
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (event) =&gt; {
+    for (const target of event.composedPath()) {
+      if (target?.nodeType === Node.ELEMENT_NODE) {
+        const trigger = target.closest(&quot;[data-tooltip]&quot;);
+        if (trigger) return trigger;
+      }
+    }
+    return null;
+  };
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating, { computePosition, flip, offset, shift, size }) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    const request = positionRequest;
+    void getPositioning().then((positioning) =&gt; {
+      if (request !== positionRequest || !trigger.isConnected) return;
+      autoUpdateCleanup = positioning.autoUpdate(trigger, floating, () =&gt; {
+        updatePosition(trigger, floating, positioning);
+      });
+    }).catch(() =&gt; {
+      if (request === positionRequest) closeTooltip(false);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handlers = {
+    pointerover: handlePointerOpen,
+    pointerdown: handlePointer,
+    pointercancel: handlePointer,
+    click: handleTouchClick,
+    pointerout: handleLeave,
+    focusin: handleFocusIn,
+    focusout: handleLeave,
+    keydown: handleKeyDown,
+    contextmenu: handleContextMenu,
+  };
+  const roots = new Map();
+  const handledEvents = new WeakSet();
+  const handleEvent = (event) =&gt; {
+    if (handledEvents.has(event)) return;
+    handledEvents.add(event);
+    handlers[event.type](event);
+  };
+  const discoverRoots = (node) =&gt; {
+    if (node.shadowRoot) listen(node.shadowRoot);
+    for (const element of node.querySelectorAll(&quot;*&quot;)) {
+      if (element.shadowRoot) listen(element.shadowRoot);
+    }
+  };
+  const listen = (root) =&gt; {
+    if (roots.has(root)) return;
+    for (const type of Object.keys(handlers)) root.addEventListener(type, handleEvent);
+    const observer = new window.MutationObserver((records) =&gt; {
+      for (const { addedNodes } of records) {
+        for (const node of addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) discoverRoots(node);
+        }
+      }
+      for (const [root, cleanup] of roots) {
+        if (root.host &amp;&amp; !root.host.isConnected) {
+          cleanup();
+          roots.delete(root);
+        }
+      }
+      if (activeTrigger &amp;&amp; !activeTrigger.isConnected) closeTooltip(false);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    roots.set(root, () =&gt; {
+      observer.disconnect();
+      for (const type of Object.keys(handlers)) root.removeEventListener(type, handleEvent);
+    });
+    discoverRoots(root);
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    for (const cleanup of roots.values()) cleanup();
+    roots.clear();
+    tooltip = null;
+  };
+
+  // Events between children of one shadow root never reach the document.
+  listen(document);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-tabs&quot;&gt;
+(() =&gt; {
+  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
+  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
+  const selectTab = (selected) =&gt; {
+    const panelId = selected.getAttribute(&quot;aria-controls&quot;);
+    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
+      const active = tab === selected;
+      tab.classList.toggle(&quot;active&quot;, active);
+      tab.setAttribute(&quot;aria-selected&quot;, String(active));
+      const id = tab.getAttribute(&quot;aria-controls&quot;);
+      const panel = id &amp;&amp; document.getElementById(id);
+      if (panel != null) {
+        panel.hidden = id !== panelId;
+        if (!panel.hidden &amp;&amp; selected.id) {
+          panel.setAttribute(&quot;aria-labelledby&quot;, selected.id);
+        }
+      }
+    }
+  };
+  const interact = (event) =&gt; {
+    const tab = event.target?.closest?.(selector);
+    if (event.defaultPrevented || tab == null || tab.matches(disabled)) {
+      return;
+    }
+    if (event.type === &quot;click&quot;) {
+      selectTab(tab);
+      return;
+    }
+    const tabs = Array.from(
+      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
+    ).filter((candidate) =&gt; !candidate.matches(disabled));
+    const current = tabs.indexOf(tab);
+    let next;
+    if (event.key === &quot;ArrowRight&quot; || event.key === &quot;ArrowDown&quot;) {
+      next = (current + 1) % tabs.length;
+    } else if (event.key === &quot;ArrowLeft&quot; || event.key === &quot;ArrowUp&quot;) {
+      next = (current + tabs.length - 1) % tabs.length;
+    } else if (event.key === &quot;Home&quot;) {
+      next = 0;
+    } else if (event.key === &quot;End&quot;) {
+      next = tabs.length - 1;
+    } else {
+      return;
+    }
+    event.preventDefault();
+    tabs[next].focus();
+    selectTab(tabs[next]);
+  };
+
+  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
+    const selected =
+      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
+    if (selected != null) {
+      selectTab(selected);
+    }
+  }
+  document.addEventListener(&quot;click&quot;, interact);
+  document.addEventListener(&quot;keydown&quot;, interact);
+  window.addEventListener(&quot;pagehide&quot;, () =&gt; {
+    document.removeEventListener(&quot;click&quot;, interact);
+    document.removeEventListener(&quot;keydown&quot;, interact);
+  }, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-carousel&quot;&gt;
+  (() =&gt; {
+    for (const root of document.querySelectorAll(&quot;.viz-carousel&quot;)) {
+      const panels = Array.from(
+        root.querySelectorAll(&quot;:scope &gt; [data-variant]&quot;),
+      );
+      if (panels.length === 0) {
+        continue;
+      }
+      root.setAttribute(&quot;role&quot;, &quot;group&quot;);
+      panels.forEach((panel, index) =&gt; {
+        panel.hidden = index !== 0;
+        panel.setAttribute(&quot;role&quot;, &quot;group&quot;);
+        if (!panel.hasAttribute(&quot;aria-label&quot;)) {
+          panel.setAttribute(&quot;aria-label&quot;, panel.dataset.variant);
+        }
+      });
+      root.dataset.activeVariant = panels[0].dataset.variant;
+      if (panels.length === 1) {
+        continue;
+      }
+
+      const controls = document.createElement(&quot;div&quot;);
+      controls.className = &quot;viz-carousel-controls&quot;;
+      // Portable copy of the settings dropdown&#x27;s legacy glyph; no 14px icon-package preset matches it.
+      // https://github.com/openai/openai/blob/master/codex/codex-apps/webview/src/icons/chevron.svg
+      controls.innerHTML = `
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-previous cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+      &lt;details class=&quot;viz-carousel-picker&quot;&gt;
+        &lt;summary class=&quot;cursor-interaction&quot;&gt;
+          &lt;span class=&quot;viz-carousel-count tabular-nums&quot;&gt;&lt;/span&gt;
+          &lt;span class=&quot;viz-carousel-name&quot;&gt;&lt;/span&gt;
+          &lt;svg class=&quot;viz-carousel-caret&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 20 21&quot; fill=&quot;none&quot; aria-hidden=&quot;true&quot; focusable=&quot;false&quot;&gt;
+            &lt;path d=&quot;M15.2793 7.71101C15.539 7.45131 15.961 7.45131 16.2207 7.71101C16.4804 7.97071 16.4804 8.39272 16.2207 8.65242L10.4707 14.4024C10.211 14.6621 9.78902 14.6621 9.52932 14.4024L3.77932 8.65242L3.69436 8.54792C3.52385 8.28979 3.55205 7.93828 3.77932 7.71101C4.00659 7.48374 4.3581 7.45554 4.61623 7.62605L4.72073 7.71101L10 12.9903L15.2793 7.71101Z&quot; fill=&quot;currentColor&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;0.6&quot; /&gt;
+          &lt;/svg&gt;
+        &lt;/summary&gt;
+        &lt;div class=&quot;viz-carousel-options&quot;&gt;&lt;/div&gt;
+      &lt;/details&gt;
+      &lt;button type=&quot;button&quot; class=&quot;viz-carousel-next cursor-interaction&quot;&gt;&lt;i data-lucide=&quot;chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;`;
+      const previous = controls.querySelector(&quot;.viz-carousel-previous&quot;);
+      const next = controls.querySelector(&quot;.viz-carousel-next&quot;);
+      const picker = controls.querySelector(&quot;.viz-carousel-picker&quot;);
+      const summary = picker.querySelector(&quot;summary&quot;);
+      const count = controls.querySelector(&quot;.viz-carousel-count&quot;);
+      const name = controls.querySelector(&quot;.viz-carousel-name&quot;);
+      const options = controls.querySelector(&quot;.viz-carousel-options&quot;);
+      const status = document.createElement(&quot;span&quot;);
+      status.className = &quot;sr-only&quot;;
+      status.setAttribute(&quot;role&quot;, &quot;status&quot;);
+      status.setAttribute(&quot;aria-live&quot;, &quot;polite&quot;);
+      status.setAttribute(&quot;aria-atomic&quot;, &quot;true&quot;);
+      previous.setAttribute(
+        &quot;aria-label&quot;,
+        root.dataset.previousLabel ?? &quot;Previous variant&quot;,
+      );
+      next.setAttribute(&quot;aria-label&quot;, root.dataset.nextLabel ?? &quot;Next variant&quot;);
+
+      let active = 0;
+      let mousePointerId = null;
+      let summaryPointerHandled = false;
+      summary.addEventListener(&quot;pointerdown&quot;, (event) =&gt; {
+        summaryPointerHandled =
+          event.pointerType === &quot;mouse&quot; &amp;&amp; event.button === 0 &amp;&amp; !event.ctrlKey;
+        if (!summaryPointerHandled) {
+          return;
+        }
+        event.preventDefault();
+        summary.focus({ preventScroll: true });
+        picker.open = !picker.open;
+        mousePointerId = picker.open ? event.pointerId : null;
+      });
+      summary.addEventListener(&quot;click&quot;, (event) =&gt; {
+        if (summaryPointerHandled &amp;&amp; event.detail &gt; 0) {
+          event.preventDefault();
+        }
+      });
+      const choices = panels.map((panel, index) =&gt; {
+        const choice = document.createElement(&quot;button&quot;);
+        choice.type = &quot;button&quot;;
+        choice.className = &quot;cursor-interaction&quot;;
+        choice.textContent = panel.dataset.variant;
+        choice.addEventListener(&quot;click&quot;, () =&gt; {
+          select(index);
+          summary.focus();
+        });
+        choice.addEventListener(&quot;pointerup&quot;, (event) =&gt; {
+          if (
+            picker.open &amp;&amp;
+            event.pointerType === &quot;mouse&quot; &amp;&amp;
+            event.button === 0 &amp;&amp;
+            event.pointerId === mousePointerId
+          ) {
+            choice.click();
+          }
+        });
+        options.appendChild(choice);
+        return choice;
+      });
+      const select = (index) =&gt; {
+        const changed = active !== index;
+        active = index;
+        panels.forEach((panel, position) =&gt; {
+          panel.hidden = position !== active;
+          choices[position].setAttribute(
+            &quot;aria-current&quot;,
+            String(position === active),
+          );
+        });
+        root.dataset.activeVariant = panels[active].dataset.variant;
+        count.textContent = `${active + 1} / ${panels.length}`;
+        name.textContent = panels[active].dataset.variant;
+        picker.open = false;
+        mousePointerId = null;
+        if (changed) {
+          status.textContent = `${count.textContent}: ${name.textContent}`;
+        }
+      };
+      previous.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + panels.length - 1) % panels.length),
+      );
+      next.addEventListener(&quot;click&quot;, () =&gt;
+        select((active + 1) % panels.length),
+      );
+      picker.addEventListener(&quot;keydown&quot;, (event) =&gt; {
+        if (event.key === &quot;Escape&quot; &amp;&amp; picker.open) {
+          event.preventDefault();
+          picker.open = false;
+          mousePointerId = null;
+          summary.focus();
+          return;
+        }
+        if (event.altKey || event.ctrlKey || event.metaKey) {
+          return;
+        }
+        const index = choices.indexOf(document.activeElement);
+        let nextIndex;
+        if (event.key === &quot;ArrowDown&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + 1) % choices.length;
+        } else if (event.key === &quot;ArrowUp&quot;) {
+          nextIndex = index &lt; 0 ? active : (index + choices.length - 1) % choices.length;
+        } else if (picker.open &amp;&amp; event.key === &quot;Home&quot;) {
+          nextIndex = 0;
+        } else if (picker.open &amp;&amp; event.key === &quot;End&quot;) {
+          nextIndex = choices.length - 1;
+        } else {
+          return;
+        }
+        event.preventDefault();
+        picker.open = true;
+        choices[nextIndex].focus();
+      });
+      picker.addEventListener(&quot;focusout&quot;, (event) =&gt; {
+        if (!picker.contains(event.relatedTarget)) {
+          picker.open = false;
+          mousePointerId = null;
+        }
+      });
+      const dismiss = (event) =&gt; {
+        if (!summary.contains(event.target)) {
+          mousePointerId = null;
+        }
+        if (!picker.contains(event.target)) {
+          picker.open = false;
+        }
+      };
+      const endPointerSelection = () =&gt; {
+        mousePointerId = null;
+      };
+      const sizePicker = () =&gt; {
+        root.style.setProperty(
+          &quot;--viz-carousel-picker-height&quot;,
+          `${picker.open ? options.offsetHeight : 0}px`,
+        );
+      };
+      picker.addEventListener(&quot;toggle&quot;, sizePicker);
+      window.addEventListener(&quot;resize&quot;, sizePicker);
+      document.addEventListener(&quot;pointerdown&quot;, dismiss);
+      document.addEventListener(&quot;pointerup&quot;, endPointerSelection);
+      document.addEventListener(&quot;pointercancel&quot;, endPointerSelection);
+      window.addEventListener(&quot;blur&quot;, endPointerSelection);
+      window.addEventListener(
+        &quot;pagehide&quot;,
+        () =&gt; {
+          document.removeEventListener(&quot;pointerdown&quot;, dismiss);
+          document.removeEventListener(&quot;pointerup&quot;, endPointerSelection);
+          document.removeEventListener(&quot;pointercancel&quot;, endPointerSelection);
+          window.removeEventListener(&quot;blur&quot;, endPointerSelection);
+          window.removeEventListener(&quot;resize&quot;, sizePicker);
+        },
+        { once: true },
+      );
+      root.append(controls, status);
+      select(0);
+    }
+  })();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+
+<script>(() => {
+  const frame = document.getElementById("codex-visualization");
+  if (!(frame instanceof HTMLIFrameElement)) {
+    return;
+  }
+  const isShare = document.documentElement.classList.contains(
+    "visualization-share-root",
+  );
+  let viewportHeight = globalThis.innerHeight;
+  let sizeFingerprint = null;
+  let sizeWriteTimeout;
+  let lastSize = null;
+  let pendingSize = null;
+  const storageKey = `codex:visualization-widget-state-v2:${JSON.stringify([
+    globalThis.location.pathname,
+    globalThis.location.search,
+  ])}`;
+  const sizeStorageKey = `${storageKey}:share-size-v1`;
+  const parseState = (serializedState) => {
+    if (
+      typeof serializedState !== "string" ||
+      new TextEncoder().encode(serializedState).length > 16 * 1024
+    ) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    /** @type {unknown} */
+    const state = JSON.parse(serializedState);
+    if (
+      state == null ||
+      typeof state !== "object" ||
+      Array.isArray(state) ||
+      ("imageIds" in state &&
+        (!Array.isArray(state.imageIds) || state.imageIds.length > 0))
+    ) {
+      throw new TypeError("Widget state must be a JSON object");
+    }
+    const storedState = { modelContent: null, privateContent: null, ...state };
+    const canonicalState = JSON.stringify(
+      storedState,
+      (_key, /** @type {unknown} */ value) => {
+        if (typeof value === "number" && !Number.isFinite(value)) {
+          throw new TypeError("Widget state must contain finite numbers");
+        }
+        return value;
+      },
+    );
+    if (new TextEncoder().encode(canonicalState).length > 16 * 1024) {
+      throw new TypeError(
+        "Widget state must be a JSON object of at most 16 KiB",
+      );
+    }
+    return storedState;
+  };
+  let storage = null;
+  let state = null;
+  try {
+    const localStorage = globalThis.localStorage;
+    const probeKey = `${storageKey}:probe`;
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    storage = localStorage;
+    const savedState = storage.getItem(storageKey);
+    if (savedState != null) {
+      try {
+        state = parseState(savedState);
+      } catch {
+        // Invalid saved state does not disable future writes.
+      }
+    }
+  } catch {
+    storage = null;
+  }
+  const persistSize = () => {
+    globalThis.clearTimeout(sizeWriteTimeout);
+    if (pendingSize == null) {
+      return;
+    }
+    try {
+      storage?.setItem(sizeStorageKey, pendingSize);
+    } catch {
+      // A denied or full cache must not affect the visualization.
+    }
+    pendingSize = null;
+  };
+  if (isShare) {
+    globalThis.addEventListener("pagehide", persistSize);
+  }
+  const initialGlobals = {
+    widgetState: state,
+    statePersistence: storage == null ? "none" : "local",
+  };
+
+  const channel = new MessageChannel();
+  channel.port1.addEventListener("message", (event) => {
+    const data = event.data;
+    if (typeof data !== "object" || data == null) {
+      return;
+    }
+    if (data.type === "widget-state-write") {
+      if (!Number.isSafeInteger(data.id) || data.id <= 0) {
+        return;
+      }
+      let ok = false;
+      try {
+        if (storage != null) {
+          const state = parseState(data.state);
+          storage.setItem(storageKey, JSON.stringify(state));
+          ok = true;
+        }
+      } catch {
+        // Storage denial, quota limits, and invalid state return a failed receipt.
+      }
+      channel.port1.postMessage({
+        type: "widget-state-result",
+        id: data.id,
+        ok,
+      });
+      return;
+    }
+    if (data.type === "height") {
+      const height = data.height;
+      if (
+        typeof height !== "number" ||
+        !Number.isFinite(height) ||
+        height < 0
+      ) {
+        return;
+      }
+      if (height <= 10_000) {
+        const width = isShare && storage != null ? frame.clientWidth : null;
+        frame.style.height = Math.ceil(height) + "px";
+        if (isShare && storage != null) {
+          const size = JSON.stringify({
+            fingerprint: sizeFingerprint,
+            width,
+            viewportHeight: globalThis.innerHeight,
+            dark: globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
+            scale: globalThis.devicePixelRatio,
+            height: Math.ceil(height),
+          });
+          if (size !== lastSize) {
+            lastSize = size;
+            pendingSize = size;
+            globalThis.clearTimeout(sizeWriteTimeout);
+            sizeWriteTimeout = globalThis.setTimeout(persistSize, 100);
+          }
+        }
+      }
+      if (isShare) {
+        // Keep unusually tall content accessible without accepting an unbounded height.
+        if (height > 10_000 && Number.parseFloat(frame.style.height) === 0) {
+          frame.style.removeProperty("height");
+        }
+        frame.scrolling = height > 10_000 ? "auto" : "no";
+        document.documentElement.classList.add("visualization-share-ready");
+      }
+      return;
+    }
+    if (data.type === "scroll-to") {
+      const top = data.top;
+      if (
+        typeof top === "number" &&
+        Number.isFinite(top) &&
+        top >= 0 &&
+        globalThis.navigator.userActivation?.isActive === true
+      ) {
+        globalThis.scrollTo({
+          top: Math.ceil(
+            globalThis.scrollY + frame.getBoundingClientRect().top + top,
+          ),
+        });
+      }
+      return;
+    }
+    if (data.type === "open-external") {
+      const rawHref = data.href;
+      if (typeof rawHref !== "string") {
+        return;
+      }
+      let href;
+      try {
+        const url = new URL(rawHref, document.baseURI);
+        if (url.protocol !== "https:") {
+          return;
+        }
+        href = url.href;
+      } catch {
+        return;
+      }
+      if (globalThis.navigator.userActivation?.isActive === true) {
+        const anchor = document.createElement("a");
+        anchor.href = href;
+        anchor.rel = "noopener noreferrer";
+        anchor.target = "_blank";
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+      }
+      return;
+    }
+    if (data.type === "follow-up") {
+      const prompt = data.prompt;
+      if (
+        typeof prompt !== "string" ||
+        globalThis.navigator.userActivation?.isActive !== true
+      ) {
+        return;
+      }
+      const title = data.title;
+      globalThis.prompt(typeof title === "string" ? title : prompt, prompt);
+    }
+  });
+  channel.port1.start();
+  const srcdoc = frame.dataset.srcdoc;
+  if (srcdoc == null) {
+    return;
+  }
+  globalThis.addEventListener("resize", () => {
+    const height = Number.parseFloat(frame.style.height);
+    if (!isShare && (!Number.isFinite(height) || height <= viewportHeight)) {
+      frame.style.removeProperty("height");
+    }
+    viewportHeight = globalThis.innerHeight;
+    channel.port1.postMessage({ type: "measure" });
+  });
+  frame.addEventListener(
+    "load",
+    () => {
+      frame.contentWindow?.postMessage(
+        { type: "codex-visualization-initialize" },
+        "*",
+        [channel.port2],
+      );
+    },
+    { once: true },
+  );
+  // Match the trusted bootstrap element, not the same text in an authored title.
+  const frameHtml = srcdoc.replace(
+    '<script type="application/json" id="codex-visualization-widget-state">__CODEX_VISUALIZATION_WIDGET_STATE__<\/script>',
+    () =>
+      '<script type="application/json" id="codex-visualization-widget-state">' +
+      JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
+      "<\/script>",
+  );
+  if (isShare && storage != null) {
+    // Fingerprint the rendered document, including restored widget state, without
+    // storing its content. This is a layout cache, not a security identity.
+    let hash = 5381;
+    for (let index = 0; index < frameHtml.length; index += 1) {
+      hash = (hash * 33 + frameHtml.charCodeAt(index)) % 4_294_967_296;
+    }
+    sizeFingerprint = hash.toString(36);
+    try {
+      const size = JSON.parse(storage.getItem(sizeStorageKey) ?? "null");
+      if (
+        size?.fingerprint === sizeFingerprint &&
+        size.width === frame.clientWidth &&
+        size.viewportHeight === globalThis.innerHeight &&
+        size.dark ===
+          globalThis.matchMedia("(prefers-color-scheme: dark)").matches &&
+        size.scale === globalThis.devicePixelRatio &&
+        typeof size.height === "number" &&
+        Number.isFinite(size.height) &&
+        size.height >= 0 &&
+        size.height <= 10_000
+      ) {
+        frame.style.height = size.height + "px";
+      }
+    } catch {
+      // Ignore missing or invalid cache entries and measure the live frame.
+    }
+  }
+  frame.srcdoc = frameHtml;
+  delete frame.dataset.srcdoc;
+})();
+</script>
+</body>
+</html>

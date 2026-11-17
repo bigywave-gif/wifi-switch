@@ -1,0 +1,868 @@
+<div id="network-switch-demo" lang="zh-CN" aria-label="WiFi Switch 交互演示">
+  <style>
+    #network-switch-demo {
+      --ns-bg: light-dark(#f5f6f8, #1e2024);
+      --ns-panel: light-dark(#ffffff, #272a2f);
+      --ns-subtle: light-dark(#f4f5f7, #30343b);
+      --ns-text: light-dark(#20252d, #eff1f4);
+      --ns-muted: light-dark(#626b79, #a8afbb);
+      --ns-border: light-dark(#e3e6eb, #3e434d);
+      --ns-blue: light-dark(#0864d6, #79b5ff);
+      --ns-blue-fill: light-dark(#0875ed, #0875ed);
+      --ns-blue-soft: light-dark(#edf5ff, #24364d);
+      --ns-green: light-dark(#16713e, #71d69a);
+      --ns-green-bg: light-dark(#edf8f1, #213b2c);
+      --ns-amber: light-dark(#855213, #f2c27c);
+      --ns-amber-bg: light-dark(#fff5e6, #3c3123);
+      --ns-space: 22px;
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ns-text);
+      width: 100%;
+    }
+    #network-switch-demo * { box-sizing: border-box; }
+    #network-switch-demo button, #network-switch-demo input { font: inherit; }
+    #network-switch-demo button { color: inherit; }
+    #network-switch-demo button:focus-visible, #network-switch-demo summary:focus-visible { outline: 3px solid var(--ns-blue); outline-offset: 3px; }
+    #network-switch-demo .ns-window { background: var(--ns-bg); border: 1px solid var(--ns-border); border-radius: 16px; overflow: hidden; }
+    #network-switch-demo .ns-titlebar { display: flex; align-items: center; gap: 14px; padding: 19px 28px; padding-right: 112px; border-bottom: 1px solid var(--ns-border); background: var(--ns-panel); }
+    #network-switch-demo .ns-logo { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; color: #fff; background: var(--ns-blue-fill); flex: 0 0 auto; }
+    #network-switch-demo .ns-logo svg { width: 25px; height: 25px; }
+    #network-switch-demo .ns-heading { font-size: 21px; line-height: 1.3; font-weight: 600; letter-spacing: -.5px; margin: 0; }
+    #network-switch-demo .ns-subtitle { color: var(--ns-muted); font-size: 12px; margin-top: 3px; }
+    #network-switch-demo .ns-demo-tag { margin-left: auto; white-space: nowrap; border: 1px solid var(--ns-border); border-radius: 6px; padding: 3px 8px; font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-body { padding: 24px 28px 22px; }
+    #network-switch-demo .ns-section-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+    #network-switch-demo .ns-section-label h2 { font-size: 13px; font-weight: 600; margin: 0; }
+    #network-switch-demo .ns-hint { font-size: 12px; color: var(--ns-muted); }
+    #network-switch-demo .ns-masters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    #network-switch-demo .ns-master { background: var(--ns-panel); border: 1px solid var(--ns-border); border-radius: 12px; padding: 17px 17px 15px; min-width: 0; }
+    #network-switch-demo .ns-master-heading { display: flex; gap: 9px; align-items: center; margin-bottom: 14px; }
+    #network-switch-demo .ns-kind-icon { display: inline-flex; color: var(--ns-blue); flex-shrink: 0; }
+    #network-switch-demo .ns-kind-icon svg { width: 19px; height: 19px; }
+    #network-switch-demo .ns-kind-title { font-size: 14px; font-weight: 600; }
+    #network-switch-demo .ns-switch { position: relative; display: inline-flex; align-items: center; justify-content: flex-end; min-height: 32px; min-width: 42px; margin-left: auto; }
+    #network-switch-demo .ns-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; z-index: 1; }
+    #network-switch-demo .ns-switch-track { display: block; width: 36px; height: 21px; border-radius: 20px; background: light-dark(#858c97, #747b86); position: relative; transition: background 160ms ease; }
+    #network-switch-demo .ns-switch-track::after { content: ""; position: absolute; width: 17px; height: 17px; border-radius: 50%; top: 2px; left: 2px; background: #fff; transition: transform 160ms ease; }
+    #network-switch-demo .ns-switch input:checked + .ns-switch-track { background: var(--ns-blue-fill); }
+    #network-switch-demo .ns-switch input:checked + .ns-switch-track::after { transform: translateX(15px); }
+    #network-switch-demo .ns-switch input:focus-visible + .ns-switch-track { outline: 3px solid var(--ns-blue); outline-offset: 4px; }
+    #network-switch-demo .ns-target { font-weight: 500; overflow-wrap: anywhere; min-height: 21px; }
+    #network-switch-demo .ns-owner { color: var(--ns-muted); font-size: 12px; margin-top: 2px; min-height: 18px; }
+    #network-switch-demo .ns-master-footer { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-top: 15px; }
+    #network-switch-demo .ns-badge { font-size: 11px; padding: 2px 7px; border-radius: 5px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: var(--ns-muted); background: var(--ns-subtle); }
+    #network-switch-demo .ns-badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    #network-switch-demo .ns-badge[data-tone="good"] { color: var(--ns-green); background: var(--ns-green-bg); }
+    #network-switch-demo .ns-badge[data-tone="waiting"] { color: var(--ns-amber); background: var(--ns-amber-bg); }
+    #network-switch-demo .ns-badge[data-tone="busy"] { color: var(--ns-blue); background: var(--ns-blue-soft); }
+    #network-switch-demo .ns-mode { font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-network-note { margin-top: 12px; color: var(--ns-amber); background: var(--ns-amber-bg); border-radius: 8px; padding: 9px 12px; font-size: 12px; display: flex; gap: 8px; align-items: flex-start; }
+    #network-switch-demo .ns-network-note[hidden] { display: none; }
+    #network-switch-demo .ns-network-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+    #network-switch-demo .ns-accounts-title { margin-top: 26px; }
+    #network-switch-demo .ns-accounts { display: grid; gap: 14px; }
+    #network-switch-demo .ns-account { background: var(--ns-panel); border: 1px solid var(--ns-border); border-radius: 12px; }
+    #network-switch-demo .ns-account > summary { display: flex; align-items: center; gap: 11px; padding: 15px 18px; list-style: none; }
+    #network-switch-demo .ns-account > summary::-webkit-details-marker { display: none; }
+    #network-switch-demo .ns-avatar { width: 32px; height: 32px; background: var(--ns-subtle); border-radius: 50%; display: grid; place-items: center; font-weight: 500; color: var(--ns-muted); flex-shrink: 0; }
+    #network-switch-demo .ns-account-name { font-weight: 600; }
+    #network-switch-demo .ns-account-user { color: var(--ns-muted); font-size: 11px; margin-top: 1px; }
+    #network-switch-demo .ns-account-count { margin-left: auto; color: var(--ns-muted); font-size: 11px; text-align: right; }
+    #network-switch-demo .ns-chevron { width: 14px; height: 14px; display: inline-flex; color: var(--ns-muted); }
+    #network-switch-demo .ns-account[open] .ns-chevron { transform: rotate(90deg); }
+    #network-switch-demo .ns-account-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ns-border); }
+    #network-switch-demo .ns-group { padding: 15px 16px 16px; min-width: 0; }
+    #network-switch-demo .ns-group + .ns-group { border-left: 1px solid var(--ns-border); }
+    #network-switch-demo .ns-group-heading { display: flex; align-items: center; gap: 7px; color: var(--ns-muted); font-size: 11px; font-weight: 600; letter-spacing: .3px; margin-bottom: 10px; }
+    #network-switch-demo .ns-group-heading svg { width: 14px; height: 14px; }
+    #network-switch-demo .ns-add { margin-left: auto; display: inline-flex; align-items: center; justify-content: center; gap: 3px; border: 0; background: transparent; color: var(--ns-blue); border-radius: 5px; padding: 4px 5px; min-height: 28px; font-size: 11px; font-weight: 400; white-space: nowrap; }
+    #network-switch-demo .ns-add:hover { background: var(--ns-blue-soft); }
+    #network-switch-demo .ns-account-tools { display: flex; align-items: center; gap: 12px; }
+    #network-switch-demo .ns-primary, #network-switch-demo .ns-secondary { border: 1px solid var(--ns-border); border-radius: 7px; padding: 7px 12px; min-height: 34px; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+    #network-switch-demo .ns-primary { color: #fff; background: var(--ns-blue-fill); border-color: var(--ns-blue-fill); }
+    #network-switch-demo .ns-secondary { color: var(--ns-text); background: var(--ns-panel); }
+    #network-switch-demo .ns-primary svg { width: 14px; height: 14px; }
+    #network-switch-demo .ns-empty { padding: 12px 4px; color: var(--ns-muted); font-size: 12px; }
+    #network-switch-demo .ns-editor { border: 1px solid color-mix(in srgb, var(--ns-blue) 40%, var(--ns-border)); border-radius: 12px; padding: 20px; background: var(--ns-panel); margin-bottom: 16px; }
+    #network-switch-demo .ns-editor[hidden] { display: none; }
+    #network-switch-demo .ns-editor-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    #network-switch-demo .ns-editor-heading h3 { font-size: 15px; font-weight: 600; margin: 0; }
+    #network-switch-demo .ns-editor-owner { color: var(--ns-muted); font-size: 12px; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; }
+    #network-switch-demo .ns-field { display: grid; gap: 6px; min-width: 0; align-content: start; }
+    #network-switch-demo .ns-field label { font-size: 12px; color: var(--ns-text); }
+    #network-switch-demo .ns-field input, #network-switch-demo .ns-field select { min-width: 0; width: 100%; height: 36px; border: 1px solid var(--ns-border); border-radius: 6px; background: var(--ns-bg); color: var(--ns-text); padding: 7px 10px; font: inherit; font-size: 13px; }
+    #network-switch-demo .ns-field input:focus-visible, #network-switch-demo .ns-field select:focus-visible { outline: 3px solid var(--ns-blue); outline-offset: 2px; }
+    #network-switch-demo .ns-field input[aria-invalid="true"] { border-color: light-dark(#ba3030, #f38484); }
+    #network-switch-demo .ns-form-note { font-size: 11px; color: var(--ns-muted); margin: 14px 0 0; }
+    #network-switch-demo .ns-form-error { color: light-dark(#af2525, #ff9a9a); font-size: 12px; margin-top: 12px; }
+    #network-switch-demo .ns-form-error[hidden] { display: none; }
+    #network-switch-demo .ns-form-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
+    #network-switch-demo .ns-connections { display: grid; gap: 9px; }
+    #network-switch-demo .ns-connection { border-radius: 7px; padding: 9px 10px; min-width: 0; background: var(--ns-subtle); display: grid; gap: 8px; }
+    #network-switch-demo .ns-connection[data-selected="true"] { background: var(--ns-blue-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ns-blue) 25%, transparent); }
+    #network-switch-demo .ns-connection-title { font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-connection-detail { font-size: 11px; color: var(--ns-muted); margin-top: 1px; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-connection-action { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 27px; }
+    #network-switch-demo .ns-selection-status { font-size: 11px; color: var(--ns-muted); display: inline-flex; align-items: center; gap: 4px; }
+    #network-switch-demo .ns-selection-status svg { width: 13px; height: 13px; }
+    #network-switch-demo .ns-selection-status[data-selected="true"] { color: var(--ns-blue); }
+    #network-switch-demo .ns-select { min-height: 28px; border: 1px solid var(--ns-border); border-radius: 6px; padding: 3px 10px; background: var(--ns-panel); color: var(--ns-blue); font-size: 11px; white-space: nowrap; }
+    #network-switch-demo .ns-select:hover:not(:disabled) { border-color: var(--ns-blue); background: var(--ns-blue-soft); }
+    #network-switch-demo .ns-select:disabled { color: var(--ns-muted); opacity: .65; }
+    #network-switch-demo .ns-select[hidden] { display: none; }
+    #network-switch-demo .ns-footer { margin-top: 18px; display: flex; gap: 8px; align-items: flex-start; font-size: 11px; color: var(--ns-muted); min-height: 18px; }
+    #network-switch-demo .ns-footer svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+    #network-switch-demo[data-density="compact"] { --ns-space: 14px; }
+    #network-switch-demo[data-density="compact"] .ns-group { padding: 12px; }
+    #network-switch-demo[data-density="compact"] .ns-connection { padding: 7px 9px; gap: 5px; }
+    #network-switch-demo[data-density="compact"] .ns-account > summary { padding: 12px 16px; }
+    #network-switch-demo[data-density="compact"] .ns-accounts { gap: 10px; }
+    @media (max-width: 760px) {
+      #network-switch-demo .ns-body { padding: 20px; }
+      #network-switch-demo .ns-titlebar { padding-left: 20px; }
+      #network-switch-demo .ns-master { padding: 14px 12px; }
+      #network-switch-demo .ns-master-footer { align-items: flex-start; flex-direction: column; gap: 5px; }
+      #network-switch-demo .ns-group { padding: 12px; }
+    }
+    @media (max-width: 610px) {
+      #network-switch-demo .ns-titlebar { flex-wrap: wrap; gap: 10px; padding: 18px 20px; padding-right: 100px; }
+      #network-switch-demo .ns-demo-tag { margin-left: 50px; }
+      #network-switch-demo .ns-masters { grid-template-columns: 1fr; gap: 9px; }
+      #network-switch-demo .ns-master { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; padding: 12px 14px; }
+      #network-switch-demo .ns-master-heading { grid-column: 1 / -1; margin: 0 0 4px; }
+      #network-switch-demo .ns-master-footer { grid-row: 2 / 4; grid-column: 2; align-items: flex-end; align-self: center; margin: 0; }
+      #network-switch-demo .ns-owner { grid-column: 1; }
+      #network-switch-demo .ns-account-groups { grid-template-columns: 1fr; }
+      #network-switch-demo .ns-group { padding: 14px 16px; }
+      #network-switch-demo .ns-group + .ns-group { border-left: 0; border-top: 1px solid var(--ns-border); }
+      #network-switch-demo .ns-connection { grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding: 10px; }
+      #network-switch-demo .ns-connection-action { flex-direction: column; align-items: flex-end; gap: 4px; }
+      #network-switch-demo .ns-section-label { align-items: flex-start; }
+      #network-switch-demo .ns-hint { font-size: 11px; text-align: right; max-width: 140px; }
+      #network-switch-demo .ns-account-count { max-width: 80px; }
+      #network-switch-demo .ns-account-tools { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+      #network-switch-demo .ns-account-tools .ns-hint { max-width: none; }
+      #network-switch-demo .ns-fields { grid-template-columns: 1fr; }
+      #network-switch-demo .ns-editor { padding: 16px; }
+      #network-switch-demo .ns-editor-heading { flex-wrap: wrap; gap: 4px 10px; }
+    }
+    @media (max-width: 360px) {
+      #network-switch-demo .ns-body { padding: 16px 12px; }
+      #network-switch-demo .ns-heading { font-size: 18px; }
+      #network-switch-demo .ns-titlebar { padding-left: 14px; gap: 8px; }
+      #network-switch-demo .ns-logo { width: 32px; height: 32px; border-radius: 9px; }
+      #network-switch-demo .ns-account > summary { padding: 13px 12px; gap: 8px; }
+      #network-switch-demo .ns-group { padding: 12px; }
+    }
+    @media (pointer: coarse) {
+      #network-switch-demo .ns-switch { min-height: 44px; min-width: 44px; }
+      #network-switch-demo .ns-select { min-height: 44px; padding-inline: 14px; }
+      #network-switch-demo .ns-add, #network-switch-demo .ns-primary, #network-switch-demo .ns-secondary { min-height: 44px; }
+      #network-switch-demo .ns-field input, #network-switch-demo .ns-field select { font-size: 16px; min-height: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #network-switch-demo .ns-switch-track, #network-switch-demo .ns-switch-track::after { transition: none; }
+    }
+  </style>
+  <style>
+    #network-switch-demo .ns-preview { --ns-menu-width: min(360px, calc((100vw - 40px) / 2)); padding: 50px 12px 24px; }
+    #network-switch-demo .ns-menu-strip { width: var(--ns-menu-width); margin: 0 auto 10px; display: flex; align-items: center; gap: 14px; height: 34px; border-radius: 7px; background: var(--ns-panel); border: 1px solid var(--ns-border); padding: 0 9px 0 12px; font-size: 12px; }
+    #network-switch-demo .ns-menu-caption { color: var(--ns-muted); margin-right: auto; font-size: 11px; }
+    #network-switch-demo .ns-menu-trigger { border: 0; border-radius: 5px; background: transparent; width: 32px; height: 27px; display: grid; place-items: center; color: var(--ns-text); }
+    #network-switch-demo .ns-menu-trigger[aria-expanded="true"] { background: var(--ns-subtle); }
+    #network-switch-demo .ns-menu-time { font-variant-numeric: tabular-nums; }
+    #network-switch-demo .ns-window { width: var(--ns-menu-width); margin: 0 auto; border-radius: 13px; background: var(--ns-panel); box-shadow: 0 10px 30px light-dark(#1b253018, #00000040); overflow: visible; }
+    #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-window, #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-menu-strip { transform: translateX(-126px); }
+    #network-switch-demo .ns-window[hidden], #network-switch-demo [hidden] { display: none !important; }
+    #network-switch-demo .ns-titlebar { padding: 16px 17px 12px; gap: 9px; border: 0; flex-wrap: nowrap; }
+    #network-switch-demo .ns-logo { width: 29px; height: 29px; border-radius: 8px; }
+    #network-switch-demo .ns-logo svg { width: 18px; height: 18px; }
+    #network-switch-demo .ns-heading { font-size: 15px; line-height: 1.3; letter-spacing: -.2px; }
+    #network-switch-demo .ns-subtitle { font-size: 11px; margin-top: 1px; }
+    #network-switch-demo .ns-demo-tag { margin-left: auto; font-size: 11px; padding: 1px 6px; }
+    #network-switch-demo .ns-gear { margin-left: auto; border: 0; border-radius: 6px; width: 30px; height: 30px; display: grid; place-items: center; background: transparent; color: var(--ns-muted); }
+    #network-switch-demo .ns-gear:hover { background: var(--ns-subtle); color: var(--ns-text); }
+    #network-switch-demo .ns-titlebar { position: relative; }
+    #network-switch-demo .ns-gear-menu { position: absolute; right: -106px; top: 50px; z-index: 5; width: 224px; padding: 6px; border: 1px solid var(--ns-border); border-radius: 11px; background: var(--ns-panel); box-shadow: 0 12px 30px light-dark(#14202c24, #00000066); }
+    #network-switch-demo .ns-gear-menu[hidden] { display: none; }
+    #network-switch-demo .ns-gear-menu button { display: block; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--ns-text); text-align: left; font-size: 12px; }
+    #network-switch-demo .ns-gear-menu button:hover, #network-switch-demo .ns-gear-menu button:focus-visible { background: var(--ns-blue-fill); color: #fff; }
+    #network-switch-demo .ns-gear-menu hr { border: 0; border-top: 1px solid var(--ns-border); margin: 5px 8px; }
+    @media (max-width: 659px) { #network-switch-demo .ns-gear-menu { right: 0; } }
+    #network-switch-demo .ns-window .ns-add, #network-switch-demo .ns-window .ns-bottom { display: none; }
+    #network-switch-demo[data-view="config"] .ns-menu-strip { display: none; }
+    #network-switch-demo .ns-config-view { max-width: 860px; margin: 0 auto; border: 1px solid var(--ns-border); border-radius: 13px; background: var(--ns-bg); overflow: hidden; }
+    #network-switch-demo .ns-config-header { padding: 18px 22px; border-bottom: 1px solid var(--ns-border); display: flex; align-items: center; gap: 12px; background: var(--ns-panel); }
+    #network-switch-demo .ns-config-header h2 { font-size: 19px; margin: 0; line-height: 1.25; }
+    #network-switch-demo .ns-config-header .ns-logo { width: 38px; height: 38px; }
+    #network-switch-demo .ns-config-header .ns-subtitle { margin-top: 2px; }
+    #network-switch-demo .ns-config-back { border: 0; background: transparent; color: var(--ns-blue); display: inline-flex; align-items: center; gap: 5px; padding: 5px; }
+    #network-switch-demo .ns-config-back svg { width: 15px; height: 15px; }
+    #network-switch-demo .ns-config-body { padding: 20px 22px 22px; }
+    #network-switch-demo .ns-config-demo-tag { margin-left: auto; font-size: 11px; color: var(--ns-muted); border: 1px solid var(--ns-border); border-radius: 6px; padding: 3px 7px; }
+    #network-switch-demo .ns-config-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 12px; }
+    #network-switch-demo .ns-config-section-heading h3 { margin: 0; font-size: 13px; }
+    #network-switch-demo .ns-config-section-heading span { color: var(--ns-muted); font-size: 11px; }
+    #network-switch-demo .ns-config-masters { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+    #network-switch-demo .ns-config-masters .ns-master { display: block; padding: 15px; border: 1px solid var(--ns-border); border-radius: 11px; background: var(--ns-panel); }
+    #network-switch-demo .ns-config-masters .ns-master-heading { gap: 8px; margin-bottom: 14px; }
+    #network-switch-demo .ns-config-masters .ns-kind-icon { display: inline-flex; }
+    #network-switch-demo .ns-config-masters .ns-kind-title { font-size: 13px; font-weight: 600; }
+    #network-switch-demo .ns-config-masters .ns-target { font-size: 13px; }
+    #network-switch-demo .ns-config-masters .ns-owner { font-size: 11px; min-height: 32px; }
+    #network-switch-demo .ns-config-masters .ns-master-footer { display: flex; margin-top: 10px; align-items: center; justify-content: space-between; }
+    #network-switch-demo .ns-config-account-heading { margin: 26px 0 11px; }
+    #network-switch-demo .ns-config-account-heading .ns-primary { margin-left: auto; }
+    #network-switch-demo .ns-config-view .ns-accounts { display: grid; gap: 12px; border: 0; padding: 0; }
+    #network-switch-demo .ns-config-view .ns-account { border: 1px solid var(--ns-border); border-radius: 9px; }
+    #network-switch-demo .ns-config-view .ns-account > summary { padding: 12px 14px; }
+    #network-switch-demo .ns-config-view .ns-account[open] > summary { color: var(--ns-text); background: var(--ns-subtle); }
+    #network-switch-demo .ns-config-view .ns-account[open] > summary .ns-account-user, #network-switch-demo .ns-config-view .ns-account[open] > summary .ns-account-count, #network-switch-demo .ns-config-view .ns-account[open] > summary .ns-chevron { color: var(--ns-muted); }
+    #network-switch-demo .ns-config-view .ns-account[open] > summary .ns-avatar { color: var(--ns-muted); background: var(--ns-panel); }
+    #network-switch-demo .ns-config-view .ns-account[open] .ns-account-groups { position: static; width: auto; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); padding: 0; border: 0; border-top: 1px solid var(--ns-border); border-radius: 0; box-shadow: none; animation: none; min-height: 0; }
+    #network-switch-demo .ns-config-view .ns-group { padding: 12px; min-width: 0; }
+    #network-switch-demo .ns-config-view .ns-group + .ns-group { border-left: 1px solid var(--ns-border); }
+    #network-switch-demo .ns-config-view .ns-group-heading { order: 0; margin: 0 0 7px; padding: 0; border: 0; }
+    #network-switch-demo .ns-config-view .ns-group-heading > span { display: inline; }
+    #network-switch-demo .ns-config-view .ns-add { margin-left: auto; }
+    #network-switch-demo .ns-config-view .ns-connections { order: 0; }
+    #network-switch-demo .ns-config-view .ns-connection-detail { display: block; }
+    #network-switch-demo .ns-config-view .ns-connection { display: block; background: var(--ns-subtle); margin-bottom: 5px; }
+    #network-switch-demo .ns-config-view .ns-connection[data-selected="true"] { background: var(--ns-blue-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ns-blue) 25%, transparent); }
+    #network-switch-demo .ns-config-view .ns-connection-action { flex-direction: row; justify-content: space-between; align-items: center; }
+    #network-switch-demo .ns-config-view .ns-select { display: inline-flex; }
+    #network-switch-demo .ns-config-view .ns-account-back { display: none; }
+    #network-switch-demo .ns-config-view .ns-bottom { margin-top: 14px; }
+    #network-switch-demo .ns-config-view .ns-swipe-hint { display: none; }
+    @media (max-width: 610px) { #network-switch-demo .ns-config-view .ns-account[open] .ns-account-groups, #network-switch-demo .ns-config-masters { grid-template-columns: 1fr; } #network-switch-demo .ns-config-view .ns-group + .ns-group { border-left: 0; border-top: 1px solid var(--ns-border); } #network-switch-demo .ns-config-header, #network-switch-demo .ns-config-body { padding-inline: 14px; } #network-switch-demo .ns-config-header { flex-wrap: wrap; } }
+    #network-switch-demo .ns-tabs { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); padding: 3px; gap: 3px; margin: 0 14px; background: var(--ns-subtle); border-radius: 8px; }
+    #network-switch-demo .ns-tab { border: 0; border-radius: 6px; background: transparent; padding: 7px 4px; min-height: 31px; display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 12px; color: var(--ns-muted); }
+    #network-switch-demo .ns-tab svg { width: 14px; height: 14px; }
+    #network-switch-demo .ns-tab[aria-selected="true"] { color: var(--ns-text); background: var(--ns-panel); box-shadow: 0 1px 3px light-dark(#00000018, #00000040); font-weight: 600; }
+    #network-switch-demo .ns-tab:disabled { opacity: .55; }
+    #network-switch-demo .ns-body { padding: 13px 14px 12px; touch-action: pan-y; }
+    #network-switch-demo .ns-masters { display: block; }
+    #network-switch-demo .ns-master { display: block; padding: 0 3px 14px; border: 0; border-radius: 0; }
+    #network-switch-demo .ns-master-heading { display: flex; margin: 0 0 8px; }
+    #network-switch-demo .ns-kind-icon { display: none; }
+    #network-switch-demo .ns-kind-title { font-size: 13px; }
+    #network-switch-demo .ns-current-row { display: flex; align-items: center; gap: 10px; min-height: 46px; }
+    #network-switch-demo .ns-current-icon { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: var(--ns-blue-fill); color: #fff; }
+    #network-switch-demo .ns-current-icon svg { width: 21px; height: 21px; }
+    #network-switch-demo .ns-master[data-actual="off"] .ns-current-icon { background: var(--ns-subtle); color: var(--ns-muted); }
+    #network-switch-demo .ns-current-copy { min-width: 0; flex: 1; }
+    #network-switch-demo .ns-target { font-size: 15px; font-weight: 600; min-height: 0; line-height: 1.35; }
+    #network-switch-demo .ns-owner { font-size: 11px; margin: 2px 0 0; min-height: 0; }
+    #network-switch-demo .ns-current-check { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; background: light-dark(#08d875, #17de81); color: #092b19; }
+    #network-switch-demo .ns-current-check svg { width: 16px; height: 16px; }
+    #network-switch-demo .ns-master:not([data-actual="good"]) .ns-current-check { display: none; }
+    #network-switch-demo .ns-master-footer { display: none; }
+    #network-switch-demo .ns-window .ns-accounts { display: none; }
+    #network-switch-demo .ns-other { border-top: 1px solid var(--ns-border); padding-top: 8px; }
+    #network-switch-demo .ns-other-toggle { width: 100%; min-height: 33px; display: flex; align-items: center; justify-content: space-between; padding: 3px 1px; border: 0; background: transparent; color: var(--ns-muted); font-size: 12px; font-weight: 600; text-align: left; }
+    #network-switch-demo .ns-other-toggle svg { width: 15px; height: 15px; transition: transform 160ms ease; }
+    #network-switch-demo .ns-other-toggle[aria-expanded="true"] svg { transform: rotate(90deg); }
+    #network-switch-demo .ns-other-list { padding-top: 4px; }
+    #network-switch-demo .ns-other-item { display: flex; align-items: center; gap: 9px; padding: 7px 0; min-width: 0; }
+    #network-switch-demo .ns-other-icon { width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 auto; color: var(--ns-muted); }
+    #network-switch-demo .ns-other-icon svg { width: 20px; height: 20px; }
+    #network-switch-demo .ns-other-copy { flex: 1; min-width: 0; }
+    #network-switch-demo .ns-other-name { font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+    #network-switch-demo .ns-other-owner { font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-other-action { border: 0; border-radius: 6px; background: var(--ns-blue-fill); color: #fff !important; font-size: 11px; padding: 5px 11px; min-height: 28px; flex: 0 0 auto; }
+    #network-switch-demo .ns-other-action:disabled { opacity: .55; }
+    #network-switch-demo .ns-other-empty { padding: 10px 0; color: var(--ns-muted); font-size: 11px; }
+    #network-switch-demo .ns-network-note { margin: 0 0 10px; font-size: 11px; padding: 8px; }
+    #network-switch-demo .ns-accounts { gap: 4px; border-top: 1px solid var(--ns-border); padding-top: 7px; }
+    #network-switch-demo .ns-accounts { position: relative; }
+    #network-switch-demo .ns-account { border: 0; border-radius: 6px; }
+    #network-switch-demo .ns-account > summary { padding: 9px 3px; gap: 8px; }
+    #network-switch-demo .ns-account > summary:hover { background: var(--ns-subtle); }
+    #network-switch-demo .ns-account[open] > summary { background: var(--ns-blue-fill); color: #fff; }
+    #network-switch-demo .ns-account[open] > summary .ns-account-user, #network-switch-demo .ns-account[open] > summary .ns-account-count, #network-switch-demo .ns-account[open] > summary .ns-chevron { color: light-dark(#e6f0ff, #eef5ff); }
+    #network-switch-demo .ns-account[open] > summary .ns-avatar { color: #fff; background: #ffffff26; }
+    #network-switch-demo .ns-account[open] .ns-account-groups { position: absolute; top: var(--ns-pane-top, 0px); left: calc(100% + 12px); width: 252px; z-index: 2; padding: 6px 8px; border: 1px solid var(--ns-border); border-radius: 10px; background: var(--ns-panel); box-shadow: 0 10px 30px light-dark(#1b253018, #00000040); animation: ns-account-slide 180ms ease-out both; }
+    #network-switch-demo .ns-account[open] .ns-chevron { transform: none; }
+    #network-switch-demo .ns-account-back { display: none; align-items: center; gap: 9px; width: 100%; padding: 5px 3px 11px; border: 0; border-bottom: 1px solid var(--ns-border); background: transparent; color: var(--ns-text); text-align: left; font-size: 12px; font-weight: 600; }
+    #network-switch-demo .ns-account-back svg { width: 15px; height: 15px; }
+    #network-switch-demo .ns-account-back:hover { color: var(--ns-blue); }
+    @keyframes ns-account-slide { from { transform: translateX(24px); opacity: .4; } to { transform: translateX(0); opacity: 1; } }
+    #network-switch-demo .ns-avatar { height: 26px; width: 26px; font-size: 12px; }
+    #network-switch-demo .ns-account-name { font-size: 12px; font-weight: 500; }
+    #network-switch-demo .ns-account-user { font-size: 11px; }
+    #network-switch-demo .ns-account-count { font-size: 11px; max-width: none; }
+    #network-switch-demo .ns-account-groups { display: block; border: 0; }
+    #network-switch-demo .ns-group { display: flex; flex-direction: column; padding: 0; }
+    #network-switch-demo .ns-group + .ns-group { border: 0; }
+    #network-switch-demo .ns-group-heading { order: 2; margin: 2px 0 0; padding: 3px 0 0; border-top: 1px solid var(--ns-border); font-size: 11px; }
+    #network-switch-demo .ns-group-heading > svg, #network-switch-demo .ns-group-heading > span { display: none; }
+    #network-switch-demo .ns-add { margin-left: 0; padding: 3px 4px; }
+    #network-switch-demo .ns-connections { order: 1; gap: 2px; }
+    #network-switch-demo .ns-connection { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; padding: 7px; gap: 7px; background: transparent; }
+    #network-switch-demo .ns-account-groups .ns-connection[data-selected="true"] { background: transparent; box-shadow: none; }
+    #network-switch-demo .ns-account-groups .ns-connection:hover { background: var(--ns-subtle); }
+    #network-switch-demo .ns-config-view .ns-account-groups .ns-connection[data-selected="true"] { background: var(--ns-blue-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ns-blue) 25%, transparent); }
+    #network-switch-demo .ns-config-view .ns-account-groups .ns-connection-action { flex-direction: row; align-items: center; justify-content: space-between; }
+    #network-switch-demo .ns-connection-action { flex-direction: column; align-items: flex-end; min-height: 0; gap: 2px; }
+    #network-switch-demo .ns-connection-title { font-size: 12px; }
+    #network-switch-demo .ns-connection-detail { display: none; }
+    #network-switch-demo .ns-selection-status { font-size: 11px; }
+    #network-switch-demo .ns-select { padding: 3px 7px; min-height: 26px; }
+    #network-switch-demo .ns-selection-status[data-selected="false"] { display: none; }
+    #network-switch-demo .ns-editor { padding: 12px; margin: 6px 0 12px; border-radius: 8px; }
+    #network-switch-demo .ns-fields { grid-template-columns: 1fr; gap: 12px; }
+    #network-switch-demo .ns-editor-heading { flex-wrap: wrap; margin-bottom: 12px; gap: 3px 8px; }
+    #network-switch-demo .ns-editor-heading h3 { font-size: 13px; }
+    #network-switch-demo .ns-editor-owner { font-size: 11px; }
+    #network-switch-demo .ns-form-actions { margin-top: 12px; }
+    #network-switch-demo .ns-bottom { border-top: 1px solid var(--ns-border); padding-top: 10px; margin-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    #network-switch-demo .ns-bottom [data-add-account] { border: 0; background: transparent; color: var(--ns-blue); padding: 3px 4px; min-height: 30px; font-size: 12px; }
+    #network-switch-demo .ns-swipe-hint { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ns-muted); }
+    #network-switch-demo .ns-footer { font-size: 11px; margin-top: 7px; min-height: 17px; }
+    #network-switch-demo .ns-footer > svg { display: none; }
+    #network-switch-demo .ns-empty { padding: 10px 6px; font-size: 11px; }
+    @media (max-width: 659px) {
+      #network-switch-demo .ns-preview { --ns-menu-width: min(360px, calc(100vw - 8px)); padding-inline: 4px; }
+      #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-window, #network-switch-demo .ns-preview:has(.ns-account[open]) .ns-menu-strip { transform: none; }
+      #network-switch-demo .ns-accounts:has(.ns-account[open]) > .ns-account > summary { visibility: hidden; }
+      #network-switch-demo .ns-account[open] .ns-account-groups { inset: 0 0 auto; width: auto; min-height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+      #network-switch-demo .ns-account-back { display: flex; }
+    }
+    @media (pointer: coarse) {
+      #network-switch-demo .ns-menu-trigger, #network-switch-demo .ns-tab, #network-switch-demo .ns-add, #network-switch-demo .ns-bottom [data-add-account], #network-switch-demo .ns-select, #network-switch-demo .ns-account-back { min-height: 44px; }
+      #network-switch-demo .ns-menu-strip { height: 48px; }
+    }
+    @media (prefers-reduced-motion: reduce) { #network-switch-demo .ns-account[open] .ns-account-groups { animation: none; } }
+  </style>
+  <div class="ns-preview viz-dotted-background">
+  <div class="ns-menu-strip"><span class="ns-menu-caption">macOS 菜单栏</span><button type="button" class="ns-menu-trigger cursor-interaction" aria-label="打开或收起 WiFi Switch" aria-expanded="true" aria-controls="ns-menu-window"><i data-lucide="arrow-left-right" aria-hidden="true"></i></button><span class="ns-menu-time">14:32</span></div>
+  <div class="ns-window" id="ns-menu-window">
+    <header class="ns-titlebar">
+      <div class="ns-logo" aria-hidden="true"><i data-lucide="arrow-left-right"></i></div>
+      <div><h1 class="ns-heading">WiFi Switch</h1><div class="ns-subtitle">快速切换连接</div></div>
+      <button type="button" class="ns-gear cursor-interaction" aria-label="设置" aria-expanded="false" aria-controls="ns-gear-menu" data-open-gear><i data-lucide="settings" aria-hidden="true"></i></button>
+      <div class="ns-gear-menu" id="ns-gear-menu" hidden><button type="button" data-gear-action="about">关于 WiFi Switch</button><hr><button type="button" data-gear-action="config">配置管理</button><button type="button" data-gear-action="guide">使用说明</button><hr><button type="button" data-gear-action="quit">退出系统</button></div>
+    </header>
+    <div class="ns-tabs" role="tablist" aria-label="连接类型">
+      <button type="button" class="ns-tab cursor-interaction" role="tab" id="ns-tab-wifi" data-tab="wifi" aria-controls="ns-menu-page" aria-selected="true"><i data-lucide="wifi" aria-hidden="true"></i>WI-FI</button>
+      <button type="button" class="ns-tab cursor-interaction" role="tab" id="ns-tab-vpn" data-tab="vpn" aria-controls="ns-menu-page" aria-selected="false"><i data-lucide="shield-check" aria-hidden="true"></i>VPN</button>
+      <button type="button" class="ns-tab cursor-interaction" role="tab" id="ns-tab-proxy" data-tab="proxy" aria-controls="ns-menu-page" aria-selected="false"><i data-lucide="globe" aria-hidden="true"></i>代理</button>
+    </div>
+    <div class="ns-body" id="ns-menu-page" role="tabpanel" aria-labelledby="ns-tab-wifi">
+      <section class="ns-masters" aria-label="三类连接总开关"></section>
+      <div class="ns-network-note" hidden><i data-lucide="info" aria-hidden="true"></i><span>Wi-Fi 已关闭。VPN 和代理仍为开启，等待网络恢复。</span></div>
+      <section class="ns-other" aria-label="其他连接"><button type="button" class="ns-other-toggle cursor-interaction" aria-expanded="false" aria-controls="ns-other-list"><span>其他网络</span><i data-lucide="chevron-right" aria-hidden="true"></i></button><div class="ns-other-list" id="ns-other-list" hidden></div></section>
+      <section class="ns-editor" aria-labelledby="ns-editor-title" hidden>
+        <div class="ns-editor-heading"><h3 id="ns-editor-title"></h3><span class="ns-editor-owner"></span></div>
+        <form novalidate autocomplete="off">
+          <div class="ns-fields"></div>
+          <p class="ns-form-note"></p>
+          <div class="ns-form-error" role="alert" hidden></div>
+          <div class="ns-form-actions"><button type="button" class="ns-secondary cursor-interaction" data-cancel>取消</button><button type="button" class="ns-primary cursor-interaction" data-save>保存</button></div>
+        </form>
+      </section>
+      <section class="ns-accounts" aria-label="账号及其连接"></section>
+      <div class="ns-bottom"><button type="button" class="ns-primary cursor-interaction" data-add-account><i data-lucide="plus" aria-hidden="true"></i>添加账号</button><span class="ns-swipe-hint"><i data-lucide="move-horizontal" aria-hidden="true"></i>左右滑动切换类型</span></div>
+      <div class="ns-footer" role="status" aria-live="polite" aria-atomic="true"><i data-lucide="circle-check" aria-hidden="true"></i><span class="ns-feedback">操作仅在 Demo 中生效。</span></div>
+    </div>
+  </div>
+  <section class="ns-config-view" aria-label="配置管理" hidden>
+    <header class="ns-config-header"><button type="button" class="ns-config-back cursor-interaction" data-close-config aria-label="返回菜单"><i data-lucide="arrow-left" aria-hidden="true"></i></button><span class="ns-logo" aria-hidden="true"><i data-lucide="arrow-left-right"></i></span><div><h2>WiFi Switch</h2><div class="ns-subtitle">一个账号，管理三类连接</div></div><span class="ns-config-demo-tag">交互演示 · 示例数据</span></header>
+    <div class="ns-config-body"><div class="ns-config-section-heading"><h3>连接总开关</h3><span>每类一个开关，全账号共用</span></div><section class="ns-config-masters" aria-label="三类连接总开关"></section><div class="ns-config-section-heading ns-config-account-heading"><h3>账号</h3><span class="ns-config-count"></span><div class="ns-config-add-slot"></div></div><div class="ns-config-content"></div></div>
+  </section>
+  </div>
+  <script>
+    (() => {
+      const root = document.getElementById('network-switch-demo');
+      root.dataset.view = 'menu';
+      const types = ['wifi', 'vpn', 'proxy'];
+      const meta = {
+        wifi: { label: 'WI-FI', icon: 'wifi', mode: '无线网络' },
+        vpn: { label: 'VPN', icon: 'shield-check', mode: '企业连接' },
+        proxy: { label: '代理', icon: 'globe', mode: '系统代理 · 规则' }
+      };
+      let accounts = [
+        { id: 'work', label: '办公账号', username: 'work.user', avatar: '办', connections: {
+          wifi: [{ id: 'office', name: 'Office-WiFi', detail: '企业 Wi-Fi' }, { id: 'meeting', name: 'Meeting-WiFi', detail: '企业 Wi-Fi' }],
+          vpn: [{ id: 'atrust', name: '公司内网', detail: 'aTrust' }],
+          proxy: [{ id: 'work-proxy', name: '办公规则', detail: 'Clash Verge · 工作配置' }]
+        }},
+        { id: 'personal', label: '个人账号', username: 'personal.user', avatar: '个', connections: {
+          wifi: [{ id: 'home', name: 'Home-WiFi', detail: '个人 Wi-Fi' }, { id: 'hotspot', name: 'Phone-Hotspot', detail: '手机热点' }],
+          vpn: [{ id: 'cisco', name: '项目专网', detail: 'Cisco Secure Client' }],
+          proxy: [{ id: 'personal-proxy', name: '日常规则', detail: 'Clash Verge · 个人配置' }]
+        }}
+      ];
+      let index;
+      function rebuildIndex() { index = Object.fromEntries(types.map(type => [type, accounts.flatMap(account => account.connections[type].map(connection => ({ ...connection, account: account.id, accountLabel: account.label })))])); }
+      rebuildIndex();
+      const defaults = () => ({ version: 2, activeType: 'wifi', enabled: { wifi: true, vpn: true, proxy: true }, selected: { wifi: 'office', vpn: 'cisco', proxy: 'work-proxy' }, open: { work: false, personal: false } });
+      const state = defaults();
+      const pending = { wifi: false, vpn: false, proxy: false };
+      const timers = {};
+      const presentation = { density: 'standard' };
+      const icon = name => `<i data-lucide="${name}" aria-hidden="true"></i>`;
+      const escape = value => String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+      const identifier = value => typeof value === 'string' && /^[a-zA-Z0-9-]{1,80}$/.test(value);
+      const text = (value, length) => typeof value === 'string' && value.length <= length;
+      function restore(saved) {
+        if (!saved || ![1, 2].includes(saved.version)) return;
+        if (types.includes(saved.activeType)) state.activeType = saved.activeType;
+        if (Array.isArray(saved.accounts) && saved.accounts.length && saved.accounts.length <= 128) {
+          const valid = saved.accounts.every(account => identifier(account.id) && text(account.label, 40) && account.label.trim() && text(account.username, 64) && types.every(type => Array.isArray(account.connections?.[type]) && account.connections[type].length <= 128 && account.connections[type].every(item => identifier(item.id) && text(item.name, 64) && item.name.trim() && text(item.detail, 240))));
+          const uniqueAccounts = new Set(saved.accounts.map(account => account.id)).size === saved.accounts.length;
+          const allConnections = valid ? saved.accounts.flatMap(account => types.flatMap(type => account.connections[type])) : [];
+          const uniqueConnections = new Set(allConnections.map(item => item.id)).size === allConnections.length;
+          if (valid && uniqueAccounts && uniqueConnections && types.every(type => saved.accounts.some(account => account.connections[type].length))) {
+            accounts = saved.accounts.map(account => ({ id: account.id, label: account.label, username: account.username, avatar: Array.from(account.label)[0], connections: Object.fromEntries(types.map(type => [type, account.connections[type].map(item => ({ id: item.id, name: item.name, detail: item.detail, mode: ['系统代理', 'TUN'].includes(item.mode) ? item.mode : undefined }))])) }));
+            rebuildIndex();
+          }
+        }
+        for (const type of types) {
+          if (typeof saved.enabled?.[type] === 'boolean') state.enabled[type] = saved.enabled[type];
+          if (index[type].some(item => item.id === saved.selected?.[type])) state.selected[type] = saved.selected[type];
+          else if (!index[type].some(item => item.id === state.selected[type])) state.selected[type] = index[type][0].id;
+        }
+        for (const account of accounts) if (typeof saved.open?.[account.id] === 'boolean') state.open[account.id] = saved.open[account.id];
+        if (['standard', 'compact'].includes(saved.density)) presentation.density = saved.density;
+        if (root.dataset.view === 'menu') accounts.forEach(account => { state.open[account.id] = false; });
+      }
+      restore(window.openai?.widgetState?.privateContent?.networkDemo);
+      const masters = root.querySelector('.ns-masters');
+      const configMasters = root.querySelector('.ns-config-masters');
+      const accountList = root.querySelector('.ns-accounts');
+      const otherList = root.querySelector('.ns-other-list');
+      const otherToggle = root.querySelector('.ns-other-toggle');
+      let otherOpen = false;
+      masters.innerHTML = `<article class="ns-master">
+        <div class="ns-master-heading"><span class="ns-kind-title"></span>
+          <label class="ns-switch cursor-interaction"><input type="checkbox" role="switch"><span class="ns-switch-track" aria-hidden="true"></span></label>
+        </div><div class="ns-current-row"><span class="ns-current-icon" aria-hidden="true"></span><div class="ns-current-copy"><div class="ns-target"></div><div class="ns-owner"></div></div><span class="ns-current-check" aria-hidden="true">${icon('check')}</span></div>
+        <div class="ns-master-footer"><span class="ns-badge"></span><span class="ns-mode"></span></div>
+      </article>`;
+      configMasters.innerHTML = types.map(type => `<article class="ns-master" data-type="${type}" aria-label="${meta[type].label} 总开关与当前连接"><div class="ns-master-heading"><span class="ns-kind-icon">${icon(meta[type].icon)}</span><span class="ns-kind-title">${meta[type].label}</span><label class="ns-switch cursor-interaction"><input type="checkbox" role="switch" data-switch="${type}" aria-label="${meta[type].label} 总开关"><span class="ns-switch-track" aria-hidden="true"></span></label></div><div class="ns-target"></div><div class="ns-owner"></div><div class="ns-master-footer"><span class="ns-badge"></span><span class="ns-mode"></span></div></article>`).join('');
+      function renderAccounts() {
+        accountList.innerHTML = accounts.map(account => `<details class="ns-account" data-account="${account.id}" ${state.open[account.id] ? 'open' : ''}>
+          <summary class="cursor-interaction"><span class="ns-avatar" aria-hidden="true">${escape(account.avatar)}</span><div><div class="ns-account-name">${escape(account.label)}</div><div class="ns-account-user">${escape(account.username || '未填写用户名')}</div></div><span class="ns-account-count"></span><span class="ns-chevron">${icon('chevron-right')}</span></summary>
+          <div class="ns-account-groups"><button class="ns-account-back cursor-interaction" type="button" aria-label="返回账号列表">${icon('arrow-left')}<span>${escape(account.label)}</span></button>${types.map(type => `<section class="ns-group" data-group="${type}" aria-label="${escape(account.label)}的${meta[type].label}"><div class="ns-group-heading">${icon(meta[type].icon)}<span>${meta[type].label}</span><button class="ns-add cursor-interaction" type="button" data-add="${type}" data-owner="${account.id}" aria-label="为${escape(account.label)}添加${meta[type].label}">${icon('plus')}添加</button></div><div class="ns-connections">${account.connections[type].map(connection => `<div class="ns-connection" data-connection="${connection.id}" data-kind="${type}"><div><div class="ns-connection-title">${escape(connection.name)}</div><div class="ns-connection-detail">${escape(connection.detail)}</div></div><div class="ns-connection-action"><span class="ns-selection-status"></span><button class="ns-select cursor-interaction" type="button" data-select="${connection.id}" data-kind="${type}" aria-label="选择${escape(account.label)}的${escape(connection.name)}">切换</button></div></div>`).join('') || '<div class="ns-empty">尚未添加</div>'}</div></section>`).join('')}</div>
+        </details>`).join('');
+        accountList.querySelectorAll('details').forEach(details => details.addEventListener('toggle', () => {
+          if (details.open && root.dataset.view !== 'config') accountList.querySelectorAll('details').forEach(other => { if (other !== details) { other.open = false; state.open[other.dataset.account] = false; } });
+          if (state.open[details.dataset.account] !== details.open) { state.open[details.dataset.account] = details.open; save(); }
+          syncAccountPane();
+        }));
+        accountList.querySelectorAll('details').forEach(details => details.querySelector('summary').addEventListener('pointerenter', event => {
+          if (root.dataset.view !== 'config' && event.pointerType === 'mouse' && matchMedia('(pointer: fine)').matches) details.open = true;
+        }));
+        accountList.querySelectorAll('.ns-account-groups').forEach(pane => pane.addEventListener('pointerleave', event => { if (root.dataset.view !== 'config' && event.pointerType === 'mouse') closeOpenAccount(); }));
+        if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+      function syncAccountPane() {
+        const pane = accountList.querySelector('.ns-account[open] .ns-account-groups');
+        const narrow = matchMedia('(max-width: 659px)').matches;
+        if (pane) pane.style.setProperty('--ns-pane-top', narrow ? '0px' : `${pane.closest('.ns-account').offsetTop}px`);
+        accountList.style.minHeight = pane && narrow && root.dataset.view !== 'config' ? `${Math.max(pane.offsetHeight, 90)}px` : '';
+      }
+      renderAccounts();
+      window.addEventListener('resize', syncAccountPane);
+      function closeOpenAccount() {
+        const opened = accountList.querySelector('.ns-account[open]');
+        if (opened) opened.open = false;
+      }
+      accountList.addEventListener('pointerleave', event => { if (root.dataset.view !== 'config' && event.pointerType === 'mouse') closeOpenAccount(); });
+      function connection(type) { return index[type].find(item => item.id === state.selected[type]); }
+      function actual(type) {
+        if (!state.enabled[type]) return { text: '已关闭', tone: 'off' };
+        if (pending[type]) return { text: '正在连接…', tone: 'busy' };
+        if (type !== 'wifi' && (!state.enabled.wifi || pending.wifi)) return { text: '等待网络', tone: 'waiting' };
+        return { text: '已连接', tone: 'good' };
+      }
+      function render() {
+        root.dataset.density = presentation.density;
+        root.querySelector('.ns-config-count').textContent = `${accounts.length} 个账号`;
+        const activeType = state.activeType;
+        root.querySelectorAll('[data-tab]').forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.tab === activeType)));
+        root.querySelector('.ns-body').setAttribute('aria-labelledby', `ns-tab-${activeType}`);
+        root.querySelectorAll('[data-group]').forEach(group => { group.hidden = root.dataset.view !== 'config' && group.dataset.group !== activeType; });
+        const current = connection(activeType), currentStatus = actual(activeType);
+        const card = masters.querySelector('.ns-master');
+        card.dataset.type = activeType;
+        card.dataset.actual = currentStatus.tone;
+        card.setAttribute('aria-label', `${meta[activeType].label} 总开关与当前连接`);
+        card.querySelector('.ns-kind-title').textContent = currentStatus.tone === 'good' ? (activeType === 'wifi' ? '已连接网络' : activeType === 'vpn' ? '已连接VPN' : '已连接代理') : `${meta[activeType].label} · ${currentStatus.text}`;
+        const masterSwitch = card.querySelector('input');
+        masterSwitch.dataset.switch = activeType;
+        masterSwitch.setAttribute('aria-label', `${meta[activeType].label} 总开关`);
+        masterSwitch.checked = state.enabled[activeType];
+        card.querySelector('.ns-current-icon').innerHTML = icon(meta[activeType].icon);
+        card.querySelector('.ns-target').textContent = current.name;
+        card.querySelector('.ns-owner').textContent = current.accountLabel;
+        card.querySelector('.ns-badge').textContent = currentStatus.text;
+        card.querySelector('.ns-badge').dataset.tone = currentStatus.tone;
+        card.querySelector('.ns-mode').textContent = activeType === 'proxy' ? `${current.mode || '系统代理'} · 规则` : meta[activeType].mode;
+        for (const type of types) {
+          const status = actual(type);
+          const configCard = configMasters.querySelector(`[data-type="${type}"]`);
+          const selectedItem = connection(type);
+          configCard.querySelector('input').checked = state.enabled[type];
+          configCard.querySelector('.ns-target').textContent = selectedItem.name;
+          configCard.querySelector('.ns-owner').textContent = `${selectedItem.accountLabel} · ${state.enabled[type] ? selectedItem.detail : '保留选择'}`;
+          configCard.querySelector('.ns-badge').textContent = status.text;
+          configCard.querySelector('.ns-badge').dataset.tone = status.tone;
+          configCard.querySelector('.ns-mode').textContent = type === 'proxy' ? `${selectedItem.mode || '系统代理'} · 规则` : meta[type].mode;
+          root.querySelectorAll(`.ns-connection[data-kind="${type}"]`).forEach(row => {
+            const selected = row.dataset.connection === state.selected[type];
+            row.dataset.selected = String(selected);
+            const label = row.querySelector('.ns-selection-status');
+            label.dataset.selected = String(selected);
+            label.textContent = selected ? (state.enabled[type] ? status.text : '已选择') : '已保存';
+            const button = row.querySelector('button');
+            button.hidden = selected;
+            button.disabled = pending[type];
+            button.textContent = state.enabled[type] ? '切换' : '选择';
+          });
+        }
+        for (const account of accounts) {
+          const selected = connection(activeType).account === account.id;
+          const section = accountList.querySelector(`[data-account="${account.id}"]`);
+          const activeCount = types.filter(type => connection(type).account === account.id && state.enabled[type] && actual(type).tone === 'good').length;
+          section.querySelector('.ns-account-count').textContent = root.dataset.view === 'config' ? (activeCount ? `${activeCount} 项正在使用` : '未使用') : selected ? (state.enabled[activeType] ? actual(activeType).text : '已选择') : `${account.connections[activeType].length} 个连接`;
+          if (section.open !== state.open[account.id]) section.open = state.open[account.id];
+        }
+        const note = root.querySelector('.ns-network-note');
+        note.hidden = state.enabled.wifi || activeType === 'wifi' || !state.enabled[activeType];
+        note.querySelector('span').textContent = `Wi-Fi 已关闭，${meta[activeType].label}保持开启，等待网络恢复。`;
+        const otherNames = { wifi: '其他网络', vpn: '其他 VPN', proxy: '其他代理' };
+        otherToggle.querySelector('span').textContent = otherNames[activeType];
+        otherToggle.setAttribute('aria-expanded', String(otherOpen));
+        otherList.hidden = !otherOpen;
+        otherList.setAttribute('aria-label', otherNames[activeType]);
+        const remaining = index[activeType].filter(item => item.id !== state.selected[activeType]);
+        otherList.innerHTML = remaining.map(item => `<div class="ns-other-item"><span class="ns-other-icon">${icon(meta[activeType].icon)}</span><div class="ns-other-copy"><div class="ns-other-name">${escape(item.name)}</div><div class="ns-other-owner">${escape(item.accountLabel)}</div></div><button class="ns-other-action cursor-interaction" type="button" data-menu-select="${item.id}" data-kind="${activeType}" ${pending[activeType] ? 'disabled' : ''}>${state.enabled[activeType] ? '连接' : '选择'}</button></div>`).join('') || '<div class="ns-other-empty">没有其他已保存的连接</div>';
+        syncAccountPane();
+        if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      }
+      function save() {
+        const snapshot = JSON.parse(JSON.stringify({ ...state, accounts, density: presentation.density }));
+        if (typeof window.openai?.setWidgetState === 'function') {
+          const payload = {
+            modelContent: { demo: 'WiFi Switch 菜单栏 · 横向分页', activeType: meta[state.activeType].label, accountCount: accounts.length, enabled: snapshot.enabled, selected: Object.fromEntries(types.map(type => [meta[type].label, { account: connection(type).accountLabel, name: connection(type).name, status: actual(type).text }])) },
+            privateContent: { networkDemo: snapshot }
+          };
+          if (new TextEncoder().encode(JSON.stringify(payload)).length < 16000) window.openai.setWidgetState(payload).catch(() => {});
+        }
+      }
+      function announce(message) { root.querySelector('.ns-feedback').textContent = message; }
+      function finishSoon(type, message) {
+        clearTimeout(timers[type]);
+        pending[type] = true;
+        render();
+        timers[type] = setTimeout(() => {
+          pending[type] = false;
+          render();
+          announce(actual(type).tone === 'waiting' ? `${meta[type].label}已开启，等待网络恢复。` : message);
+          save();
+        }, 650);
+      }
+      function handleSwitch(event) {
+        const type = event.target.dataset.switch;
+        if (!types.includes(type)) return;
+        state.enabled[type] = event.target.checked;
+        clearTimeout(timers[type]);
+        pending[type] = false;
+        if (state.enabled[type]) {
+          announce(`${meta[type].label}正在开启…`);
+          finishSoon(type, `${meta[type].label}已开启，使用${connection(type).accountLabel}的${connection(type).name}。`);
+        } else {
+          render();
+          announce(type === 'wifi' ? 'WI-FI 已关闭，连接选择已保留；VPN 和代理开关未改变。' : `${meta[type].label}已关闭，连接选择已保留；其他开关未改变。`);
+        }
+        save();
+      }
+      masters.addEventListener('change', handleSwitch);
+      configMasters.addEventListener('change', handleSwitch);
+      function chooseConnection(type, id) {
+        if (!types.includes(type) || !index[type].some(item => item.id === id) || pending[type]) return;
+        state.selected[type] = id;
+        if (state.enabled[type]) {
+          announce(`正在切换${meta[type].label}…`);
+          finishSoon(type, `${meta[type].label}已切换至${connection(type).name}；其他类型的选择保持不变。`);
+        } else {
+          render();
+          announce(`已选择${connection(type).name}；开启${meta[type].label}总开关后生效。`);
+        }
+        save();
+      }
+      otherToggle.addEventListener('click', () => { otherOpen = !otherOpen; render(); });
+      otherList.addEventListener('click', event => {
+        const button = event.target.closest('[data-menu-select]');
+        if (button && !button.disabled) chooseConnection(button.dataset.kind, button.dataset.menuSelect);
+      });
+      accountList.addEventListener('click', event => {
+        const back = event.target.closest('.ns-account-back');
+        if (back) {
+          const details = back.closest('details');
+          details.open = false;
+          details.querySelector('summary').focus();
+          return;
+        }
+        const button = event.target.closest('button[data-select]');
+        if (!button || button.disabled) return;
+        chooseConnection(button.dataset.kind, button.dataset.select);
+      });
+      const editor = root.querySelector('.ns-editor');
+      const form = editor.querySelector('form');
+      const configView = root.querySelector('.ns-config-view');
+      const menuWindow = root.querySelector('.ns-window');
+      const menuBody = root.querySelector('.ns-body');
+      const menuFooter = root.querySelector('.ns-footer');
+      const bottom = root.querySelector('.ns-bottom');
+      const addAccountButton = bottom.querySelector('[data-add-account]');
+      const gearButton = root.querySelector('[data-open-gear]');
+      const gearMenu = root.querySelector('.ns-gear-menu');
+      function closeGear() { gearMenu.hidden = true; gearButton.setAttribute('aria-expanded', 'false'); }
+      gearButton.addEventListener('click', () => { gearMenu.hidden = !gearMenu.hidden; gearButton.setAttribute('aria-expanded', String(!gearMenu.hidden)); });
+      gearMenu.addEventListener('click', event => {
+        const action = event.target.dataset.gearAction;
+        if (!action) return;
+        closeGear();
+        if (action === 'config') openConfig();
+        else if (action === 'quit') {
+          menuWindow.hidden = true;
+          root.querySelector('.ns-menu-trigger').setAttribute('aria-expanded', 'false');
+        } else announce(action === 'about' ? 'WiFi Switch · 独立交互演示。' : '使用说明：通过齿轮进入配置管理，菜单栏用于查看和切换连接。');
+      });
+      document.addEventListener('pointerdown', event => { if (!gearMenu.contains(event.target) && !gearButton.contains(event.target)) closeGear(); });
+      gearMenu.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeGear(); gearButton.focus(); } });
+      function openConfig() {
+        closeGear();
+        closeOpenAccount();
+        root.dataset.view = 'config';
+        menuWindow.hidden = true;
+        configView.hidden = false;
+        configView.querySelector('.ns-config-add-slot').append(addAccountButton);
+        configView.querySelector('.ns-config-content').append(editor, accountList);
+        accounts.forEach(account => { state.open[account.id] = true; });
+        renderAccounts();
+        render();
+        configView.querySelector('[data-close-config]').focus();
+      }
+      function closeConfig() {
+        if (editing) closeEditor();
+        root.dataset.view = 'menu';
+        configView.hidden = true;
+        menuWindow.hidden = false;
+        menuBody.insertBefore(editor, menuFooter);
+        menuBody.insertBefore(accountList, menuFooter);
+        bottom.prepend(addAccountButton);
+        accounts.forEach(account => { state.open[account.id] = false; });
+        renderAccounts();
+        render();
+        root.querySelector('.ns-menu-trigger').setAttribute('aria-expanded', 'true');
+        gearButton.focus();
+      }
+      root.querySelector('[data-close-config]').addEventListener('click', closeConfig);
+      let editing = null;
+      const inputField = (name, label, placeholder, type = 'text', length = 64) => `<div class="ns-field"><label for="ns-field-${name}">${label}</label><input id="ns-field-${name}" name="${name}" type="${type}" maxlength="${length}" placeholder="${placeholder}" autocomplete="${type === 'password' ? 'new-password' : 'off'}"></div>`;
+      const selectField = (name, label, options) => `<div class="ns-field"><label for="ns-field-${name}">${label}</label><select id="ns-field-${name}" name="${name}">${options.map(option => `<option value="${escape(option)}">${escape(option)}</option>`).join('')}</select></div>`;
+      function openEditor(type, accountId = null) {
+        const account = accounts.find(item => item.id === accountId);
+        if (type !== 'account' && (!types.includes(type) || !account)) return;
+        editing = { type, accountId };
+        root.querySelectorAll('[data-tab]').forEach(tab => { tab.disabled = true; });
+        editor.querySelector('h3').textContent = type === 'account' ? '添加账号' : `添加 ${meta[type].label}`;
+        editor.querySelector('.ns-editor-owner').textContent = account ? `归属账号：${account.label}` : '创建一次，再关联三类连接';
+        const fields = editor.querySelector('.ns-fields');
+        if (type === 'account') {
+          fields.innerHTML = inputField('label', '账号备注（必填）', '例如：出差账号', 'text', 40) + inputField('username', '用户名（选填）', '例如：demo.user') + inputField('password', '示例密码（选填）', '仅演示，不保存密码', 'password', 128);
+        } else if (type === 'wifi') {
+          fields.innerHTML = inputField('name', '网络名称 SSID（必填）', '例如：Guest-WiFi') + selectField('authentication', '认证方式', ['企业 Wi-Fi', '普通密码 Wi-Fi', '开放网络']);
+        } else if (type === 'vpn') {
+          fields.innerHTML = inputField('name', '连接名称（必填）', '例如：研发内网') + selectField('client', 'VPN 客户端', ['aTrust', 'Cisco Secure Client']) + inputField('server', '服务器地址（必填）', '例如：vpn.example.com', 'text', 128) + selectField('authentication', '认证方式', ['在原客户端登录', '使用此账号凭据']);
+        } else {
+          fields.innerHTML = inputField('name', '连接名称（必填）', '例如：开发代理') + selectField('client', '代理客户端', ['Clash Verge Rev', 'Clash Verge']) + inputField('profile', '客户端中的配置名称（必填）', '例如：开发环境') + selectField('mode', '接管方式', ['系统代理', 'TUN']);
+        }
+        editor.querySelector('.ns-form-note').textContent = type === 'account' ? '演示密码不会保存。创建账号后，可分别添加 WI-FI、VPN 和代理。' : type === 'wifi' ? '凭据沿用所属账号。保存只添加网络，不会自动连接。' : '保存只添加配置，不会自动连接或改变总开关。';
+        editor.querySelector('.ns-form-error').hidden = true;
+        editor.hidden = false;
+        fields.querySelector('input').focus();
+      }
+      function closeEditor() {
+        const previous = editing;
+        editing = null;
+        root.querySelectorAll('[data-tab]').forEach(tab => { tab.disabled = false; });
+        form.reset();
+        editor.querySelector('.ns-fields').replaceChildren();
+        editor.hidden = true;
+        const opener = previous?.type === 'account' ? root.querySelector('[data-add-account]') : accountList.querySelector(`[data-add="${previous?.type}"][data-owner="${previous?.accountId}"]`);
+        opener?.focus();
+      }
+      root.querySelector('[data-add-account]').addEventListener('click', () => openEditor('account'));
+      accountList.addEventListener('click', event => {
+        const button = event.target.closest('[data-add]');
+        if (button) openEditor(button.dataset.add, button.dataset.owner);
+      });
+      editor.querySelector('[data-cancel]').addEventListener('click', closeEditor);
+      editor.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeEditor(); } });
+      function formError(message, name) {
+        const notice = editor.querySelector('.ns-form-error');
+        notice.textContent = message;
+        notice.hidden = false;
+        const field = form.elements.namedItem(name);
+        field?.setAttribute('aria-invalid', 'true');
+        field?.focus();
+      }
+      function saveEditor() {
+        if (!editing) return;
+        form.querySelectorAll('[aria-invalid]').forEach(field => field.removeAttribute('aria-invalid'));
+        const value = name => String(form.elements.namedItem(name)?.value || '').trim();
+        const { type, accountId } = editing;
+        const name = value(type === 'account' ? 'label' : 'name');
+        if (!name) return formError(type === 'account' ? '请填写账号备注。' : '请填写连接名称。', type === 'account' ? 'label' : 'name');
+        const account = accounts.find(item => item.id === accountId);
+        if (type !== 'account' && !account) return formError('所属账号已不存在，请取消后重新添加。', 'name');
+        if (account?.connections[type].some(item => item.name === name)) return formError('此账号下已存在同名连接，请使用其他名称。', 'name');
+        if (type === 'wifi' && (new TextEncoder().encode(name).length > 32 || name.includes('\0'))) return formError('Wi-Fi 名称最多为 32 个 UTF-8 字节，且不能包含空字符。', 'name');
+        if (type === 'vpn') {
+          if (!value('server')) return formError('请填写 VPN 服务器地址。', 'server');
+          try {
+            const server = new URL(value('server').includes('://') ? value('server') : `https://${value('server')}`);
+            if (!['https:', 'http:'].includes(server.protocol) || !server.hostname || server.username || server.password || /\s/.test(value('server'))) throw new Error('invalid');
+          } catch { return formError('请填写有效的服务器域名或地址。', 'server'); }
+        }
+        if (type === 'proxy' && !value('profile')) return formError('请填写客户端中的配置名称。', 'profile');
+        if (new TextEncoder().encode(JSON.stringify(accounts)).length > 12000) return formError('当前演示数据已满，请先完成已有连接的体验。', type === 'account' ? 'label' : 'name');
+        const id = `custom-${globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}`;
+        if (type === 'account') {
+          accounts.push({ id, label: name, username: value('username'), avatar: Array.from(name)[0], connections: { wifi: [], vpn: [], proxy: [] } });
+          state.open[id] = true;
+        } else {
+          const detail = type === 'wifi' ? value('authentication') : type === 'vpn' ? `${value('client')} · ${value('server')}` : `${value('client')} · ${value('profile')}`;
+          account.connections[type].push({ id, name, detail, ...(type === 'proxy' ? { mode: value('mode') } : {}) });
+          state.open[accountId] = true;
+        }
+        closeEditor();
+        rebuildIndex();
+        renderAccounts();
+        render();
+        save();
+        announce(type === 'account' ? `已添加账号“${name}”，可以继续添加三类连接。` : `已为${account.label}添加“${name}”，当前连接和总开关保持不变。`);
+        const next = type === 'account' ? accountList.querySelector(`[data-account="${id}"] [data-add="${state.activeType}"]`) : root.dataset.view === 'config' ? accountList.querySelector(`[data-add="${type}"][data-owner="${accountId}"]`) : accountList.querySelector(`[data-select="${id}"]`);
+        next?.focus();
+      }
+      // The preview iframe disallows form navigation; save locally for clicks and Enter.
+      form.addEventListener('submit', event => event.preventDefault());
+      form.querySelector('[data-save]').addEventListener('click', saveEditor);
+      form.addEventListener('input', event => {
+        event.target.removeAttribute('aria-invalid');
+        editor.querySelector('.ns-form-error').hidden = true;
+      });
+      form.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && !event.isComposing && event.target.tagName === 'INPUT') {
+          event.preventDefault();
+          saveEditor();
+        }
+      });
+      const page = root.querySelector('.ns-body');
+      const tabs = root.querySelector('.ns-tabs');
+      function switchPage(type, focus = false) {
+        if (editing || !types.includes(type) || type === state.activeType) return;
+        const direction = types.indexOf(type) > types.indexOf(state.activeType) ? 1 : -1;
+        state.activeType = type;
+        otherOpen = false;
+        render();
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          accountList.getAnimations().forEach(animation => animation.cancel());
+          accountList.animate([{ transform: `translateX(${direction * 24}px)`, opacity: .5 }, { transform: 'translateX(0)', opacity: 1 }], { duration: 170, easing: 'ease-out' });
+        }
+        if (focus) tabs.querySelector(`[data-tab="${type}"]`).focus();
+        announce(`${meta[type].label} · ${actual(type).text}`);
+        save();
+      }
+      function stepPage(direction) {
+        const index = Math.max(0, Math.min(types.length - 1, types.indexOf(state.activeType) + direction));
+        switchPage(types[index]);
+      }
+      tabs.addEventListener('click', event => {
+        const tab = event.target.closest('[data-tab]');
+        if (tab) switchPage(tab.dataset.tab);
+      });
+      tabs.addEventListener('keydown', event => {
+        const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+        if (!keys.includes(event.key) || editing) return;
+        event.preventDefault();
+        const current = types.indexOf(state.activeType);
+        const next = event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (current + (event.key === 'ArrowRight' ? 1 : -1) + types.length) % types.length;
+        switchPage(types[next], true);
+      });
+      let gesture = null, suppressClickUntil = 0;
+      page.addEventListener('pointerdown', event => {
+        if (editing || !event.isPrimary || event.button !== 0 || event.target.closest('input, select, textarea')) return;
+        gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, swiping: false };
+      });
+      page.addEventListener('pointermove', event => {
+        if (!gesture || gesture.id !== event.pointerId) return;
+        const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
+        if (Math.abs(dx) > 14 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+          gesture.swiping = true;
+          page.setPointerCapture(event.pointerId);
+        }
+      });
+      page.addEventListener('pointerup', event => {
+        if (!gesture || gesture.id !== event.pointerId) return;
+        const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
+        if (gesture.swiping) {
+          suppressClickUntil = Date.now() + 350;
+          if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) stepPage(dx < 0 ? 1 : -1);
+        }
+        gesture = null;
+      });
+      page.addEventListener('pointercancel', () => { gesture = null; });
+      page.addEventListener('click', event => {
+        if (Date.now() < suppressClickUntil) { event.preventDefault(); event.stopPropagation(); }
+      }, true);
+      let wheelTotal = 0, lastWheel = 0, wheelBlockedUntil = 0;
+      page.addEventListener('wheel', event => {
+        if (editing || Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+        event.preventDefault();
+        const now = Date.now();
+        if (now - lastWheel > 160) wheelTotal = 0;
+        lastWheel = now;
+        if (now < wheelBlockedUntil) return;
+        wheelTotal += event.deltaX * (event.deltaMode === 1 ? 16 : 1);
+        if (Math.abs(wheelTotal) > 45) {
+          stepPage(wheelTotal > 0 ? 1 : -1);
+          wheelTotal = 0;
+          wheelBlockedUntil = now + 500;
+        }
+      }, { passive: false });
+      const menuTrigger = root.querySelector('.ns-menu-trigger');
+      menuTrigger.addEventListener('click', () => {
+        menuWindow.hidden = !menuWindow.hidden;
+        menuTrigger.setAttribute('aria-expanded', String(!menuWindow.hidden));
+      });
+      menuWindow.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !editing && !event.defaultPrevented) {
+          menuWindow.hidden = true;
+          menuTrigger.setAttribute('aria-expanded', 'false');
+          menuTrigger.focus();
+        }
+      });
+      window.addEventListener('openai:set_globals', event => {
+        const saved = event.detail?.globals?.widgetState?.privateContent?.networkDemo;
+        if (!saved || editing || types.some(type => pending[type])) return;
+        const previousAccounts = JSON.stringify(accounts);
+        restore(saved);
+        if (previousAccounts !== JSON.stringify(accounts)) renderAccounts();
+        render();
+      });
+      render();
+      if (globalThis.lucide) lucide.createIcons({ attrs: { width: 16, height: 16 } });
+      if (globalThis.Tweak) {
+        const tweak = new Tweak({ container: root, onChange: () => { render(); save(); } });
+        tweak.addSelect(presentation, 'density', { label: '列表密度', options: [{ label: '标准', value: 'standard' }, { label: '紧凑', value: 'compact' }] });
+      }
+    })();
+  </script>
+</div>
